@@ -203,6 +203,8 @@ generate-go: ## Runs Go related generate targets
 	$(MAKE) generate-go-core
 	$(MAKE) generate-go-kubeadm-bootstrap
 	$(MAKE) generate-go-kubeadm-control-plane
+	$(MAKE) generate-go-exp-postapply
+
 
 .PHONY: generate-go-core
 generate-go-core: $(CONTROLLER_GEN) $(CONVERSION_GEN)
@@ -231,6 +233,12 @@ generate-go-kubeadm-control-plane: $(CONTROLLER_GEN) $(CONVERSION_GEN) ## Runs G
 		object:headerFile=./hack/boilerplate/boilerplate.generatego.txt \
 		paths=./controlplane/kubeadm/api/...
 
+.PHONY: generate-go-exp-postapply
+generate-go-exp-postapply: $(CONTROLLER_GEN) $(CONVERSION_GEN) ## Runs Go related generate targets for the experimental postapply
+	$(CONTROLLER_GEN) \
+		object:headerFile=./hack/boilerplate/boilerplate.generatego.txt \
+		paths=./exp/postapply/api/...
+
 .PHONY: generate-bindata
 generate-bindata: $(KUSTOMIZE) $(GOBINDATA) clean-bindata ## Generate code for embedding the clusterctl api manifest
 	# Package manifest YAML into a single file.
@@ -250,6 +258,7 @@ generate-manifests: ## Generate manifests e.g. CRD, RBAC etc.
 	$(MAKE) generate-core-manifests
 	$(MAKE) generate-kubeadm-bootstrap-manifests
 	$(MAKE) generate-kubeadm-control-plane-manifests
+	$(MAKE) generate-exp-postapply-manifests
 
 .PHONY: generate-core-manifests
 generate-core-manifests: $(CONTROLLER_GEN) ## Generate manifests for the core provider e.g. CRD, RBAC etc.
@@ -292,6 +301,15 @@ generate-kubeadm-control-plane-manifests: $(CONTROLLER_GEN) ## Generate manifest
 		output:rbac:dir=./controlplane/kubeadm/config/rbac \
 		output:webhook:dir=./controlplane/kubeadm/config/webhook \
 		webhook
+
+.PHONY: generate-exp-postapply-manifests
+generate-exp-postapply-manifests: $(CONTROLLER_GEN) ## Generate manifests for the postapply controller e.g. CRD, RBAC etc.
+	$(CONTROLLER_GEN) \
+		paths=./exp/postapply/api/... \
+		paths=./exp/postapply/controllers/... \
+		crd:trivialVersions=false,preserveUnknownFields=false \
+		rbac:roleName=manager-role \
+		output:crd:dir=./exp/postapply/config/crd/bases
 
 .PHONY: modules
 modules: ## Runs go mod to ensure modules are up to date.
@@ -431,6 +449,8 @@ release-manifests: $(RELEASE_DIR) $(KUSTOMIZE) ## Builds the manifests to publis
 	$(KUSTOMIZE) build bootstrap/kubeadm/config > $(RELEASE_DIR)/bootstrap-components.yaml
 	# Build control-plane-components.
 	$(KUSTOMIZE) build controlplane/kubeadm/config > $(RELEASE_DIR)/control-plane-components.yaml
+	# Build experimental postapply related components.
+	$(KUSTOMIZE) build exp/postapply/config/default > $(RELEASE_DIR)/postapply-components.yaml
 
 	## Build cluster-api-components (aggregate of all of the above).
 	cat $(RELEASE_DIR)/core-components.yaml > $(RELEASE_DIR)/cluster-api-components.yaml
@@ -438,6 +458,9 @@ release-manifests: $(RELEASE_DIR) $(KUSTOMIZE) ## Builds the manifests to publis
 	cat $(RELEASE_DIR)/bootstrap-components.yaml >> $(RELEASE_DIR)/cluster-api-components.yaml
 	echo "---" >> $(RELEASE_DIR)/cluster-api-components.yaml
 	cat $(RELEASE_DIR)/control-plane-components.yaml >> $(RELEASE_DIR)/cluster-api-components.yaml
+	echo "---" >> $(RELEASE_DIR)/cluster-api-components.yaml
+	cat $(RELEASE_DIR)/postapply-components.yaml >> $(RELEASE_DIR)/cluster-api-components.yaml
+
 
 release-binaries: ## Builds the binaries to publish with a release
 	RELEASE_BINARY=./cmd/clusterctl GOOS=linux GOARCH=amd64 $(MAKE) release-binary
