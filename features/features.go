@@ -24,11 +24,15 @@ import (
 )
 
 const (
-// Every feature gate should add method here following this template:
-//
-// // owner: @username
-// // alpha: v1.X
-// MyFeature featuregate.Feature = "MyFeature"
+	// Every feature gate should add method here following this template:
+	//
+	// // owner: @username
+	// // alpha: v1.X
+	// MyFeature featuregate.Feature = "MyFeature"
+
+	// owner: @sedefsavas
+	// alpha: v1.X  TODO: add version
+	PostApply featuregate.Feature = "PostApply"
 )
 
 func init() {
@@ -40,4 +44,5 @@ func init() {
 var defaultClusterAPIFeatureGates = map[featuregate.Feature]featuregate.FeatureSpec{
 	// Every feature should be initiated here:
 	// MyFeature:     {Default: false, PreRelease: featuregate.Alpha},
+	PostApply: {Default: false, PreRelease: featuregate.Alpha},
 }

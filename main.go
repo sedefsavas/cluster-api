@@ -29,7 +29,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/klog"
 	"k8s.io/klog/klogr"
-	_ "sigs.k8s.io/cluster-api/features"
+	"sigs.k8s.io/cluster-api/features"
 	"sigs.k8s.io/cluster-api/util/featuregate"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/cache"
@@ -39,6 +39,9 @@ import (
 	clusterv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
 	clusterv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controllers"
+	postapplyv1alpha3 "sigs.k8s.io/cluster-api/exp/postapply/api/v1alpha3"
+	postapply "sigs.k8s.io/cluster-api/exp/postapply/controllers"
+
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	// +kubebuilder:scaffold:imports
 )
@@ -69,6 +72,8 @@ func init() {
 	_ = clusterv1alpha2.AddToScheme(scheme)
 	_ = clusterv1alpha3.AddToScheme(scheme)
 	_ = apiextensionsv1.AddToScheme(scheme)
+	_ = postapplyv1alpha3.AddToScheme(scheme)
+
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -206,6 +211,18 @@ func setupReconcilers(mgr ctrl.Manager) {
 	}).SetupWithManager(mgr, concurrency(machinePoolConcurrency)); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "MachinePool")
 		os.Exit(1)
+	}
+
+	if featuregate.DefaultFeatureGate.Enabled(features.PostApply) {
+		klog.Info("xx enabled")
+		if err := (&postapply.PostApplyConfigReconciler{
+			Client: mgr.GetClient(),
+			Log:    ctrl.Log.WithName("controllers").WithName("PostApplyConfig"),
+			Scheme: mgr.GetScheme(),
+		}).SetupWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "PostApplyConfig")
+			os.Exit(1)
+		}
 	}
 }
 
