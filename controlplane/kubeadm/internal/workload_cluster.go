@@ -28,12 +28,15 @@ import (
 	"time"
 
 	"github.com/blang/semver"
+	"github.com/docker/distribution/reference"
 	"github.com/pkg/errors"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd"
 	etcdutil "sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd/util"
 	"sigs.k8s.io/cluster-api/util"
@@ -43,6 +46,10 @@ import (
 
 var (
 	ErrControlPlaneMinNodes = errors.New("cluster has fewer than 2 control plane nodes; removing an etcd member is not supported")
+)
+
+var (
+	kubeProxyDaemonSetName = "kube-proxy"
 )
 
 type etcdClientFor interface {
@@ -523,6 +530,54 @@ func firstNodeNotMatchingName(name string, nodes []corev1.Node) *corev1.Node {
 	for _, n := range nodes {
 		if n.Name != name {
 			return &n
+		}
+	}
+	return nil
+}
+
+// modifyImageTag takes an image string, and returns an updated tagged image
+func modifyImageTag(image, tagName string) (string, error) {
+	namedRef, err := reference.ParseNormalizedNamed(image)
+	// return error if images use digest as version instead of tag
+	if _, isCanonical := namedRef.(reference.Canonical); isCanonical {
+		return "", errors.New("image uses digest as version, cannot update tag ")
+	}
+
+	// update the image tag with tagName
+	namedTagged, err := reference.WithTag(namedRef, tagName)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to update image tag")
+
+	}
+
+	// if tagging is successful, return the full image name (registry/repo:tag)
+	if _, ok := namedRef.(reference.Tagged); ok {
+		return reference.FamiliarString(reference.TagNameOnly(namedTagged)), nil
+	}
+
+	return "", errors.New("failed to update image tag")
+}
+
+func (c *Cluster) UpdateKubeProxyImage(ctx context.Context, kcp *controlplanev1.KubeadmControlPlane) error {
+	ds := &appsv1.DaemonSet{}
+	if err := c.Client.Get(ctx, ctrlclient.ObjectKey{Name: kubeProxyDaemonSetName, Namespace: metav1.NamespaceSystem}, ds); err != nil && !apierrors.IsNotFound(err) {
+		return errors.Wrapf(err, "failed to determine if %s daemonset already exists", kubeProxyDaemonSetName)
+	} else if err != nil {
+		// if kube-proxy is missing, return without errors
+		return nil
+	}
+
+	newImageName, err := modifyImageTag(ds.Spec.Template.Spec.Containers[0].Image, "v"+kcp.Spec.Version)
+	if err != nil {
+		return err
+	}
+
+	if len(ds.Spec.Template.Spec.Containers) > 0 && ds.Spec.Template.Spec.Containers[0].Image != newImageName {
+		fmt.Println("xx OLD imagetag", "image", ds.Spec.Template.Spec.Containers[0].Image)
+		ds.Spec.Template.Spec.Containers[0].Image = newImageName
+		fmt.Println("xx NEW imagetag", "image", newImageName)
+		if err := c.Client.Update(ctx, ds); err != nil {
+			return errors.Wrap(err, "error updating kube-proxy DaemonSet")
 		}
 	}
 	return nil

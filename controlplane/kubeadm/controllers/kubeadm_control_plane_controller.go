@@ -258,7 +258,20 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 		return r.upgradeControlPlane(ctx, cluster, kcp, ownedMachines, requireUpgrade)
 	}
 
-	// If we've made it this far, we we can assume that all ownedMachines are up to date
+	logger.Info("xx updating the image")
+	// If we've made it this far, we can assume that all control-plane machines are up to date
+	workloadCluster, err := r.managementCluster.GetWorkloadCluster(ctx, util.ObjectKey(cluster))
+	if err != nil {
+		logger.Error(err, "failed to get remote client for workload cluster", "cluster key", util.ObjectKey(cluster))
+		return ctrl.Result{}, err
+	}
+
+	err = workloadCluster.UpdateKubeProxyImage(ctx, kcp)
+	if err != nil {
+		logger.Error(err, "failed updating kube-proxy image")
+	}
+	logger.Info("xx updated the image")
+
 	numMachines := len(ownedMachines)
 	desiredReplicas := int(*kcp.Spec.Replicas)
 
