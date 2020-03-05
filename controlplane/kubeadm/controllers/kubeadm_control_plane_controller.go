@@ -19,12 +19,15 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"sigs.k8s.io/cluster-api/controllers/remote"
 	"strings"
 	"time"
 
 	"github.com/blang/semver"
+	"github.com/docker/distribution/reference"
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
+	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -197,6 +200,39 @@ func (r *KubeadmControlPlaneReconciler) Reconcile(req ctrl.Request) (res ctrl.Re
 	return r.reconcile(ctx, cluster, kcp)
 }
 
+func (r *KubeadmControlPlaneReconciler) updateKubeProxyImage(ctx context.Context, cluster *clusterv1.Cluster, kcp *controlplanev1.KubeadmControlPlane) error {
+	c, err := remote.NewClusterClient(context.Background(), r.Client, util.ObjectKey(cluster), r.scheme)
+	// Failed to get remote cluster client: Kubeconfig secret may be missing for the cluster.
+	if err != nil {
+		return err
+	}
+	ds := &v1.DaemonSet{}
+	err = c.Get(ctx, client.ObjectKey{Namespace: "kube-system", Name: "kube-proxy"}, ds)
+	// if kube-proxy is missing, return without errors
+	if err != nil && apierrors.IsNotFound(err) {
+		return nil
+	} else if err != nil {
+		return err
+	} else {
+		newImageName, err := imageWithTagString(ds.Spec.Template.Spec.Containers[0].Image, "v"+kcp.Spec.Version)
+		if err != nil {
+			return err
+		}
+
+		if len(ds.Spec.Template.Spec.Containers) > 0 && ds.Spec.Template.Spec.Containers[0].Image != newImageName{
+			ds.Spec.Template.Spec.Containers[0].Image = newImageName
+			patchHelper, err := patch.NewHelper(ds, r.Client)
+			if err != nil {
+				return errors.Wrapf(err, "failed to create patch helper for daemonset %s", ds.Name)
+			}
+
+			if err := patchHelper.Patch(ctx, ds); err != nil {
+				return errors.Wrapf(err, "failed to patch daemonset %s for image upgrade", ds.Name)
+			}
+		}
+	}
+	return nil
+}
 // reconcile handles KubeadmControlPlane reconciliation.
 func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *clusterv1.Cluster, kcp *controlplanev1.KubeadmControlPlane) (res ctrl.Result, reterr error) {
 	logger := r.Log.WithValues("namespace", kcp.Namespace, "kubeadmControlPlane", kcp.Name, "cluster", cluster.Name)
@@ -258,6 +294,11 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 		return r.upgradeControlPlane(ctx, cluster, kcp, ownedMachines, requireUpgrade)
 	}
 
+	err = r.updateKubeProxyImage(ctx, cluster, kcp)
+	if err != nil{
+		logger.Error(err,"failed updating kube-proxy image")
+	}
+
 	// If we've made it this far, we we can assume that all ownedMachines are up to date
 	numMachines := len(ownedMachines)
 	desiredReplicas := int(*kcp.Spec.Replicas)
@@ -280,6 +321,26 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 	}
 
 	return ctrl.Result{}, nil
+}
+
+// imageWithTagString takes an image string, and zreturns an updated tagged image
+func imageWithTagString(image string, tagName string) (string, error) {
+	namedRef, err := reference.ParseNormalizedNamed(image)
+	// return error if images use digest as version instead of tag
+	if _, isCanonical := namedRef.(reference.Canonical); isCanonical {
+		return "", errors.New("image uses digest as version, cannot update tag ")
+	}
+	namedTagged, err := reference.WithTag(namedRef, tagName)
+	if err != nil {
+		return "", errors.New("failed to update image tag")
+
+	}
+
+	if _, ok := namedRef.(reference.Tagged); ok {
+		return reference.FamiliarString(reference.TagNameOnly(namedTagged)), nil
+	}
+
+	return "", errors.New("failed to update image tag")
 }
 
 func (r *KubeadmControlPlaneReconciler) updateStatus(ctx context.Context, kcp *controlplanev1.KubeadmControlPlane, cluster *clusterv1.Cluster) error {
