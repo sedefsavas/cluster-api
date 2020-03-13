@@ -189,3 +189,46 @@ func TestMachineClusterNameImmutable(t *testing.T) {
 		})
 	}
 }
+
+func TestMachineVersionValidation(t *testing.T) {
+	tests := []struct {
+		name      string
+		version   string
+		expectErr bool
+	}{
+		{
+			name:      "should succeed when given a valid semantic version with prepended 'v'",
+			version:   "v1.17.2",
+			expectErr: false,
+		},
+		{
+			name:      "should succeed when given a valid semantic version without 'v'",
+			version:   "1.17.2",
+			expectErr: false,
+		},
+		{
+			name:      "should return error when given an invalid semantic version",
+			version:   "vv1.17.2",
+			expectErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			g := NewWithT(t)
+
+			m := &Machine{
+				Spec: MachineSpec{
+					Version:   &tt.version,
+					Bootstrap: Bootstrap{ConfigRef: nil, DataSecretName: pointer.StringPtr("test")},
+				},
+			}
+
+			if tt.expectErr {
+				g.Expect(m.ValidateCreate()).NotTo(Succeed())
+			} else {
+				g.Expect(m.ValidateCreate()).To(Succeed())
+			}
+		})
+	}
+}
