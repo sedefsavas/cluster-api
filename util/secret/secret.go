@@ -23,6 +23,7 @@ import (
 
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -68,4 +69,19 @@ func ParseSecretName(name string) (string, Purpose, error) {
 		}
 	}
 	return "", "", errors.Errorf("%q is not a valid cluster secret name. Invalid purpose suffix", name)
+}
+
+// GetAnySecretFromNamespacedName retrieves any Secret from the given
+// secret name and namespace.
+func GetAnySecretFromNamespacedName(ctx context.Context, c client.Client, secretName types.NamespacedName) (*corev1.Secret, error) {
+	secret := &corev1.Secret{}
+	secretKey := client.ObjectKey{
+		Namespace: secretName.Namespace,
+		Name:      secretName.Name,
+	}
+	if err := c.Get(ctx, secretKey, secret); err != nil {
+		return nil, err
+	}
+
+	return secret, nil
 }

@@ -29,8 +29,12 @@ const (
 	// MyFeature featuregate.Feature = "MyFeature"
 
 	// owner: @
-	// alpha: v0.3
+	// alpha: v0.3.x
 	MachinePool featuregate.Feature = "MachinePool"
+
+	// owner: @
+	// alpha: v0.3
+	PostApply featuregate.Feature = "PostApply"
 )
 
 func init() {
@@ -42,4 +46,5 @@ func init() {
 var defaultClusterAPIFeatureGates = map[featuregate.Feature]featuregate.FeatureSpec{
 	// Every feature should be initiated here:
 	MachinePool: {Default: false, PreRelease: featuregate.Alpha},
+	PostApply: {Default: false, PreRelease: featuregate.Alpha},
 }
