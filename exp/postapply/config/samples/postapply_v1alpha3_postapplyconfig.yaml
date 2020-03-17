@@ -1,0 +1,7 @@
+apiVersion: postapply.cluster.x-k8s.io/v1alpha3
+kind: PostApplyConfig
+metadata:
+  name: postapplyconfig-sample
+spec:
+  # Add fields here
+  foo: bar

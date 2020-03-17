@@ -34,6 +34,8 @@ import (
 	"sigs.k8s.io/cluster-api/controllers"
 	expv1alpha3 "sigs.k8s.io/cluster-api/exp/api/v1alpha3"
 	expcontrollers "sigs.k8s.io/cluster-api/exp/controllers"
+	postapplyv1alpha3 "sigs.k8s.io/cluster-api/exp/postapply/api/v1alpha3"
+	postapply "sigs.k8s.io/cluster-api/exp/postapply/controllers"
 	"sigs.k8s.io/cluster-api/feature"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/cache"
@@ -71,6 +73,7 @@ func init() {
 	_ = clusterv1alpha3.AddToScheme(scheme)
 	_ = expv1alpha3.AddToScheme(scheme)
 	_ = apiextensionsv1.AddToScheme(scheme)
+	_ = postapplyv1alpha3.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -203,6 +206,18 @@ func setupReconcilers(mgr ctrl.Manager) {
 	}).SetupWithManager(mgr, concurrency(machineDeploymentConcurrency)); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "MachineDeployment")
 		os.Exit(1)
+	}
+
+	if feature.Gates.Enabled(feature.PostApply) {
+		klog.Info("xx enabled")
+		if err := (&postapply.PostApplyConfigReconciler{
+			Client: mgr.GetClient(),
+			Log:    ctrl.Log.WithName("controllers").WithName("PostApplyConfig"),
+			Scheme: mgr.GetScheme(),
+		}).SetupWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "PostApplyConfig")
+			os.Exit(1)
+		}
 	}
 
 	if feature.Gates.Enabled(feature.MachinePool) {

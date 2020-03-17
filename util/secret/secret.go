@@ -19,6 +19,7 @@ package secret
 import (
 	"context"
 	"fmt"
+	"k8s.io/apimachinery/pkg/types"
 
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -49,4 +50,19 @@ func GetFromNamespacedName(ctx context.Context, c client.Client, clusterName cli
 // Name returns the name of the secret for a cluster.
 func Name(cluster string, suffix Purpose) string {
 	return fmt.Sprintf("%s-%s", cluster, suffix)
+}
+
+// GetAnySecretFromNamespacedName retrieves any Secret from the given
+// secret name and namespace.
+func GetAnySecretFromNamespacedName(ctx context.Context, c client.Client, secretName types.NamespacedName) (*corev1.Secret, error) {
+	secret := &corev1.Secret{}
+	secretKey := client.ObjectKey{
+		Namespace: secretName.Namespace,
+		Name:      secretName.Name,
+	}
+	if err := c.Get(ctx, secretKey, secret); err != nil {
+		return nil, err
+	}
+
+	return secret, nil
 }
