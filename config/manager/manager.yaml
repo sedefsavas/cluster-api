@@ -21,6 +21,7 @@ spec:
         - /manager
         args:
         - --enable-leader-election
+        - --feature-gates=PostApply=true
         image: controller:latest
         name: manager
         ports:
