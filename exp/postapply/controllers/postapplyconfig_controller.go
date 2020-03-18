@@ -88,6 +88,7 @@ func (r *PostApplyConfigReconciler) Reconcile(req ctrl.Request) (_ ctrl.Result, 
 func (r *PostApplyConfigReconciler) reconcile(ctx context.Context, postApplyConf *postapplyv1.PostApplyConfig) (ctrl.Result, error) {
 	logger := r.Log.WithValues("postapplyconfig", postApplyConf.Name, "namespace", postApplyConf.Namespace)
 
+	logger.Info("debug: in PostApplyConfig Reconcile")
 	cls, err := r.getMatchingClustersForPostApply(ctx, postApplyConf.Spec.ClusterSelector.MatchLabels)
 	if err != nil {
 		logger.Error(err, "Failed fetching clusters that matches PostApplyConfig labels", "PostApplyConfig", postApplyConf.Name)
@@ -95,6 +96,8 @@ func (r *PostApplyConfigReconciler) reconcile(ctx context.Context, postApplyConf
 	}
 
 	for _, cl := range cls {
+		logger.Info("debug: Applying addons to clusters", "cluster", cl.Name)
+
 		r.PostApplyToCluster(cl, postApplyConf)
 	}
 
@@ -122,11 +125,12 @@ func (r *PostApplyConfigReconciler) getMatchingClustersForPostApply(ctx context.
 func (r *PostApplyConfigReconciler) PostApplyToCluster(cluster *clusterv1.Cluster, postApplyConf *postapplyv1.PostApplyConfig) error {
 	logger := r.Log.WithValues("PostApplyConfig", postApplyConf.Name, "namespace", postApplyConf.Namespace)
 
-	logger.Info("Applying PostApplyConfig to cluster", "Cluster", cluster.Name, "PostApplyConfig", postApplyConf.Name)
+	logger.Info("debug: Applying PostApplyConfig to cluster", "Cluster", cluster.Name, "PostApplyConfig", postApplyConf.Name)
 
 	// Check if this postApplyConf is applied to the cluster, if not continue
 	if r.IsYamlAppliedToCluster(cluster, postApplyConf.Status.ClusterRefList) {
-		logger.Info("PostApplyConfig applied before", "Cluster", cluster.Name, "PostApplyConfig", postApplyConf.Name)
+		logger.Info("debug: "+
+			" applied before", "Cluster", cluster.Name, "PostApplyConfig", postApplyConf.Name)
 		return nil
 	}
 
@@ -143,7 +147,7 @@ func (r *PostApplyConfigReconciler) PostApplyToCluster(cluster *clusterv1.Cluste
 		return err
 	}
 
-	logger.Info("Successfully applied post-apply addon", "PostApplyConfig", postApplyConf.Name+"/"+postApplyConf.Namespace)
+	logger.Info("debug: Successfully applied post-apply addon", "PostApplyConfig", postApplyConf.Name+"/"+postApplyConf.Namespace)
 
 	if postApplyConf.Status.ClusterRefList == nil {
 		postApplyConf.Status.ClusterRefList = make([]*corev1.ObjectReference, 0)
@@ -170,7 +174,7 @@ func (r *PostApplyConfigReconciler) IsYamlAppliedToCluster(cluster *clusterv1.Cl
 }
 
 func (r *PostApplyConfigReconciler) postApplyToCluster(cluster *clusterv1.Cluster, postApplyConf *postapplyv1.PostApplyConfig) error {
-	c, err := remote.NewClusterClient(context.Background(), r.Client, cluster, r.Scheme)
+	c, err := remote.NewClusterClient(context.Background(), r.Client, client.ObjectKey{cluster.Namespace, cluster.Name}, r.Scheme)
 	// Failed to get remote cluster client: Kubeconfig secret may be missing for the cluster.
 	if err != nil {
 		return err

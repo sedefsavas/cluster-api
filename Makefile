@@ -211,18 +211,28 @@ generate-go: ## Runs Go related generate targets
 	$(MAKE) generate-go-core
 	$(MAKE) generate-go-kubeadm-bootstrap
 	$(MAKE) generate-go-kubeadm-control-plane
+	$(MAKE) generate-go-exp-postapply
+
 
 .PHONY: generate-go-core
 generate-go-core: $(CONTROLLER_GEN) $(CONVERSION_GEN)
 	$(CONTROLLER_GEN) \
 		object:headerFile=./hack/boilerplate/boilerplate.generatego.txt \
 		paths=./api/... \
-		paths=./$(EXP_DIR)/api/... \
+		paths=./$(EXP_DIR)/postappy/api/... \
 		paths=./cmd/clusterctl/...
 	$(CONVERSION_GEN) \
 		--input-dirs=./api/v1alpha2 \
 		--output-file-base=zz_generated.conversion \
 		--go-header-file=./hack/boilerplate/boilerplate.generatego.txt
+
+.PHONY: generate-go-exp-postapply
+generate-go-exp-postapply: $(CONTROLLER_GEN) $(CONVERSION_GEN) ## Runs Go related generate targets for the experimental postapply
+		$(CONTROLLER_GEN) \
+				object:headerFile=./hack/boilerplate/boilerplate.generatego.txt \
+				paths=./exp/postapply/api/...
+
+
 
 .PHONY: generate-go-kubeadm-bootstrap
 generate-go-kubeadm-bootstrap: $(CONTROLLER_GEN) $(CONVERSION_GEN) ## Runs Go related generate targets for the kubeadm bootstrapper
@@ -260,14 +270,15 @@ generate-manifests: ## Generate manifests e.g. CRD, RBAC etc.
 	$(MAKE) generate-core-manifests
 	$(MAKE) generate-kubeadm-bootstrap-manifests
 	$(MAKE) generate-kubeadm-control-plane-manifests
+	$(MAKE) generate-exp-postapply-manifests
 
 .PHONY: generate-core-manifests
 generate-core-manifests: $(CONTROLLER_GEN) ## Generate manifests for the core provider e.g. CRD, RBAC etc.
 	$(CONTROLLER_GEN) \
 		paths=./api/... \
 		paths=./controllers/... \
-		paths=./$(EXP_DIR)/api/... \
-		paths=./$(EXP_DIR)/controllers/... \
+		paths=./$(EXP_DIR)/postappy/api/... \
+		paths=./$(EXP_DIR)/postappy/controllers/... \
 		crd:crdVersions=v1 \
 		rbac:roleName=manager-role \
 		output:crd:dir=./config/crd/bases \
@@ -280,6 +291,15 @@ generate-core-manifests: $(CONTROLLER_GEN) ## Generate manifests for the core pr
 	## Copy files in CI folders.
 	cp -f ./config/rbac/*.yaml ./config/ci/rbac/
 	cp -f ./config/manager/manager*.yaml ./config/ci/manager/
+
+.PHONY: generate-exp-postapply-manifests
+generate-exp-postapply-manifests: $(CONTROLLER_GEN) ## Generate manifests for the postapply controller e.g. CRD, RBAC etc.
+	$(CONTROLLER_GEN) \
+		paths=./exp/postapply/api/... \
+		paths=./exp/postapply/controllers/... \
+		crd:trivialVersions=false,preserveUnknownFields=false \
+		rbac:roleName=manager-role \
+		output:crd:dir=./exp/postapply/config/crd/bases
 
 .PHONY: generate-kubeadm-bootstrap-manifests
 generate-kubeadm-bootstrap-manifests: $(CONTROLLER_GEN) ## Generate manifests for the kubeadm bootstrap provider e.g. CRD, RBAC etc.
@@ -443,6 +463,9 @@ release-manifests: $(RELEASE_DIR) $(KUSTOMIZE) ## Builds the manifests to publis
 	$(KUSTOMIZE) build bootstrap/kubeadm/config > $(RELEASE_DIR)/bootstrap-components.yaml
 	# Build control-plane-components.
 	$(KUSTOMIZE) build controlplane/kubeadm/config > $(RELEASE_DIR)/control-plane-components.yaml
+	# Build experimental postapply related components.
+	$(KUSTOMIZE) build exp/postapply/config/default > $(RELEASE_DIR)/postapply-components.yaml
+
 
 	## Build cluster-api-components (aggregate of all of the above).
 	cat $(RELEASE_DIR)/core-components.yaml > $(RELEASE_DIR)/cluster-api-components.yaml
@@ -450,6 +473,9 @@ release-manifests: $(RELEASE_DIR) $(KUSTOMIZE) ## Builds the manifests to publis
 	cat $(RELEASE_DIR)/bootstrap-components.yaml >> $(RELEASE_DIR)/cluster-api-components.yaml
 	echo "---" >> $(RELEASE_DIR)/cluster-api-components.yaml
 	cat $(RELEASE_DIR)/control-plane-components.yaml >> $(RELEASE_DIR)/cluster-api-components.yaml
+	echo "---" >> $(RELEASE_DIR)/cluster-api-components.yaml
+	cat $(RELEASE_DIR)/postapply-components.yaml >> $(RELEASE_DIR)/cluster-api-components.yaml
+
 
 release-binaries: ## Builds the binaries to publish with a release
 	RELEASE_BINARY=./cmd/clusterctl GOOS=linux GOARCH=amd64 $(MAKE) release-binary

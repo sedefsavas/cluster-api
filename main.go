@@ -33,7 +33,6 @@ import (
 	clusterv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controllers"
 	expv1alpha3 "sigs.k8s.io/cluster-api/exp/api/v1alpha3"
-	expcontrollers "sigs.k8s.io/cluster-api/exp/controllers"
 	postapplyv1alpha3 "sigs.k8s.io/cluster-api/exp/postapply/api/v1alpha3"
 	postapply "sigs.k8s.io/cluster-api/exp/postapply/controllers"
 	"sigs.k8s.io/cluster-api/feature"
@@ -71,7 +70,6 @@ func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 	_ = clusterv1alpha2.AddToScheme(scheme)
 	_ = clusterv1alpha3.AddToScheme(scheme)
-	_ = expv1alpha3.AddToScheme(scheme)
 	_ = apiextensionsv1.AddToScheme(scheme)
 	_ = postapplyv1alpha3.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
@@ -209,7 +207,6 @@ func setupReconcilers(mgr ctrl.Manager) {
 	}
 
 	if feature.Gates.Enabled(feature.PostApply) {
-		klog.Info("xx enabled")
 		if err := (&postapply.PostApplyConfigReconciler{
 			Client: mgr.GetClient(),
 			Log:    ctrl.Log.WithName("controllers").WithName("PostApplyConfig"),
@@ -219,16 +216,8 @@ func setupReconcilers(mgr ctrl.Manager) {
 			os.Exit(1)
 		}
 	}
+	klog.Info("xx after")
 
-	if feature.Gates.Enabled(feature.MachinePool) {
-		if err := (&expcontrollers.MachinePoolReconciler{
-			Client: mgr.GetClient(),
-			Log:    ctrl.Log.WithName("controllers").WithName("MachinePool"),
-		}).SetupWithManager(mgr, concurrency(machinePoolConcurrency)); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "MachinePool")
-			os.Exit(1)
-		}
-	}
 	if err := (&controllers.MachineHealthCheckReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("MachineHealthCheck"),
