@@ -122,7 +122,7 @@ var _ = Describe("Docker", func() {
 					Cluster:      cluster,
 					ControlPlane: controlPlane,
 				}
-				framework.WaitForOneKubeadmControlPlaneMachineToExist(ctx, waitForOneKubeadmControlPlaneMachineToExistInput, "5m")
+				framework.WaitForOneKubeadmControlPlaneMachineToExist(ctx, waitForOneKubeadmControlPlaneMachineToExistInput, "20m")
 
 				// Insatll a networking solution on the workload cluster
 				workloadClient, err := mgmt.GetWorkloadClient(ctx, cluster.Namespace, cluster.Name)
@@ -141,7 +141,7 @@ var _ = Describe("Docker", func() {
 					Cluster:      cluster,
 					ControlPlane: controlPlane,
 				}
-				framework.WaitForKubeadmControlPlaneMachinesToExist(ctx, assertKubeadmControlPlaneNodesExistInput, "10m", "10s")
+				framework.WaitForKubeadmControlPlaneMachinesToExist(ctx, assertKubeadmControlPlaneNodesExistInput, "20m", "10s")
 
 				// Create the workload nodes
 				createMachineDeploymentinput := framework.CreateMachineDeploymentInput{
@@ -212,7 +212,7 @@ var _ = Describe("Docker", func() {
 						return 0, errors.New("old nodes remain")
 					}
 					return upgraded, nil
-				}, "10m", "30s").Should(Equal(int(*controlPlane.Spec.Replicas)))
+				}, "20m", "30s").Should(Equal(int(*controlPlane.Spec.Replicas)))
 			})
 		})
 	})
