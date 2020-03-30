@@ -85,33 +85,46 @@ func TestSelectMachineForUpgrade(t *testing.T) {
 	cluster, kcp, genericMachineTemplate := createClusterWithControlPlane()
 	kcp.Spec.KubeadmConfigSpec.ClusterConfiguration = nil
 
-	m1 := machine("machine-1", withFailureDomain("one"))
-	m2 := machine("machine-2", withFailureDomain("two"), withTimestamp(metav1.Time{Time: time.Date(1, 0, 0, 0, 0, 0, 0, time.UTC)}))
-	m3 := machine("machine-3", withFailureDomain("two"), withTimestamp(metav1.Time{Time: time.Date(2, 0, 0, 0, 0, 0, 0, time.UTC)}))
+	m1 := machine("machine-1", withFailureDomain("one"), withTimestamp(metav1.Time{Time: time.Date(1, 0, 0, 0, 0, 0, 0, time.UTC)}))
+	m2 := machine("machine-2", withFailureDomain("two"), withTimestamp(metav1.Time{Time: time.Date(2, 0, 0, 0, 0, 0, 0, time.UTC)}))
+	m3 := machine("machine-3", withFailureDomain("two"), withTimestamp(metav1.Time{Time: time.Date(3, 0, 0, 0, 0, 0, 0, time.UTC)}))
 
-	mc1 := internal.FilterableMachineCollection{
+	mc1 := internal.FilterableMachineCollection{"machine-1": m1}
+	mc2 := internal.FilterableMachineCollection{
+		"machine-1": m1,
+		"machine-2": m2,
+	}
+	mc3 := internal.FilterableMachineCollection{
 		"machine-1": m1,
 		"machine-2": m2,
 		"machine-3": m3,
 	}
-	fd1 := clusterv1.FailureDomains{
+	fd := clusterv1.FailureDomains{
 		"one":   failureDomain(true),
 		"two":   failureDomain(true),
-		"three": failureDomain(true),
-		"four":  failureDomain(false),
+		"three": failureDomain(false),
 	}
 
-	controlPlane := &internal.ControlPlane{
+	//fdEmpty := clusterv1.FailureDomains{}
+
+	controlPlane1 := &internal.ControlPlane{
 		KCP:      &controlplanev1.KubeadmControlPlane{},
-		Cluster:  &clusterv1.Cluster{Status: clusterv1.ClusterStatus{FailureDomains: fd1}},
-		Machines: mc1,
+		Cluster:  &clusterv1.Cluster{Status: clusterv1.ClusterStatus{FailureDomains: fd}},
+		Machines: mc3,
 	}
+
+	//controlPlane2 := &internal.ControlPlane{
+	//	KCP:      &controlplanev1.KubeadmControlPlane{},
+	//	Cluster:  &clusterv1.Cluster{Status: clusterv1.ClusterStatus{FailureDomains: fdEmpty}},
+	//	Machines: mc,
+	//}
 
 	fakeClient := newFakeClient(
 		g,
 		cluster.DeepCopy(),
 		kcp.DeepCopy(),
 		genericMachineTemplate.DeepCopy(),
+		m1.DeepCopy(),
 		m2.DeepCopy(),
 	)
 
@@ -128,14 +141,28 @@ func TestSelectMachineForUpgrade(t *testing.T) {
 	testCases := []struct {
 		name            string
 		upgradeMachines internal.FilterableMachineCollection
-		cpMachines      internal.FilterableMachineCollection
+		cp              *internal.ControlPlane
 		expectErr       bool
 		expectedMachine clusterv1.Machine
 	}{
 		{
 			name:            "matching controlplane machines and upgrade machines",
+			upgradeMachines: mc3,
+			cp:              controlPlane1,
+			expectErr:       false,
+			expectedMachine: clusterv1.Machine{ObjectMeta: metav1.ObjectMeta{Name: "machine-2"}},
+		},
+		{
+			name:            "Single upgrade machine and multiple control plane machines",
 			upgradeMachines: mc1,
-			cpMachines:      controlPlane.Machines,
+			cp:              controlPlane1,
+			expectErr:       false,
+			expectedMachine: clusterv1.Machine{ObjectMeta: metav1.ObjectMeta{Name: "machine-1"}},
+		},
+		{
+			name:            "Single upgrade machine",
+			upgradeMachines: mc2,
+			cp:              controlPlane1,
 			expectErr:       false,
 			expectedMachine: clusterv1.Machine{ObjectMeta: metav1.ObjectMeta{Name: "machine-2"}},
 		},
@@ -147,7 +174,7 @@ func TestSelectMachineForUpgrade(t *testing.T) {
 
 			g.Expect(clusterv1.AddToScheme(scheme.Scheme)).To(Succeed())
 
-			selectedMachine, err := r.selectMachineForUpgrade(context.Background(), cluster, controlPlane.Machines, controlPlane)
+			selectedMachine, err := r.selectMachineForUpgrade(context.Background(), nil, tc.upgradeMachines, tc.cp)
 
 			if tc.expectErr {
 				g.Expect(err).To(HaveOccurred())

@@ -120,11 +120,11 @@ func TestNewFailureDomainPickMost(t *testing.T) {
 			expected: nil,
 		},
 		{
-			name: "no machines",
+			name: "no machines should return nil",
 			fds: clusterv1.FailureDomains{
 				*a: clusterv1.FailureDomainSpec{},
 			},
-			expected: []*string{a},
+			expected: nil,
 		},
 		{
 			name:     "one machine in a failure domain",
@@ -141,24 +141,24 @@ func TestNewFailureDomainPickMost(t *testing.T) {
 			expected: []*string{a},
 		},
 		{
-			name: "mismatched failure domain on machine",
+			name: "mismatched failure domain on machine should return nil",
 			fds: clusterv1.FailureDomains{
 				*a: clusterv1.FailureDomainSpec{},
 			},
 			machines: NewFilterableMachineCollection(machineb.DeepCopy()),
-			expected: []*string{a},
+			expected: nil,
 		},
 		{
-			name:     "failure domains and no machines should return a valid failure domain",
+			name:     "failure domains and no machines should return nil",
 			fds:      fds,
-			expected: []*string{a, b},
+			expected: nil,
 		},
 	}
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
 			g := NewWithT(t)
 
-			fd := PickMost(tc.fds, tc.machines)
+			fd := PickMost(OrderDescending(tc.fds, tc.machines), tc.machines)
 			if tc.expected == nil {
 				g.Expect(fd).To(BeNil())
 			} else {

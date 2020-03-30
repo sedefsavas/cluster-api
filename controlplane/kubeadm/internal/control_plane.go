@@ -122,7 +122,11 @@ func (c *ControlPlane) FailureDomainWithMostMachines(machines FilterableMachineC
 	}
 
 	// Otherwise pick the currently known failure domain with the most Machines
-	return PickMost(c.Cluster.Status.FailureDomains.FilterControlPlane(), machines)
+	// fdOrdering sorts failure domains according to all  control plane machines
+	fdOrdering := OrderDescending(c.Cluster.Status.FailureDomains.FilterControlPlane(), c.Machines)
+
+	//Find the failure domain that has at least one machine in machines
+	return PickMost(fdOrdering, machines)
 }
 
 // FailureDomainWithFewestMachines returns the failure domain with the fewest number of machines.

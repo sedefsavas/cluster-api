@@ -50,15 +50,29 @@ func (f failureDomainAggregations) Swap(i, j int) {
 	f[i], f[j] = f[j], f[i]
 }
 
-// PickMost returns the failure domain with the most number of machines.
-func PickMost(failureDomains clusterv1.FailureDomains, machines FilterableMachineCollection) *string {
+// PickMost picks the failure domain with most machines on it. Return nil if no machines are on fds
+func PickMost(fds failureDomainAggregations, machines FilterableMachineCollection) *string {
+	for _, fd := range fds {
+		for _, m := range machines {
+			if m.Spec.FailureDomain == nil {
+				return &fd.id
+			}
+			if *m.Spec.FailureDomain == fd.id {
+				return &fd.id
+			}
+		}
+	}
+	return nil
+}
+
+// OrderDescending returns the failure domain with the most number of machines.
+func OrderDescending(failureDomains clusterv1.FailureDomains, machines FilterableMachineCollection) failureDomainAggregations {
 	aggregations := pick(failureDomains, machines)
 	if len(aggregations) == 0 {
 		return nil
 	}
 	sort.Sort(sort.Reverse(aggregations))
-	return pointer.StringPtr(aggregations[0].id)
-
+	return aggregations
 }
 
 // PickFewest returns the failure domain with the fewest number of machines.
