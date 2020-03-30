@@ -23,8 +23,6 @@ import (
 	"golang.org/x/net/context"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
-	cabpkv1 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
 )
 
 // These tests are written in BDD-style using Ginkgo framework. Refer to
@@ -32,8 +30,8 @@ import (
 
 var _ = Describe("KubeadmControlPlane", func() {
 	var (
-		key              types.NamespacedName
-		created, fetched *KubeadmControlPlane
+		created  *KubeadmControlPlane
+		ctx = context.TODO()
 	)
 
 	BeforeEach(func() {
@@ -52,42 +50,6 @@ var _ = Describe("KubeadmControlPlane", func() {
 
 		It("should create an object successfully", func() {
 
-			key = types.NamespacedName{
-				Name:      "foo",
-				Namespace: "default",
-			}
-
-			// wrong version value
-			created = &KubeadmControlPlane{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      "foo",
-					Namespace: "default",
-				},
-				Spec: KubeadmControlPlaneSpec{
-					InfrastructureTemplate: corev1.ObjectReference{},
-					Version:                "1",
-					KubeadmConfigSpec:      cabpkv1.KubeadmConfigSpec{},
-				},
-			}
-
-			By("creating an API obj with wrong version")
-			Expect(k8sClient.Create(context.TODO(), created)).NotTo(Succeed())
-
-			// wrong version value
-			created = &KubeadmControlPlane{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      "foo",
-					Namespace: "default",
-				},
-				Spec: KubeadmControlPlaneSpec{
-					Version:           "1",
-					KubeadmConfigSpec: cabpkv1.KubeadmConfigSpec{},
-				},
-			}
-
-			By("creating an API obj with missing field")
-			Expect(k8sClient.Create(context.TODO(), created)).NotTo(Succeed())
-
 			created = &KubeadmControlPlane{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "foo",
@@ -96,20 +58,11 @@ var _ = Describe("KubeadmControlPlane", func() {
 				Spec: KubeadmControlPlaneSpec{
 					InfrastructureTemplate: corev1.ObjectReference{},
 					Version:                "v1.1.1",
-					KubeadmConfigSpec:      cabpkv1.KubeadmConfigSpec{},
 				},
 			}
 
-			By("creating an API obj")
-			Expect(k8sClient.Create(context.TODO(), created)).To(Succeed())
-
-			fetched = &KubeadmControlPlane{}
-			Expect(k8sClient.Get(context.TODO(), key, fetched)).To(Succeed())
-			Expect(fetched).To(Equal(created))
-
-			By("deleting the created object")
-			Expect(k8sClient.Delete(context.TODO(), created)).To(Succeed())
-			Expect(k8sClient.Get(context.TODO(), key, created)).ToNot(Succeed())
+			By("creating an API obj with missing KubeadmConfigSpec")
+			Expect(k8sClient.Create(ctx, created)).NotTo(Succeed())
 		})
 
 	})
