@@ -61,6 +61,10 @@ func (f *fakeManagementCluster) TargetClusterEtcdIsHealthy(_ context.Context, _ 
 	return nil
 }
 
+func (f *fakeManagementCluster) TargetClusterRemoveMissingNodes(ctx context.Context, clusterKey client.ObjectKey) error {
+	return nil
+}
+
 type fakeWorkloadCluster struct {
 	*internal.Workload
 	Status internal.ClusterStatus

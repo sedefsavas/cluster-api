@@ -320,3 +320,30 @@ func (r *KubeadmControlPlaneReconciler) ClusterToKubeadmControlPlane(o handler.M
 
 	return nil
 }
+
+func (r *KubeadmControlPlaneReconciler) generalHealthCheck(ctx context.Context, cluster *clusterv1.Cluster, kcp *controlplanev1.KubeadmControlPlane, controlPlane *internal.ControlPlane) error {
+	logger := controlPlane.Logger()
+
+	// Do a health check of the Control Plane components
+	if err := r.managementCluster.TargetClusterControlPlaneIsHealthy(ctx, util.ObjectKey(cluster), kcp.Name); err != nil {
+		logger.V(2).Info("Waiting for control plane to pass control plane health check to continue reconciliation", "cause", err)
+		r.recorder.Eventf(kcp, corev1.EventTypeWarning, "ControlPlaneUnhealthy",
+			"Waiting for control plane to pass control plane health check to continue reconciliation: %v", err)
+		return &capierrors.RequeueAfterError{RequeueAfter: healthCheckFailedRequeueAfter}
+	}
+
+	// Ensure etcd is healthy
+	if err := r.managementCluster.TargetClusterEtcdIsHealthy(ctx, util.ObjectKey(cluster), kcp.Name); err != nil {
+		// If there are any nodes in ETCD members that do not exist, remove them from ETCD and from kubeadm configmap.
+		// This will solve issues related to manual control-plane machine deletion.
+		if err := r.managementCluster.TargetClusterRemoveMissingNodes(ctx, util.ObjectKey(cluster)); err != nil {
+			logger.V(2).Info("Failed attempt to remove potential hanging etcd members to pass etcd health check to continue reconciliation", "cause", err)
+		}
+		logger.V(2).Info("Waiting for control plane to pass etcd health check to continue reconciliation", "cause", err)
+		r.recorder.Eventf(kcp, corev1.EventTypeWarning, "ControlPlaneUnhealthy",
+			"Waiting for control plane to pass etcd health check to continue reconciliation: %v", err)
+		return &capierrors.RequeueAfterError{RequeueAfter: healthCheckFailedRequeueAfter}
+	}
+
+	return nil
+}

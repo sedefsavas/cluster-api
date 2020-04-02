@@ -22,6 +22,7 @@ import (
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	kerrors "k8s.io/apimachinery/pkg/util/errors"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd"
 	etcdutil "sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd/util"
@@ -89,6 +90,7 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context) (HealthCheckResult, error)
 			response[name] = errors.Wrap(err, "failed to list etcd members using etcd client")
 			continue
 		}
+
 		member := etcdutil.MemberForName(members, name)
 
 		// Check that the member reports no alarms.
@@ -130,6 +132,54 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context) (HealthCheckResult, error)
 	return response, nil
 }
 
+// RemoveEtcdMissingNodes iterates over all ETCD members and finds members with nodes that do not belong to the workload cluster.
+// If there are any such members, it deletes those members and remove nodes from kubeadmconfig so that Kubeadm does not try to run etcd-health check over them.
+func (w *Workload) RemoveEtcdMissingNodes(ctx context.Context) error {
+	controlPlaneNodes, err := w.getControlPlaneNodes(ctx)
+	if err != nil {
+		return err
+	}
+
+	errList := []error{}
+	for _, node := range controlPlaneNodes.Items {
+		name := node.Name
+
+		// Create the etcd Client for the etcd Pod scheduled on the Node
+		etcdClient, err := w.etcdClientGenerator.forNode(ctx, name)
+		if err != nil {
+			continue
+		}
+
+		// List etcd members. This checks that the member is healthy, because the request goes through consensus.
+		members, err := etcdClient.Members(ctx)
+		if err != nil {
+			continue
+		}
+		// check if there is any member's node is missing from workload cluster.
+		// Check if any member's node is missing from workload cluster
+		// If any, delete it with best effort
+		for _, m := range members {
+			for _, node := range controlPlaneNodes.Items {
+
+				name := node.Name
+				if m.Name == name {
+					continue
+				}
+			}
+
+			if err := w.removeMemberForNode(ctx, m.Name); err != nil {
+				errList = append(errList, err)
+			}
+
+			if err := w.RemoveNodeFromKubeadmConfigMap(ctx, m.Name); err != nil {
+				errList = append(errList, err)
+
+			}
+		}
+	}
+	return kerrors.NewAggregate(errList)
+}
+
 // UpdateEtcdVersionInKubeadmConfigMap sets the imageRepository or the imageTag or both in the kubeadm config map.
 func (w *Workload) UpdateEtcdVersionInKubeadmConfigMap(ctx context.Context, imageRepository, imageTag string) error {
 	configMapKey := ctrlclient.ObjectKey{Name: kubeadmConfigKey, Namespace: metav1.NamespaceSystem}
@@ -155,7 +205,10 @@ func (w *Workload) RemoveEtcdMemberForMachine(ctx context.Context, machine *clus
 		// Nothing to do, no node for Machine
 		return nil
 	}
+	return w.removeMemberForNode(ctx, machine.Status.NodeRef.Name)
+}
 
+func (w *Workload) removeMemberForNode(ctx context.Context, name string) error {
 	// Pick a different node to talk to etcd
 	controlPlaneNodes, err := w.getControlPlaneNodes(ctx)
 	if err != nil {
@@ -174,7 +227,7 @@ func (w *Workload) RemoveEtcdMemberForMachine(ctx context.Context, machine *clus
 	if err != nil {
 		return errors.Wrap(err, "failed to list etcd members using etcd client")
 	}
-	member := etcdutil.MemberForName(members, machine.Status.NodeRef.Name)
+	member := etcdutil.MemberForName(members, name)
 
 	// The member has already been removed, return immediately
 	if member == nil {

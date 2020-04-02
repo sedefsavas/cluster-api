@@ -42,6 +42,7 @@ type ManagementCluster interface {
 	TargetClusterEtcdIsHealthy(ctx context.Context, clusterKey client.ObjectKey, controlPlaneName string) error
 	TargetClusterControlPlaneIsHealthy(ctx context.Context, clusterKey client.ObjectKey, controlPlaneName string) error
 	GetWorkloadCluster(ctx context.Context, clusterKey client.ObjectKey) (WorkloadCluster, error)
+	TargetClusterRemoveMissingNodes(ctx context.Context, clusterKey client.ObjectKey) error
 }
 
 // Management holds operations on the management cluster.
@@ -177,4 +178,14 @@ func (m *Management) TargetClusterEtcdIsHealthy(ctx context.Context, clusterKey 
 		return err
 	}
 	return m.healthCheck(ctx, cluster.EtcdIsHealthy, clusterKey, controlPlaneName)
+}
+
+// TargetClusterRemoveMissingNodes is to be called if target cluster's etcd cluster is unhealthy.
+// It checks if there are any ETCD members whose nodes are missing from the target cluster and remove them if there are any.
+func (m *Management) TargetClusterRemoveMissingNodes(ctx context.Context, clusterKey client.ObjectKey) error {
+	cluster, err := m.GetWorkloadCluster(ctx, clusterKey)
+	if err != nil {
+		return err
+	}
+	return cluster.RemoveEtcdMissingNodes(ctx)
 }
