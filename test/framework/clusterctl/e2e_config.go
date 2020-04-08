@@ -43,9 +43,6 @@ import (
 type LoadE2EConfigInput struct {
 	// ConfigPath for the e2e test.
 	ConfigPath string
-
-	// BasePath to be used as a base for relative paths in the e2e config file.
-	BasePath string
 }
 
 // LoadE2EConfig loads the configuration for the e2e test environment.
@@ -58,7 +55,7 @@ func LoadE2EConfig(ctx context.Context, input LoadE2EConfigInput) *E2EConfig {
 	Expect(yaml.Unmarshal(configData, config)).To(Succeed(), "Failed to convert the e2e test config file to yaml")
 
 	config.Defaults()
-	config.AbsPaths(input.BasePath)
+	config.AbsPaths(filepath.Dir(input.ConfigPath))
 
 	Expect(config.Validate()).To(Succeed(), "The e2e test config file is not valid")
 

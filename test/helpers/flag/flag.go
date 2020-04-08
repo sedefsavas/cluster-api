@@ -18,6 +18,7 @@ package flag
 
 import (
 	"flag"
+	"strconv"
 )
 
 func DefineOrLookupStringFlag(name string, value string, usage string) *string {
@@ -27,4 +28,13 @@ func DefineOrLookupStringFlag(name string, value string, usage string) *string {
 		return &v
 	}
 	return flag.String(name, value, usage)
+}
+
+func DefineOrLookupBoolFlag(name string, value bool, usage string) *bool {
+	f := flag.Lookup(name)
+	if f != nil {
+		v, _ := strconv.ParseBool(f.Value.String())
+		return &v
+	}
+	return flag.Bool(name, value, usage)
 }

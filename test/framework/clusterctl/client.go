@@ -75,6 +75,7 @@ type ConfigClusterInput struct {
 	ClusterctlConfigPath     string
 	KubeconfigPath           string
 	InfrastructureProvider   string
+	Namespace                string
 	ClusterName              string
 	KubernetesVersion        string
 	ControlPlaneMachineCount *int64
@@ -83,12 +84,12 @@ type ConfigClusterInput struct {
 
 // ConfigCluster gets a workload cluster based on a template.
 func ConfigCluster(ctx context.Context, input ConfigClusterInput) []byte {
-	By(fmt.Sprintf("clusterctl config cluster %s --infrastructure %s --kubernetes-version %s --control-plane-machine-count %d --worker-machine-count %s",
+	By(fmt.Sprintf("clusterctl config cluster %s --infrastructure %s --kubernetes-version %s --control-plane-machine-count %d --worker-machine-count %d",
 		input.ClusterName,
 		input.InfrastructureProvider,
 		input.KubernetesVersion,
-		input.ControlPlaneMachineCount,
-		input.WorkerMachineCount,
+		*input.ControlPlaneMachineCount,
+		*input.WorkerMachineCount,
 	))
 
 	templateOptions := clusterctlclient.GetClusterTemplateOptions{
@@ -101,6 +102,7 @@ func ConfigCluster(ctx context.Context, input ConfigClusterInput) []byte {
 		KubernetesVersion:        input.KubernetesVersion,
 		ControlPlaneMachineCount: input.ControlPlaneMachineCount,
 		WorkerMachineCount:       input.WorkerMachineCount,
+		TargetNamespace:          input.Namespace,
 	}
 
 	clusterctlClient, log := getClusterctlClientWithLogger(input.ClusterctlConfigPath, "clusterctl-config-cluster.log", input.LogPath)

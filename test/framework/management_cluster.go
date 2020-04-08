@@ -24,6 +24,7 @@ import (
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -157,4 +158,23 @@ func WaitForDeploymentsAvailable(ctx context.Context, input WaitForDeploymentsAv
 		return false
 
 	}, intervals...).Should(BeTrue(), "Deployment %s/%s failed to get status.Available = True condition", input.Deployment.GetNamespace(), input.Deployment.GetName())
+}
+
+// CreateNamespaceInput is the input type for CreateNamespace.
+type CreateNamespaceInput struct {
+	Creator Creator
+	Name    string
+}
+
+// CreateNamespace is used to create a namespace object.
+func CreateNamespace(ctx context.Context, input CreateNamespaceInput, intervals ...interface{}) {
+	ns := &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: input.Name,
+		},
+	}
+	By(fmt.Sprintf("Creating namespace %s", input.Name))
+	Eventually(func() error {
+		return input.Creator.Create(context.TODO(), ns)
+	}, intervals...).Should(Succeed())
 }
