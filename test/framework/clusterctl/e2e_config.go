@@ -322,13 +322,14 @@ func fileExists(filename string) bool {
 }
 
 // InfraProvider returns the infrastructure provider selected for running this E2E test.
-func (c *E2EConfig) InfraProvider() string {
-	for _, providerConfig := range c.Providers {
-		if providerConfig.Type == string(clusterctlv1.InfrastructureProviderType) {
-			return providerConfig.Name
+func (c *E2EConfig) InfraProviders() []string {
+	InfraProviders := []string{}
+	for _, provider := range c.Providers {
+		if provider.Type == string(clusterctlv1.InfrastructureProviderType) {
+			InfraProviders = append(InfraProviders, provider.Name)
 		}
 	}
-	panic("it is required to have an infra provider in the config")
+	return InfraProviders
 }
 
 // IntervalsOrDefault returns the intervals to be applied to a Eventually operation.

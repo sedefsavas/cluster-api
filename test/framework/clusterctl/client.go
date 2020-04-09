@@ -46,12 +46,12 @@ type InitInput struct {
 
 // Init calls clusterctl init with the list of providers defined in the local repository
 func Init(ctx context.Context, input InitInput) {
-	By(fmt.Sprintf("clusterctl init --core %s --bootstrap %s --control-plane %s --infrastructure %s",
+	fmt.Fprintf(GinkgoWriter, "clusterctl init --core %s --bootstrap %s --control-plane %s --infrastructure %s",
 		input.CoreProvider,
 		strings.Join(input.BootstrapProviders, ", "),
 		strings.Join(input.ControlPlaneProviders, ", "),
 		strings.Join(input.InfrastructureProviders, ", "),
-	))
+	)
 
 	initOpt := clusterctlclient.InitOptions{
 		Kubeconfig:              input.KubeconfigPath,
@@ -80,23 +80,25 @@ type ConfigClusterInput struct {
 	KubernetesVersion        string
 	ControlPlaneMachineCount *int64
 	WorkerMachineCount       *int64
+	Flavor                   string
 }
 
 // ConfigCluster gets a workload cluster based on a template.
 func ConfigCluster(ctx context.Context, input ConfigClusterInput) []byte {
-	By(fmt.Sprintf("clusterctl config cluster %s --infrastructure %s --kubernetes-version %s --control-plane-machine-count %d --worker-machine-count %d",
+	fmt.Fprintf(GinkgoWriter, "clusterctl config cluster %s --infrastructure %s --kubernetes-version %s --control-plane-machine-count %d --worker-machine-count %d --flavor %s",
 		input.ClusterName,
-		input.InfrastructureProvider,
+		valueOrDefault(input.InfrastructureProvider),
 		input.KubernetesVersion,
 		*input.ControlPlaneMachineCount,
 		*input.WorkerMachineCount,
-	))
+		valueOrDefault(input.Flavor),
+	)
 
 	templateOptions := clusterctlclient.GetClusterTemplateOptions{
 		Kubeconfig: input.KubeconfigPath,
 		ProviderRepositorySource: &clusterctlclient.ProviderRepositorySourceOptions{
 			InfrastructureProvider: input.InfrastructureProvider,
-			Flavor:                 "",
+			Flavor:                 input.Flavor,
 		},
 		ClusterName:              input.ClusterName,
 		KubernetesVersion:        input.KubernetesVersion,
@@ -117,6 +119,13 @@ func ConfigCluster(ctx context.Context, input ConfigClusterInput) []byte {
 	log.WriteString(string(yaml))
 
 	return yaml
+}
+
+func valueOrDefault(v string) string {
+	if v != "" {
+		return v
+	}
+	return "(default)"
 }
 
 // MoveInput is the input for ClusterctlMove.

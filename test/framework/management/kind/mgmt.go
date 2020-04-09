@@ -107,6 +107,16 @@ func (c *Cluster) GetName() string {
 	return c.Name
 }
 
+// GetKubeconfigPath returns the path to the kubeconfig file for the cluster.
+func (c Cluster) GetKubeconfigPath() string {
+	return c.KubeconfigPath
+}
+
+// GetScheme returns the scheme defining the types hosted in the cluster.
+func (c Cluster) GetScheme() *runtime.Scheme {
+	return c.Scheme
+}
+
 // LoadImage will put a local image onto the kind node
 func (c *Cluster) LoadImage(ctx context.Context, image string) error {
 	provider := cluster.NewProvider(
@@ -181,36 +191,13 @@ func (c *Cluster) ImageExists(ctx context.Context, image string) bool {
 // TODO: Considier a Kubectl function and then wrap it at the next level up.
 
 // Apply wraps `kubectl apply` and prints the output so we can see what gets applied to the cluster.
-// TODO: Remove this usage of kubectl and replace with a function from apply.go using the controller-runtime client.
 func (c *Cluster) Apply(ctx context.Context, resources []byte) error {
-	rbytes := bytes.NewReader(resources)
-	applyCmd := exec.NewCommand(
-		exec.WithCommand("kubectl"),
-		exec.WithArgs("apply", "--kubeconfig", c.KubeconfigPath, "-f", "-"),
-		exec.WithStdin(rbytes),
-	)
-	stdout, stderr, err := applyCmd.Run(ctx)
-	if err != nil {
-		fmt.Println(string(stderr))
-		return err
-	}
-	fmt.Println(string(stdout))
-	return nil
+	return exec.KubectlApply(ctx, c.KubeconfigPath, resources)
 }
 
 // Wait wraps `kubectl wait`.
 func (c *Cluster) Wait(ctx context.Context, args ...string) error {
-	wargs := append([]string{"wait", "--kubeconfig", c.KubeconfigPath}, args...)
-	wait := exec.NewCommand(
-		exec.WithCommand("kubectl"),
-		exec.WithArgs(wargs...),
-	)
-	_, stderr, err := wait.Run(ctx)
-	if err != nil {
-		fmt.Println(string(stderr))
-		return err
-	}
-	return nil
+	return exec.KubectlWait(ctx, c.KubeconfigPath, args...)
 }
 
 // Teardown deletes all the tmp files and cleans up the kind cluster.

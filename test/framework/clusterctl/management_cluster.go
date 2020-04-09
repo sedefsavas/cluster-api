@@ -42,44 +42,38 @@ import (
 
 // Provides utilities for setting up a management cluster using clusterctl.
 
-// InitManagementClusterInput is the information required to initialize a new
-// management cluster for e2e testing.
-type InitManagementClusterInput struct {
-	// E2EConfig defining the configuration for the E2E test.
-	E2EConfig *E2EConfig
+// CreateManagementClusterInput is the information required to CreateManagementCluster a new management cluster for e2e testing.
+type CreateManagementClusterInput struct {
+	// Name of the cluster
+	Name string
 
-	// ClusterctlConfigPath is the path to a clusterctl config file that points to repositories to be used during "clusterctl init".
-	ClusterctlConfigPath string
-
-	// LogsFolder defines a folder where to store clusterctl logs.
-	LogsFolder string
+	// Images to be loaded in the cluster (this is kind specific)
+	Images []framework.ContainerImage
 
 	// Scheme is used to initialize the scheme for the management cluster client.
 	Scheme *runtime.Scheme
 
 	// NewManagementClusterFn should return a new management cluster.
-	NewManagementClusterFn func(name string, scheme *runtime.Scheme) (cluster framework.ManagementCluster, kubeConfigPath string, err error)
+	NewManagementClusterFn func(name string, scheme *runtime.Scheme) (cluster framework.ManagementCluster, err error)
 }
 
-// InitManagementCluster returns a new cluster initialized and the path to the kubeConfig file to be used to access it.
-func InitManagementCluster(ctx context.Context, input *InitManagementClusterInput) (framework.ManagementCluster, string) {
-	// validate parameters and apply defaults
+// CreateManagementCluster returns a new empty management cluster eventually with the required images pre-loaded (this is kind specific).
+func CreateManagementCluster(ctx context.Context, input *CreateManagementClusterInput) (framework.ManagementCluster, error) {
+	Expect(input.Name).ToNot(BeEmpty(), "Invalid argument. Name can't be empty when calling CreateManagementCluster")
+	Expect(input.Scheme).ToNot(BeNil(), "Invalid argument. Scheme can't be nil when calling CreateManagementCluster")
 
-	Expect(input.E2EConfig).ToNot(BeNil(), "Invalid argument. input.E2EConfig can't be nil when calling InitManagementCluster")
-	Expect(input.NewManagementClusterFn).ToNot(BeNil(), "Invalid argument. input.NewManagementClusterFn can't be nil when calling InitManagementCluster")
-	Expect(input.ClusterctlConfigPath).To(BeAnExistingFile(), "Invalid argument. input.ClusterctlConfigPath must be an existing file")
+	By(fmt.Sprintf("Creating the management cluster with name %s", input.Name))
 
-	By(fmt.Sprintf("Creating the management cluster with name %s", input.E2EConfig.ManagementClusterName))
-
-	managementCluster, managementClusterKubeConfigPath, err := input.NewManagementClusterFn(input.E2EConfig.ManagementClusterName, input.Scheme)
-	Expect(err).ToNot(HaveOccurred(), "Failed to create the management cluster with name %s", input.E2EConfig.ManagementClusterName)
-	Expect(managementCluster).ToNot(BeNil(), "The management cluster with name %s should not be nil", input.E2EConfig.ManagementClusterName)
+	managementCluster, err := input.NewManagementClusterFn(input.Name, input.Scheme)
+	Expect(err).ToNot(HaveOccurred(), "Failed to create the management cluster with name %s", input.Name)
+	Expect(managementCluster).ToNot(BeNil(), "The management cluster with name %s should not be nil", input.Name)
+	Expect(managementCluster.GetKubeconfigPath()).To(BeAnExistingFile(), "The kubeConfig file for the management cluster with name %s does not exists at %s", input.Name, managementCluster.GetKubeconfigPath())
 
 	// Load the images into the cluster.
 	if imageLoader, ok := managementCluster.(framework.ImageLoader); ok {
 		By("Loading images into the management cluster")
 
-		for _, image := range input.E2EConfig.Images {
+		for _, image := range input.Images {
 			err := imageLoader.LoadImage(ctx, image.Name)
 			switch image.LoadBehavior {
 			case framework.MustLoadImage:
@@ -92,41 +86,68 @@ func InitManagementCluster(ctx context.Context, input *InitManagementClusterInpu
 		}
 	}
 
-	By("Running clusterctl init")
+	return managementCluster, nil
+}
+
+// InitManagementClusterInput is the information required to initialize a management cluster by running "clusterctl init".
+type InitManagementClusterInput struct {
+	// ManagementCluster to initialize.
+	ManagementCluster framework.ManagementCluster
+
+	// InfrastructureProviders to be installed during "clusterctl init".
+	InfrastructureProviders []string
+
+	// ClusterctlConfigPath is the path to a clusterctl config file that points to repositories to be used during "clusterctl init".
+	ClusterctlConfigPath string
+
+	// WaitForProviderIntervals
+	WaitForProviderIntervals []interface{}
+
+	// LogsFolder defines a folder where to store clusterctl logs.
+	LogsFolder string
+}
+
+// InitManagementCluster initialize a management cluster by running "clusterctl init", waits for the providers to come up
+// and finally creates the log watcher for all the controller logs.
+func InitManagementCluster(ctx context.Context, input *InitManagementClusterInput) {
+	// validate parameters and apply defaults
+
+	Expect(input.ManagementCluster).ToNot(BeNil(), "Invalid argument. input.ManagementCluster can't be nil when calling InitManagementCluster")
+	Expect(input.InfrastructureProviders).ToNot(BeEmpty(), "Invalid argument. input.InfrastructureProviders can't be empty when calling InitManagementCluster")
+	Expect(input.ClusterctlConfigPath).To(BeAnExistingFile(), "Invalid argument. input.ClusterctlConfigPath should be an existing file")
+	Expect(os.MkdirAll(input.LogsFolder, 0644)).To(Succeed(), "Invalid argument. can't create input.LogsFolder %s", input.LogsFolder)
 
 	Init(ctx, InitInput{
 		// pass reference to the management cluster hosting this test
-		KubeconfigPath: managementClusterKubeConfigPath,
+		KubeconfigPath: input.ManagementCluster.GetKubeconfigPath(),
 		// pass the clusterctl config file that points to the local provider repository created for this test,
 		ClusterctlConfigPath: input.ClusterctlConfigPath,
 		// setup the desired list of providers for a single-tenant management cluster
 		CoreProvider:            clusterctlconfig.ClusterAPIProviderName,
 		BootstrapProviders:      []string{clusterctlconfig.KubeadmBootstrapProviderName},
 		ControlPlaneProviders:   []string{clusterctlconfig.KubeadmControlPlaneProviderName},
-		InfrastructureProviders: []string{input.E2EConfig.InfraProvider()},
+		InfrastructureProviders: input.InfrastructureProviders,
 		// setup output path for clusterctl logs
 		LogPath: input.LogsFolder,
 	})
 
 	By("Waiting for providers controllers to be running")
 
-	client, err := managementCluster.GetClient()
-	Expect(err).NotTo(HaveOccurred())
+	client, err := input.ManagementCluster.GetClient()
+	Expect(err).NotTo(HaveOccurred(), "Failed to get controller runtime client for the management cluster")
 	controllersDeployments := discovery.GetControllerDeployments(ctx, discovery.GetControllerDeploymentsInput{
 		Lister: client,
 	})
-	Expect(controllersDeployments).ToNot(BeNil())
+	Expect(controllersDeployments).ToNot(BeEmpty(), "The list of controller deployments should not be empty")
 	for _, deployment := range controllersDeployments {
 		framework.WaitForDeploymentsAvailable(ctx, framework.WaitForDeploymentsAvailableInput{
 			Getter:     client,
 			Deployment: deployment,
-		}, input.E2EConfig.IntervalsOrDefault("init-management-cluster/wait-controllers", "2m", "10s")...)
+		}, input.WaitForProviderIntervals...)
 
 		// Start streaming logs from all controller providers
-		watchLogs(ctx, managementCluster, deployment.Namespace, deployment.Name, input.LogsFolder)
+		watchLogs(ctx, input.ManagementCluster, deployment.Namespace, deployment.Name, input.LogsFolder)
 	}
-
-	return managementCluster, managementClusterKubeConfigPath
 }
 
 // watchLogs streams logs for all containers for all pods belonging to a deployment. Each container's logs are streamed
@@ -144,13 +165,13 @@ func watchLogs(ctx context.Context, mgmt framework.ManagementCluster, namespace,
 	}
 
 	deployment := &appsv1.Deployment{}
-	Expect(c.Get(ctx, client.ObjectKey{Namespace: namespace, Name: deploymentName}, deployment)).To(Succeed())
+	Expect(c.Get(ctx, client.ObjectKey{Namespace: namespace, Name: deploymentName}, deployment)).To(Succeed(), "Failed to get deployment %s/%s", namespace, deploymentName)
 
 	selector, err := metav1.LabelSelectorAsMap(deployment.Spec.Selector)
-	Expect(err).NotTo(HaveOccurred())
+	Expect(err).NotTo(HaveOccurred(), "Failed to Pods selector for deployment %s/%s", namespace, deploymentName)
 
 	pods := &corev1.PodList{}
-	Expect(c.List(ctx, pods, client.InNamespace(namespace), client.MatchingLabels(selector))).To(Succeed())
+	Expect(c.List(ctx, pods, client.InNamespace(namespace), client.MatchingLabels(selector))).To(Succeed(), "Failed to list Pods for deployment %s/%s", namespace, deploymentName)
 
 	for _, pod := range pods.Items {
 		for _, container := range deployment.Spec.Template.Spec.Containers {

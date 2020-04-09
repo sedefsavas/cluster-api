@@ -19,6 +19,7 @@ package framework
 import (
 	"context"
 
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -60,6 +61,10 @@ type ManagementCluster interface {
 	Teardown(context.Context)
 	// GetName returns the name of the cluster.
 	GetName() string
+	// GetKubeconfigPath returns the path to the kubeconfig file for the cluster.
+	GetKubeconfigPath() string
+	// GetScheme returns the scheme defining the types hosted in the cluster.
+	GetScheme() *runtime.Scheme
 	// GetClient returns a client to the Management cluster.
 	GetClient() (client.Client, error)
 	// GetClientSet returns a clientset to the management cluster.
