@@ -33,11 +33,12 @@ import (
 	bootstrapv1 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
 	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	expv1 "sigs.k8s.io/cluster-api/exp/api/v1alpha3"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 )
 
-// DumpResources dump cluster API related resources to YAML
-func DumpResources(mgmt ManagementCluster, resourcePath string, writer io.Writer) error {
+// DumpCAPIResources dump cluster API related resources to YAML
+func DumpCAPIResources(mgmt ManagementCluster, resourcePath string, writer io.Writer, options ...client.ListOption) error {
 	resources := map[string]runtime.Object{
 		"Cluster":             &clusterv1.ClusterList{},
 		"MachineDeployment":   &clusterv1.MachineDeploymentList{},
@@ -49,22 +50,22 @@ func DumpResources(mgmt ManagementCluster, resourcePath string, writer io.Writer
 		"Node":                &corev1.NodeList{},
 	}
 
-	return dumpResources(mgmt, resources, resourcePath, writer)
+	return dumpResources(mgmt, resources, resourcePath, writer, options...)
 }
 
 // DumpProviderResources dump provider specific API related resources to YAML
-func DumpProviderResources(mgmt ManagementCluster, resources map[string]runtime.Object, resourcePath string, writer io.Writer) error {
-	return dumpResources(mgmt, resources, resourcePath, writer)
+func DumpProviderResources(mgmt ManagementCluster, resources map[string]runtime.Object, resourcePath string, writer io.Writer, options ...client.ListOption) error {
+	return dumpResources(mgmt, resources, resourcePath, writer, options...)
 }
 
-func dumpResources(mgmt ManagementCluster, resources map[string]runtime.Object, resourcePath string, writer io.Writer) error {
+func dumpResources(mgmt ManagementCluster, resources map[string]runtime.Object, resourcePath string, writer io.Writer, options ...client.ListOption) error {
 	c, err := mgmt.GetClient()
 	if err != nil {
 		return err
 	}
 
 	for kind, resourceList := range resources {
-		if err := c.List(context.TODO(), resourceList); err != nil {
+		if err := c.List(context.TODO(), resourceList, options...); err != nil {
 			return errors.Wrapf(err, "error getting resources of kind %s", kind)
 		}
 
@@ -82,7 +83,7 @@ func dumpResources(mgmt ManagementCluster, resources map[string]runtime.Object, 
 			namespace := metaObj.GetNamespace()
 			name := metaObj.GetName()
 
-			resourceFilePath := path.Join(resourcePath, kind, namespace, name+".yaml")
+			resourceFilePath := path.Join(resourcePath, namespace, kind, name+".yaml")
 			if err := dumpResource(resourceFilePath, obj, writer); err != nil {
 				return err
 			}
@@ -90,6 +91,13 @@ func dumpResources(mgmt ManagementCluster, resources map[string]runtime.Object, 
 	}
 
 	return nil
+}
+
+// ListByNamespaceOptions returns a set of ListOptions that allows listing objects only in a particular namespace.
+func ListByNamespaceOptions(namespace string) []client.ListOption {
+	return []client.ListOption{
+		client.InNamespace(namespace),
+	}
 }
 
 func dumpResource(resourceFilePath string, resource runtime.Object, writer io.Writer) error {

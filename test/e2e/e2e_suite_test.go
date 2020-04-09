@@ -21,34 +21,45 @@ package e2e
 import (
 	"context"
 	"fmt"
+	"os"
+	"path"
 	"path/filepath"
+	goRuntime "runtime"
+	"strings"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
-	"github.com/onsi/ginkgo/config"
-	"github.com/onsi/ginkgo/reporters"
 	. "github.com/onsi/gomega"
 
+	"github.com/onsi/ginkgo/config"
+	"github.com/onsi/ginkgo/reporters"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/cluster-api/test/framework"
 	"sigs.k8s.io/cluster-api/test/framework/clusterctl"
 	capiFlag "sigs.k8s.io/cluster-api/test/helpers/flag"
+	infrav1 "sigs.k8s.io/cluster-api/test/infrastructure/docker/api/v1alpha3"
 	capde2e "sigs.k8s.io/cluster-api/test/infrastructure/docker/e2e"
+	"sigs.k8s.io/cluster-api/util"
 )
 
 var (
-	artifactFolderFlag = capiFlag.DefineOrLookupStringFlag("e2e.artifacts-folder", "", "folder where e2e test artifact should be stored")
-	configPathFlag     = capiFlag.DefineOrLookupStringFlag("e2e.config", "", "path to the e2e config file")
-	skipCleanupFlag    = capiFlag.DefineOrLookupBoolFlag("e2e.skip-resource-cleanup", false, "if true, the resource cleanup after tests will be skipped")
+	artifactPathFlag = capiFlag.DefineOrLookupStringFlag("e2e.artifacts-path", "", "path to store e2e test artifacts")
+	configPathFlag   = capiFlag.DefineOrLookupStringFlag("e2e.config", "", "path to the e2e config file")
+	skipCleanupFlag  = capiFlag.DefineOrLookupBoolFlag("e2e.skip-resource-cleanup", false, "if true, the resource cleanup after tests will be skipped")
 )
 
 func TestE2E(t *testing.T) {
-	artifactFolder = *artifactFolderFlag
+	artifactPath = *artifactPathFlag
 	configPath = *configPathFlag
 	skipCleanup = *skipCleanupFlag
 
+	// If running in prow, make sure to output the junit files to the artifacts path
+	if ap, exists := os.LookupEnv("ARTIFACTS"); exists {
+		artifactPath = ap
+	}
+
 	RegisterFailHandler(Fail)
-	junitPath := filepath.Join(artifactFolder, fmt.Sprintf("junit.e2e_suite.%d.xml", config.GinkgoConfig.ParallelNode))
+	junitPath := filepath.Join(artifactPath, fmt.Sprintf("junit.e2e_suite.%d.xml", config.GinkgoConfig.ParallelNode))
 	junitReporter := reporters.NewJUnitReporter(junitPath)
 	RunSpecsWithDefaultAndCustomReporters(t, "capi-e2e", []Reporter{junitReporter})
 }
@@ -57,8 +68,14 @@ var (
 	// configPath to the e2e config file.
 	configPath string
 
-	// artifactFolder where to store e2e test artifact.
-	artifactFolder string
+	// artifactPath where to store e2e test artifact.
+	artifactPath string
+
+	// logsPath where to store e2e test logs.
+	logsPath string
+
+	// resourcesPath where to store e2e test resources.
+	resourcesPath string
 
 	// skipCleanup prevent cleanup of test resources e.g. for debug purposes.
 	skipCleanup bool
@@ -84,23 +101,38 @@ var (
 // In this case, the local clusterctl repository & the bootstrap cluster are shared across all the tests.
 var _ = SynchronizedBeforeSuite(func() []byte {
 	// Before all ParallelNodes
+	artifactPath = os.Getenv("ARTIFACTS")
+
+	By("creating the logs directory")
+	logsPath = path.Join(artifactPath, "logs")
+	Expect(os.MkdirAll(filepath.Dir(logsPath), 0755)).To(Succeed())
+
+	By("creating the providers directory")
+	providerLogsPath := path.Join(logsPath, "common")
+	Expect(os.MkdirAll(filepath.Dir(providerLogsPath), 0755)).To(Succeed())
+
+	By("creating the resources directory")
+	resourcesPath = path.Join(artifactPath, "resources")
+	Expect(os.MkdirAll(filepath.Dir(resourcesPath), 0755)).To(Succeed())
 
 	Expect(configPath).To(BeAnExistingFile(), "invalid argument. e2e.config should be an existing file")
-	Expect(artifactFolder).To(BeADirectory(), "invalid argument. e2e.artifacts-folder should be an existing folder")
+	Expect(artifactPath).To(BeADirectory(), "invalid argument. e2e.artifacts-folder should be an existing folder")
 
 	By("Initializing a runtime.Scheme with all the GVK relevant for this test")
 	scheme = runtime.NewScheme()
 	framework.TryAddDefaultSchemes(scheme)
+	// TODO make adding infra provider schemes generic (if it is possible)
+	Expect(infrav1.AddToScheme(scheme)).To(Succeed())
 
 	By(fmt.Sprintf("Loading the e2e test configuration from %s", configPath))
 	e2eConfig = clusterctl.LoadE2EConfig(context.TODO(), clusterctl.LoadE2EConfigInput{ConfigPath: configPath})
 	Expect(e2eConfig).ToNot(BeNil(), "Failed to load E2E config")
 
-	By(fmt.Sprintf("Creating a clusterctl local repository into %s", artifactFolder))
+	By(fmt.Sprintf("Creating a clusterctl local repository into %s", artifactPath))
 	// NB. Creating the local clusterctl repository into the the artifact folder so it will be preserved at the end of the test
 	clusterctlConfigPath = clusterctl.CreateRepository(context.TODO(), clusterctl.CreateRepositoryInput{
 		E2EConfig:     e2eConfig,
-		ArtifactsPath: artifactFolder,
+		ArtifactsPath: artifactPath,
 	})
 	Expect(clusterctlConfigPath).To(BeAnExistingFile(), "Failed to get a clusterctl config file")
 
@@ -124,7 +156,7 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 			kubeConfigPath = kindCluster.KubeconfigPath
 			return cluster, kubeConfigPath, err
 		},
-		LogsFolder: artifactFolder,
+		LogsFolder: providerLogsPath,
 	})
 	Expect(managementCluster).ToNot(BeNil(), "Failed to get a management cluster")
 	Expect(managementClusterKubeConfigPath).To(BeAnExistingFile(), "Failed to get a clusterctl config file")
@@ -151,3 +183,22 @@ var _ = SynchronizedAfterSuite(func() {
 		managementCluster.Teardown(context.TODO())
 	}
 })
+
+// TODO Move the functions below to the helper folder once it is moved under /test/e2e
+
+// GenerateRandomNamespace generates a random namespace using the caller's file name
+func GenerateRandomNamespace() string {
+	testName := strings.ReplaceAll(GetSuiteName(), "_", "-")
+	return fmt.Sprintf("%s-%s", testName, util.RandomString(6))
+}
+
+// GetSuiteName gets the currently running test's name and trims it. For example, for "/foo/bar.go" returns "bar"
+func GetSuiteName() string {
+	_, filename, _, ok := goRuntime.Caller(1)
+	if !ok {
+		return ""
+	}
+	filename = filepath.Base(filename)
+
+	return filename[0 : len(filename)-len(filepath.Ext(filename))]
+}

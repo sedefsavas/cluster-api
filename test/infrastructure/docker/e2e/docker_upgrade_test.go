@@ -170,7 +170,7 @@ var _ = Describe("Docker Upgrade", func() {
 		ensureDockerArtifactsDeleted(ensureDockerDeletedInput)
 
 		// Dump cluster API and docker related resources to artifacts before deleting them.
-		Expect(framework.DumpResources(mgmt, resourcesPath, GinkgoWriter)).To(Succeed())
+		Expect(framework.DumpCAPIResources(mgmt, resourcesPath, GinkgoWriter)).To(Succeed())
 		resources := map[string]runtime.Object{
 			"DockerCluster":         &infrav1.DockerClusterList{},
 			"DockerMachine":         &infrav1.DockerMachineList{},

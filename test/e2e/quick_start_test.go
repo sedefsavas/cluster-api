@@ -27,22 +27,23 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"sigs.k8s.io/cluster-api/test/framework/clusterctl"
-	"sigs.k8s.io/cluster-api/test/framework/discovery"
 
+	"k8s.io/apimachinery/pkg/runtime"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/test/framework"
+	"sigs.k8s.io/cluster-api/test/framework/clusterctl"
+	"sigs.k8s.io/cluster-api/test/framework/discovery"
+	infrav1 "sigs.k8s.io/cluster-api/test/infrastructure/docker/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/util"
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var _ = Describe("When following the Cluster API quick-start", func() {
 	var (
-		suiteArtifactFolder string
-		logPath             string
-		namespaceName       string
-		clusterName         string
-		client              ctrlclient.Client
+		logPath       string
+		namespaceName string
+		clusterName   string
+		client        ctrlclient.Client
 
 		cluster *clusterv1.Cluster
 	)
@@ -55,13 +56,12 @@ var _ = Describe("When following the Cluster API quick-start", func() {
 		Expect(err).NotTo(HaveOccurred(), "Failed to get a client for the management cluster")
 
 		//TODO: refactor this and stream events out of the namespace
-		namespaceName = fmt.Sprintf("quick-start-%s", util.RandomString(6))
+		namespaceName = GenerateRandomNamespace()
 		framework.CreateNamespace(context.TODO(), framework.CreateNamespaceInput{Creator: client, Name: namespaceName}, "40s", "10s")
 
 		clusterName = fmt.Sprintf("cluster-%s", util.RandomString(6))
 
-		suiteArtifactFolder = filepath.Join(artifactFolder, "quick-start")
-		logPath = filepath.Join(suiteArtifactFolder, "logs")
+		logPath = filepath.Join(logsPath, GetSuiteName())
 	})
 
 	It("Should create a workload cluster", func() {
@@ -174,7 +174,14 @@ var _ = Describe("When following the Cluster API quick-start", func() {
 	})
 
 	AfterEach(func() {
-		//TODO: dump all the ClusterAPI resources in the namespace
+		// Dump cluster API and docker related resources to artifacts before deleting them.
+		Expect(framework.DumpCAPIResources(managementCluster, resourcesPath, GinkgoWriter, framework.ListByNamespaceOptions(namespaceName)...)).To(Succeed())
+		resources := map[string]runtime.Object{
+			"DockerCluster":         &infrav1.DockerClusterList{},
+			"DockerMachine":         &infrav1.DockerMachineList{},
+			"DockerMachineTemplate": &infrav1.DockerMachineTemplateList{},
+		}
+		Expect(framework.DumpProviderResources(managementCluster, resources, resourcesPath, GinkgoWriter, framework.ListByNamespaceOptions(namespaceName)...)).To(Succeed())
 
 		//TODO: refactor this into a framework function
 		By("Deleting the Cluster object")
