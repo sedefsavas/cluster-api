@@ -167,7 +167,7 @@ type CreateNamespaceInput struct {
 }
 
 // CreateNamespace is used to create a namespace object.
-func CreateNamespace(ctx context.Context, input CreateNamespaceInput, intervals ...interface{}) {
+func CreateNamespace(ctx context.Context, input CreateNamespaceInput, intervals ...interface{}) *corev1.Namespace {
 	ns := &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: input.Name,
@@ -177,4 +177,6 @@ func CreateNamespace(ctx context.Context, input CreateNamespaceInput, intervals 
 	Eventually(func() error {
 		return input.Creator.Create(context.TODO(), ns)
 	}, intervals...).Should(Succeed())
+
+	return ns
 }

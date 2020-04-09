@@ -42,7 +42,7 @@ type CreateRepositoryInput struct {
 // to a clusterctl config file to be used for working with such repository.
 func CreateRepository(ctx context.Context, input CreateRepositoryInput) string {
 	Expect(input.E2EConfig).ToNot(BeNil(), "Invalid argument. input.E2EConfig can't be nil when calling CreateRepository")
-	Expect(os.MkdirAll(input.RepositoryFolder, 0644)).To(Succeed(), "Failed to create the clusterctl local repository folder", input.RepositoryFolder)
+	Expect(os.MkdirAll(input.RepositoryFolder, 0755)).To(Succeed(), "Failed to create the clusterctl local repository folder %s", input.RepositoryFolder)
 
 	providers := []providerConfig{}
 	for _, provider := range input.E2EConfig.Providers {
@@ -55,7 +55,7 @@ func CreateRepository(ctx context.Context, input CreateRepositoryInput) string {
 			Expect(err).ToNot(HaveOccurred(), "Failed to generate the manifest for %q / %q", providerLabel, version.Name)
 
 			sourcePath := filepath.Join(input.RepositoryFolder, providerLabel, version.Name)
-			Expect(os.MkdirAll(sourcePath, 0644)).To(Succeed(), "Failed to create the clusterctl local repository folder for %q / %q", providerLabel, version.Name)
+			Expect(os.MkdirAll(sourcePath, 0755)).To(Succeed(), "Failed to create the clusterctl local repository folder for %q / %q", providerLabel, version.Name)
 
 			filePath := filepath.Join(sourcePath, "components.yaml")
 			Expect(ioutil.WriteFile(filePath, manifest, 0755)).To(Succeed(), "Failed to write manifest in the clusterctl local repository for %q / %q", providerLabel, version.Name)

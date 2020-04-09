@@ -115,7 +115,7 @@ func InitManagementCluster(ctx context.Context, input *InitManagementClusterInpu
 	Expect(input.ManagementCluster).ToNot(BeNil(), "Invalid argument. input.ManagementCluster can't be nil when calling InitManagementCluster")
 	Expect(input.InfrastructureProviders).ToNot(BeEmpty(), "Invalid argument. input.InfrastructureProviders can't be empty when calling InitManagementCluster")
 	Expect(input.ClusterctlConfigPath).To(BeAnExistingFile(), "Invalid argument. input.ClusterctlConfigPath should be an existing file")
-	Expect(os.MkdirAll(input.LogsFolder, 0644)).To(Succeed(), "Invalid argument. can't create input.LogsFolder %s", input.LogsFolder)
+	Expect(os.MkdirAll(input.LogsFolder, 0755)).To(Succeed(), "Invalid argument. can't create input.LogsFolder %s", input.LogsFolder)
 
 	Init(ctx, InitInput{
 		// pass reference to the management cluster hosting this test

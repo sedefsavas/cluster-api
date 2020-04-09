@@ -33,6 +33,10 @@ import (
 
 // Provide E2E friendly wrappers for the clusterctl client library.
 
+const (
+	DefaultFlavor = ""
+)
+
 // InitInput is the input for Init.
 type InitInput struct {
 	LogPath                 string
@@ -46,7 +50,7 @@ type InitInput struct {
 
 // Init calls clusterctl init with the list of providers defined in the local repository
 func Init(ctx context.Context, input InitInput) {
-	fmt.Fprintf(GinkgoWriter, "clusterctl init --core %s --bootstrap %s --control-plane %s --infrastructure %s",
+	fmt.Fprintf(GinkgoWriter, "clusterctl init --core %s --bootstrap %s --control-plane %s --infrastructure %s\n",
 		input.CoreProvider,
 		strings.Join(input.BootstrapProviders, ", "),
 		strings.Join(input.ControlPlaneProviders, ", "),
@@ -85,7 +89,7 @@ type ConfigClusterInput struct {
 
 // ConfigCluster gets a workload cluster based on a template.
 func ConfigCluster(ctx context.Context, input ConfigClusterInput) []byte {
-	fmt.Fprintf(GinkgoWriter, "clusterctl config cluster %s --infrastructure %s --kubernetes-version %s --control-plane-machine-count %d --worker-machine-count %d --flavor %s",
+	fmt.Fprintf(GinkgoWriter, "clusterctl config cluster %s --infrastructure %s --kubernetes-version %s --control-plane-machine-count %d --worker-machine-count %d --flavor %s\n",
 		input.ClusterName,
 		valueOrDefault(input.InfrastructureProvider),
 		input.KubernetesVersion,

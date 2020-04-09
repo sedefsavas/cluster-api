@@ -22,10 +22,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
-	goRuntime "runtime"
-	"strings"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
@@ -36,30 +33,34 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/cluster-api/test/framework"
 	"sigs.k8s.io/cluster-api/test/framework/clusterctl"
+	"sigs.k8s.io/cluster-api/test/framework/management"
 	capiFlag "sigs.k8s.io/cluster-api/test/helpers/flag"
-	infrav1 "sigs.k8s.io/cluster-api/test/infrastructure/docker/api/v1alpha3"
+	dockerv1 "sigs.k8s.io/cluster-api/test/infrastructure/docker/api/v1alpha3"
 	capde2e "sigs.k8s.io/cluster-api/test/infrastructure/docker/e2e"
-	"sigs.k8s.io/cluster-api/util"
 )
 
 var (
-	artifactPathFlag = capiFlag.DefineOrLookupStringFlag("e2e.artifacts-path", "", "path to store e2e test artifacts")
-	configPathFlag   = capiFlag.DefineOrLookupStringFlag("e2e.config", "", "path to the e2e config file")
-	skipCleanupFlag  = capiFlag.DefineOrLookupBoolFlag("e2e.skip-resource-cleanup", false, "if true, the resource cleanup after tests will be skipped")
+	//TODO: refactor this so we can avoid Flag variables
+	artifactFolderFlag     = capiFlag.DefineOrLookupStringFlag("e2e.artifacts-folder", "", "folder where e2e test artifact should be stored")
+	configPathFlag         = capiFlag.DefineOrLookupStringFlag("e2e.config", "", "path to the e2e config file")
+	useExistingClusterFlag = capiFlag.DefineOrLookupBoolFlag("e2e.use-existing-cluster", false, "if true, the test uses the current cluster instead of creating a new one (default discovery rules apply)")
+	skipCleanupFlag        = capiFlag.DefineOrLookupBoolFlag("e2e.skip-resource-cleanup", false, "if true, the resource cleanup after tests will be skipped")
 )
 
 func TestE2E(t *testing.T) {
-	artifactPath = *artifactPathFlag
+	artifactFolder = *artifactFolderFlag
 	configPath = *configPathFlag
 	skipCleanup = *skipCleanupFlag
+	useExistingCluster = *useExistingClusterFlag
 
 	// If running in prow, make sure to output the junit files to the artifacts path
+	//TODO: is this required? having an env variable override a flag (one and only) might create confusion
 	if ap, exists := os.LookupEnv("ARTIFACTS"); exists {
-		artifactPath = ap
+		artifactFolder = ap
 	}
 
 	RegisterFailHandler(Fail)
-	junitPath := filepath.Join(artifactPath, fmt.Sprintf("junit.e2e_suite.%d.xml", config.GinkgoConfig.ParallelNode))
+	junitPath := filepath.Join(artifactFolder, fmt.Sprintf("junit.e2e_suite.%d.xml", config.GinkgoConfig.ParallelNode))
 	junitReporter := reporters.NewJUnitReporter(junitPath)
 	RunSpecsWithDefaultAndCustomReporters(t, "capi-e2e", []Reporter{junitReporter})
 }
@@ -68,14 +69,11 @@ var (
 	// configPath to the e2e config file.
 	configPath string
 
-	// artifactPath where to store e2e test artifact.
-	artifactPath string
+	// useExistingCluster instruct the test to use the current cluster instead of creating a new one (default discovery rules apply).
+	useExistingCluster bool
 
-	// logsPath where to store e2e test logs.
-	logsPath string
-
-	// resourcesPath where to store e2e test resources.
-	resourcesPath string
+	// artifactFolder where to store e2e test artifact.
+	artifactFolder string
 
 	// skipCleanup prevent cleanup of test resources e.g. for debug purposes.
 	skipCleanup bool
@@ -87,118 +85,122 @@ var (
 	// with the providers specified in the configPath.
 	clusterctlConfigPath string
 
-	// scheme with all the GVK relevant for this test.
-	scheme *runtime.Scheme
-
 	// managementCluster to be used for the e2e tests.
 	managementCluster framework.ManagementCluster
-
-	// kubeconfig file pointing to the managementCluster used for the e2e tests.
-	managementClusterKubeConfigPath string
 )
 
-// Using a singleton for creating resources shared across nodes when running tests in parallel.
+// Using a SynchronizedBeforeSuite for controlling how to create resources shared across ParallelNodes (~ginkgo threads).
 // In this case, the local clusterctl repository & the bootstrap cluster are shared across all the tests.
 var _ = SynchronizedBeforeSuite(func() []byte {
-	// Before all ParallelNodes
-	artifactPath = os.Getenv("ARTIFACTS")
+	// Before all ParallelNodes.
 
-	By("creating the logs directory")
-	logsPath = path.Join(artifactPath, "logs")
-	Expect(os.MkdirAll(filepath.Dir(logsPath), 0755)).To(Succeed())
-
-	By("creating the providers directory")
-	providerLogsPath := path.Join(logsPath, "common")
-	Expect(os.MkdirAll(filepath.Dir(providerLogsPath), 0755)).To(Succeed())
-
-	By("creating the resources directory")
-	resourcesPath = path.Join(artifactPath, "resources")
-	Expect(os.MkdirAll(filepath.Dir(resourcesPath), 0755)).To(Succeed())
-
-	Expect(configPath).To(BeAnExistingFile(), "invalid argument. e2e.config should be an existing file")
-	Expect(artifactPath).To(BeADirectory(), "invalid argument. e2e.artifacts-folder should be an existing folder")
+	validateBeforeSuiteInputs()
 
 	By("Initializing a runtime.Scheme with all the GVK relevant for this test")
-	scheme = runtime.NewScheme()
-	framework.TryAddDefaultSchemes(scheme)
-	// TODO make adding infra provider schemes generic (if it is possible)
-	Expect(infrav1.AddToScheme(scheme)).To(Succeed())
+	scheme := initScheme()
 
-	By(fmt.Sprintf("Loading the e2e test configuration from %s", configPath))
-	e2eConfig = clusterctl.LoadE2EConfig(context.TODO(), clusterctl.LoadE2EConfigInput{ConfigPath: configPath})
-	Expect(e2eConfig).ToNot(BeNil(), "Failed to load E2E config")
+	Byf("Loading the e2e test configuration from %s", configPath)
+	e2eConfig = loadE2EConfig(configPath)
 
-	By(fmt.Sprintf("Creating a clusterctl local repository into %s", artifactPath))
-	// NB. Creating the local clusterctl repository into the the artifact folder so it will be preserved at the end of the test
-	clusterctlConfigPath = clusterctl.CreateRepository(context.TODO(), clusterctl.CreateRepositoryInput{
-		E2EConfig:     e2eConfig,
-		ArtifactsPath: artifactPath,
-	})
-	Expect(clusterctlConfigPath).To(BeAnExistingFile(), "Failed to get a clusterctl config file")
+	Byf("Creating a clusterctl local repository into %s", artifactFolder)
+	clusterctlConfigPath = createClusterctlLocalRepository(e2eConfig, filepath.Join(artifactFolder, "repository"))
 
-	By("Initializing a management cluster")
-	//TODO: manage "use existing cluster" scenario. Initial assumption: existing cluster should have providers
-	//TODO: manage "use kind without CAPD" scenario.
-	//TODO: stream logs out of controllers
-	//TODO: define log folder organization (logs for the bootstrap cluster, logs for each spec
-	managementCluster, managementClusterKubeConfigPath = clusterctl.InitManagementCluster(context.TODO(), &clusterctl.InitManagementClusterInput{
-		E2EConfig:            e2eConfig,
-		ClusterctlConfigPath: clusterctlConfigPath,
-		Scheme:               scheme,
-		NewManagementClusterFn: func(name string, scheme *runtime.Scheme) (cluster framework.ManagementCluster, kubeConfigPath string, err error) {
-			cluster, err = capde2e.NewClusterForCAPD(context.TODO(), name, scheme)
-			if err != nil {
-				return nil, "", err
-			}
-			//TODO: this is hacky way to get the kubeconfig path. As soon as v1alpha4 opens, we should add GetKubeConfigPath method to the ManagementCluster interface and get rid of this
-			//TODO: move th kubeconfig into the artifact folder
-			kindCluster := cluster.(*capde2e.CAPDCluster)
-			kubeConfigPath = kindCluster.KubeconfigPath
-			return cluster, kubeConfigPath, err
-		},
-		LogsFolder: providerLogsPath,
-	})
-	Expect(managementCluster).ToNot(BeNil(), "Failed to get a management cluster")
-	Expect(managementClusterKubeConfigPath).To(BeAnExistingFile(), "Failed to get a clusterctl config file")
+	By("Getting the management cluster")
+	if useExistingCluster {
+		managementCluster = connectToManagementCluster(scheme)
+	} else {
+		managementCluster = createManagementCluster(e2eConfig, scheme)
+	}
+
+	By("Initializing the management cluster")
+	initManagementCluster(managementCluster, clusterctlConfigPath, e2eConfig.InfraProviders(), filepath.Join(artifactFolder, "bootstrap-cluster"), e2eConfig.GetIntervals("bootstrap-cluster", "wait-controllers")...)
 
 	return nil
 }, func(_ []byte) {
-	// Before each ParallelNode
+	// Before each ParallelNode.
 })
 
-// Using a singleton for deleting resources shared across nodes when running tests in parallel.
+// Using a SynchronizedAfterSuite for controlling how to delete resources shared across ParallelNodes (~ginkgo threads).
 // In this case, deleting the bootstrap cluster shared across all the tests; instead the local clusterctl repository
 // is preserved like everything else created into the artifact folder.
 var _ = SynchronizedAfterSuite(func() {
-	// After each ParallelNode
+	// After each ParallelNode.
 }, func() {
-	// After all ParallelNodes
-	if skipCleanup {
-		return
-	}
+	// After all ParallelNodes.
 
-	// Tears down the management cluster
 	By("Tearing down the management cluster")
-	if managementCluster != nil {
-		managementCluster.Teardown(context.TODO())
+	if !skipCleanup {
+		tearDown(managementCluster)
 	}
 })
 
-// TODO Move the functions below to the helper folder once it is moved under /test/e2e
-
-// GenerateRandomNamespace generates a random namespace using the caller's file name
-func GenerateRandomNamespace() string {
-	testName := strings.ReplaceAll(GetSuiteName(), "_", "-")
-	return fmt.Sprintf("%s-%s", testName, util.RandomString(6))
+func Byf(format string, a ...interface{}) {
+	By(fmt.Sprintf(format, a...))
 }
 
-// GetSuiteName gets the currently running test's name and trims it. For example, for "/foo/bar.go" returns "bar"
-func GetSuiteName() string {
-	_, filename, _, ok := goRuntime.Caller(1)
-	if !ok {
-		return ""
-	}
-	filename = filepath.Base(filename)
+func validateBeforeSuiteInputs() {
+	Expect(configPath).To(BeAnExistingFile(), "Invalid argument. e2e.config should be an existing file")
+	Expect(os.MkdirAll(artifactFolder, 0755)).To(Succeed(), "Invalid argument. can't create e2e.artifacts-folder %s", artifactFolder)
+}
 
-	return filename[0 : len(filename)-len(filepath.Ext(filename))]
+func initScheme() *runtime.Scheme {
+	sc := runtime.NewScheme()
+	framework.TryAddDefaultSchemes(sc)
+
+	// TODO make adding infra provider schemes generic (if it is possible)
+	Expect(dockerv1.AddToScheme(sc)).To(Succeed(), "Failed to add %s types to schema", dockerv1.GroupVersion.String())
+	return sc
+}
+
+func loadE2EConfig(configPath string) *clusterctl.E2EConfig {
+	config := clusterctl.LoadE2EConfig(context.TODO(), clusterctl.LoadE2EConfigInput{ConfigPath: configPath})
+	Expect(config).ToNot(BeNil(), "Failed to load E2E config from %s", configPath)
+	return config
+}
+
+func createClusterctlLocalRepository(config *clusterctl.E2EConfig, repositoryPath string) string {
+	clusterctlConfig := clusterctl.CreateRepository(context.TODO(), clusterctl.CreateRepositoryInput{
+		E2EConfig:        config,
+		RepositoryFolder: repositoryPath,
+	})
+	Expect(clusterctlConfig).To(BeAnExistingFile(), "The clusterctl config file does not exists in the local repository %s", repositoryPath)
+	return clusterctlConfig
+}
+
+func connectToManagementCluster(scheme *runtime.Scheme) framework.ManagementCluster {
+	return management.NewBaseCluster("", scheme)
+}
+
+func createManagementCluster(config *clusterctl.E2EConfig, scheme *runtime.Scheme) framework.ManagementCluster {
+	cluster, err := clusterctl.CreateManagementCluster(context.TODO(), &clusterctl.CreateManagementClusterInput{
+		Name:   config.ManagementClusterName,
+		Images: config.Images,
+		Scheme: scheme,
+		NewManagementClusterFn: func(name string, scheme *runtime.Scheme) (framework.ManagementCluster, error) {
+			//TODO: manage "use kind without CAPD" scenario.
+			return capde2e.NewClusterForCAPD(context.TODO(), name, scheme)
+		},
+	})
+	Expect(err).NotTo(HaveOccurred(), "Failed to create a management cluster")
+	Expect(cluster).ToNot(BeNil(), "Failed to create a management cluster")
+	Expect(cluster.GetKubeconfigPath()).To(BeAnExistingFile(), "Failed to get a clusterctl config file")
+	return cluster
+}
+
+func initManagementCluster(cluster framework.ManagementCluster, clusterctlConfigPath string, infraProviders []string, artifactFolder string, waitForProviderIntervals ...interface{}) {
+	//TODO: skip init if already initialized
+	//TODO: split attach watches to a management cluster (attach watches should be executed no matter if we are skippining init or not)
+	clusterctl.InitManagementCluster(context.TODO(), &clusterctl.InitManagementClusterInput{
+		ManagementCluster:        cluster,
+		InfrastructureProviders:  infraProviders,
+		ClusterctlConfigPath:     clusterctlConfigPath,
+		WaitForProviderIntervals: waitForProviderIntervals,
+		LogsFolder:               artifactFolder,
+	})
+}
+
+func tearDown(cluster framework.ManagementCluster) {
+	if cluster != nil {
+		cluster.Teardown(context.TODO())
+	}
 }

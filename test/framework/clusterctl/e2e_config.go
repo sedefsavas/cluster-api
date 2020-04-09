@@ -332,11 +332,13 @@ func (c *E2EConfig) InfraProviders() []string {
 	return InfraProviders
 }
 
-// IntervalsOrDefault returns the intervals to be applied to a Eventually operation.
-func (c *E2EConfig) IntervalsOrDefault(key string, defaults ...interface{}) []interface{} {
-	intervals, ok := c.Intervals[key]
+// GetIntervals returns the intervals to be applied to a Eventually operation.
+func (c *E2EConfig) GetIntervals(spec, key string) []interface{} {
+	intervals, ok := c.Intervals[fmt.Sprintf("%s/%s", spec, key)]
 	if !ok {
-		return defaults
+		if intervals, ok = c.Intervals[fmt.Sprintf("default/%s", key)]; !ok {
+			return nil
+		}
 	}
 	intervalsInterfaces := make([]interface{}, len(intervals))
 	for i := range intervals {
