@@ -21,7 +21,6 @@ package e2e
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"path/filepath"
 	"strconv"
 
@@ -44,8 +43,8 @@ var _ = Describe("When following the Cluster API quick-start", func() {
 		namespaceName string
 		clusterName   string
 		client        ctrlclient.Client
-
-		cluster *clusterv1.Cluster
+		cluster       *clusterv1.Cluster
+		cniPath       = "./data/calico/calico.yaml"
 	)
 
 	BeforeEach(func() {
@@ -128,15 +127,13 @@ var _ = Describe("When following the Cluster API quick-start", func() {
 		workloadClient, err := managementCluster.GetWorkloadClient(context.TODO(), namespaceName, clusterName)
 		Expect(err).ToNot(HaveOccurred(), "Failed to get the client for the workload cluster with name %s", cluster.Name)
 
-		//TODO: read calico manifest from data folder, so we are removing an external variable that might affect the test
 		//TODO: CNI plugin configurable/pluggable (see CAPA)?
-		applyYAMLURLInput := framework.ApplyYAMLURLInput{
-			Client:        workloadClient,
-			HTTPGetter:    http.DefaultClient,
-			NetworkingURL: "https://docs.projectcalico.org/manifests/calico.yaml",
-			Scheme:        scheme,
+		applyYAMLInput := framework.ApplyYAMLInput{
+			Client:     workloadClient,
+			Scheme:     scheme,
+			Filename:   cniPath,
 		}
-		framework.ApplyYAMLURL(context.TODO(), applyYAMLURLInput)
+		framework.ApplyYAMLFromFile(context.TODO(), applyYAMLInput)
 
 		By("Waiting for the remaining control plane machines to be provisioned (if any)")
 		if controlPlane.Spec.Replicas != nil && int(*controlPlane.Spec.Replicas) > 1 {
@@ -202,5 +199,6 @@ var _ = Describe("When following the Cluster API quick-start", func() {
 			Lister:  client,
 			Cluster: cluster,
 		})
+
 	})
 })
