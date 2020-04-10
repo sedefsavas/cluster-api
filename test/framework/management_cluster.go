@@ -182,7 +182,6 @@ func CreateNamespace(ctx context.Context, input CreateNamespaceInput, intervals 
 	if input.Name == "" {
 		input.Name = fmt.Sprintf("test-%s", util.RandomString(6))
 	}
-
 	ns := &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: input.Name,
