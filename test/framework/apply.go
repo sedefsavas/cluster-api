@@ -37,24 +37,36 @@ type HTTPGetter interface {
 	Get(url string) (resp *http.Response, err error)
 }
 
-// ApplyYAMLURLInput is the input for ApplyYAMLURL.
-type ApplyYAMLURLInput struct {
+// ApplyYAMLInput is the input for ApplyYAMLURL.
+type ApplyYAMLInput struct {
 	Client        client.Client
 	HTTPGetter    HTTPGetter
 	NetworkingURL string
 	Scheme        *runtime.Scheme
+	Filename      string
 }
 
 // ApplyYAMLURL is essentially kubectl apply -f <url>.
 // If the YAML in the URL contains Kinds not registered with the scheme this will fail.
-func ApplyYAMLURL(ctx context.Context, input ApplyYAMLURLInput) {
+func ApplyYAMLURL(ctx context.Context, input ApplyYAMLInput) {
 	By(fmt.Sprintf("Applying networking from %s", input.NetworkingURL))
 	resp, err := input.HTTPGetter.Get(input.NetworkingURL)
 	Expect(err).ToNot(HaveOccurred())
 	yamls, err := ioutil.ReadAll(resp.Body)
 	Expect(err).ToNot(HaveOccurred())
 	defer resp.Body.Close()
-	yamlFiles := bytes.Split(yamls, []byte("---"))
+	applyByteArr(ctx, yamls, input)
+}
+
+func ApplyYAMLFromFile(ctx context.Context, input ApplyYAMLInput) {
+	By(fmt.Sprintf("Applying yaml from  %s", input.Filename))
+	calicoYaml, err := ioutil.ReadFile(input.Filename)
+	Expect(err).ShouldNot(HaveOccurred())
+	applyByteArr(ctx, calicoYaml, input)
+}
+
+func applyByteArr(ctx context.Context, byteArr []byte, input ApplyYAMLInput) {
+	yamlFiles := bytes.Split(byteArr, []byte("---"))
 	codecs := serializer.NewCodecFactory(input.Scheme)
 	for _, f := range yamlFiles {
 		f = bytes.TrimSpace(f)
