@@ -346,3 +346,11 @@ func (c *E2EConfig) GetIntervals(spec, key string) []interface{} {
 	}
 	return intervalsInterfaces
 }
+
+func (c *E2EConfig) GetCNIPath() string {
+	path, ok := c.Variables["CNI_PATH"]
+	if !ok {
+		return ""
+	}
+	return path
+}

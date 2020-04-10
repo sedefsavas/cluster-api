@@ -21,21 +21,26 @@ package e2e
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	corev1 "k8s.io/api/core/v1"
 
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/test/framework"
 	"sigs.k8s.io/cluster-api/test/framework/clusterctl"
 	"sigs.k8s.io/cluster-api/test/framework/discovery"
+	"sigs.k8s.io/cluster-api/test/framework/exec"
 	dockerv1 "sigs.k8s.io/cluster-api/test/infrastructure/docker/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/util"
+	"sigs.k8s.io/cluster-api/util/kubeconfig"
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -86,11 +91,11 @@ func initSpec(input initSpecInput) *SpecContext {
 	}
 }
 
-type createClusterTemplateInput struct {
+type createWorkloadClusterInput struct {
 	getClusterTemplateInput
 }
 
-func createClusterTemplate(spec *SpecContext, input createClusterTemplateInput) (*clusterv1.Cluster, *controlplanev1.KubeadmControlPlane, []*clusterv1.MachineDeployment) {
+func createWorkloadCluster(spec *SpecContext, input createWorkloadClusterInput) (*clusterv1.Cluster, *controlplanev1.KubeadmControlPlane, []*clusterv1.MachineDeployment) {
 	By("Getting a cluster template yaml")
 	workloadClusterTemplate := getClusterTemplate(spec, input.getClusterTemplateInput)
 
@@ -139,6 +144,32 @@ func getClusterTemplate(spec *SpecContext, input getClusterTemplateInput) []byte
 	return workloadClusterTemplate
 }
 
+type deployCNIInput struct {
+	mgmtClient          ctrlclient.Client
+	cniPath             string
+	workloadClusterName types.NamespacedName
+}
+
+//TODO: make cni configurable in the e2econfig file (by provider). Use variables?
+func deployCNI(input deployCNIInput) {
+	By("Deploying CNI on the workload cluster")
+	kubeConfigPath := createClusterKubeConfigs(input.workloadClusterName, input.mgmtClient)
+	Expect(exec.KubectlApplyWithPath(context.TODO(), kubeConfigPath, input.cniPath)).To(Succeed())
+}
+
+func createClusterKubeConfigs(cluster types.NamespacedName, mgmtClient ctrlclient.Client) string {
+	kubeConfigData, err := kubeconfig.FromSecret(context.TODO(), mgmtClient, cluster)
+	Expect(err).NotTo(HaveOccurred())
+
+	tmpDir := filepath.Join(artifactFolder, "temp")
+	Expect(os.MkdirAll(tmpDir, 0755)).To(Succeed(), "Failed to create temp kubeconfig folder %s", tmpDir)
+
+	kubeConfigPath := path.Join(tmpDir, cluster.Name+".kubeconfig")
+
+	Expect(ioutil.WriteFile(kubeConfigPath, kubeConfigData, 0640)).To(Succeed())
+	return kubeConfigPath
+}
+
 func waitForCluster(spec *SpecContext, name string) *clusterv1.Cluster {
 	client := getClient(spec.managementCluster)
 
@@ -161,8 +192,6 @@ func waitForCluster(spec *SpecContext, name string) *clusterv1.Cluster {
 func waitForControlPlane(spec *SpecContext, cluster *clusterv1.Cluster) *controlplanev1.KubeadmControlPlane {
 	client := getClient(spec.managementCluster)
 
-	var cniPath = "./data/calico/calico.yaml"
-
 	controlPlane := discovery.GetKubeadmControlPlaneByCluster(context.TODO(), discovery.GetKubeadmControlPlaneByClusterInput{
 		Lister:      client,
 		ClusterName: cluster.Name,
@@ -177,21 +206,8 @@ func waitForControlPlane(spec *SpecContext, cluster *clusterv1.Cluster) *control
 		ControlPlane: controlPlane,
 	}, spec.getIntervals("wait-first-control-plane-node")...)
 
-	By("Installing Calico on the workload cluster")
-	workloadClient, err := spec.managementCluster.GetWorkloadClient(context.TODO(), cluster.Namespace, cluster.Name)
-	Expect(err).ToNot(HaveOccurred(), "Failed to get the client for the workload cluster with name %s", cluster.Name)
-
-	//TODO: make cni configurable in the e2econfig file (by provider). Use variables?
-	//TODO: refactor this. using the same input struct of ApplyYAMLURL is confusing. what about using managementCluster.Apply
-	applyYAMLInput := framework.ApplyYAMLInput{
-		Client:   workloadClient,
-		Scheme:   spec.managementCluster.GetScheme(),
-		Filename: cniPath,
-	}
-	framework.ApplyYAMLFromFile(context.TODO(), applyYAMLInput)
-
 	if controlPlane.Spec.Replicas != nil && int(*controlPlane.Spec.Replicas) > 1 {
-		Byf("for the remaining control plane machines managed by %s/%s to be provisioned", controlPlane.Namespace, controlPlane.Name)
+		Byf("Waiting for the remaining control plane machines managed by %s/%s to be provisioned", controlPlane.Namespace, controlPlane.Name)
 		framework.WaitForKubeadmControlPlaneMachinesToExist(context.TODO(), framework.WaitForKubeadmControlPlaneMachinesToExistInput{
 			Lister:       client,
 			Cluster:      cluster,

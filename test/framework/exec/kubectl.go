@@ -39,6 +39,20 @@ func KubectlApply(ctx context.Context, kubeconfigPath string, resources []byte) 
 	return nil
 }
 
+func KubectlApplyWithPath(ctx context.Context, kubeconfigPath string, path string) error {
+	applyCmd := NewCommand(
+		WithCommand("kubectl"),
+		WithArgs("apply", "--kubeconfig", kubeconfigPath, "-f", path),
+	)
+	stdout, stderr, err := applyCmd.Run(ctx)
+	if err != nil {
+		fmt.Println(string(stderr))
+		return err
+	}
+	fmt.Println(string(stdout))
+	return nil
+}
+
 func KubectlWait(ctx context.Context, kubeconfigPath string, args ...string) error {
 	wargs := append([]string{"wait", "--kubeconfig", kubeconfigPath}, args...)
 	wait := NewCommand(

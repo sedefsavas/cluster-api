@@ -22,6 +22,8 @@ import (
 	"fmt"
 
 	. "github.com/onsi/ginkgo"
+
+	"k8s.io/apimachinery/pkg/types"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/test/framework/clusterctl"
 	"sigs.k8s.io/cluster-api/util"
@@ -31,9 +33,13 @@ var _ = Describe("When following the Cluster API quick-start", func() {
 	var (
 		spec    *SpecContext
 		cluster *clusterv1.Cluster
+		cniPath string
 	)
 
 	BeforeEach(func() {
+		if e2eConfig.GetCNIPath() == "" {
+			cniPath =  "./data/calico/calico.yaml"
+		}
 		spec = initSpec(initSpecInput{
 			specName:             "quick-start",
 			managementCluster:    managementCluster,
@@ -44,7 +50,7 @@ var _ = Describe("When following the Cluster API quick-start", func() {
 	})
 
 	It("Should create a workload cluster", func() {
-		settings := createClusterTemplateInput{getClusterTemplateInput{
+		settings := createWorkloadClusterInput{getClusterTemplateInput{
 			flavor:      clusterctl.DefaultFlavor,
 			clusterName: fmt.Sprintf("cluster-%s", util.RandomString(6)),
 			//TODO: read from variables
@@ -53,9 +59,16 @@ var _ = Describe("When following the Cluster API quick-start", func() {
 			workerMachineCount:       1,
 		}}
 
-		Byf("Creating the a cluster name %s using %s template (%s, %d control-planes, %d workers)",
+		Byf("Creating a cluster with name %s using %s template (Kuberneres version %s, %d control-planes, %d workers)",
 			settings.clusterName, valueOrDefault(settings.flavor), settings.kubernetesVersion, settings.controlPlaneMachineCount, settings.workerMachineCount)
-		cluster, _, _ = createClusterTemplate(spec, settings)
+		workloadCluster, _, _ := createWorkloadCluster(spec, settings)
+
+		By("Deploying CNI to the workload cluster")
+		deployCNI(deployCNIInput{
+			mgmtClient: getClient(managementCluster),
+			cniPath: cniPath,
+			workloadClusterName: types.NamespacedName{Name:settings.clusterName, Namespace: workloadCluster.Namespace},
+		})
 	})
 
 	AfterEach(func() {

@@ -142,7 +142,7 @@ var _ = Describe("Docker Create", func() {
 		// Insatll a networking solution on the workload cluster
 		workloadClient, err := mgmt.GetWorkloadClient(ctx, cluster.Namespace, cluster.Name)
 		Expect(err).ToNot(HaveOccurred())
-		applyYAMLURLInput := framework.ApplyYAMLInput{
+		applyYAMLURLInput := framework.ApplyYAMLURLInput{
 			Client:        workloadClient,
 			HTTPGetter:    http.DefaultClient,
 			NetworkingURL: "https://docs.projectcalico.org/manifests/calico.yaml",
