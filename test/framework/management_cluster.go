@@ -19,11 +19,19 @@ package framework
 import (
 	"context"
 	"fmt"
+	"os"
+	"path"
+	"path/filepath"
+	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/informers"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -157,4 +165,88 @@ func WaitForDeploymentsAvailable(ctx context.Context, input WaitForDeploymentsAv
 		return false
 
 	}, intervals...).Should(BeTrue(), "Deployment %s/%s failed to get status.Available = True condition", input.Deployment.GetNamespace(), input.Deployment.GetName())
+}
+
+// CreateNamespaceInput is the input type for CreateNamespace.
+type CreateNamespaceInput struct {
+	Creator Creator
+	Name    string
+}
+
+// CreateNamespace is used to create a namespace object.
+func CreateNamespace(ctx context.Context, input CreateNamespaceInput, intervals ...interface{}) *corev1.Namespace {
+	ns := &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: input.Name,
+		},
+	}
+	By(fmt.Sprintf("Creating namespace %s", input.Name))
+	Eventually(func() error {
+		return input.Creator.Create(context.TODO(), ns)
+	}, intervals...).Should(Succeed())
+
+	return ns
+}
+
+// DeleteNamespaceInput is the input type for DeleteNamespace.
+type DeleteNamespaceInput struct {
+	Deleter Deleter
+	Name    string
+}
+
+// DeleteNamespace is used to delete namespace object.
+func DeleteNamespace(ctx context.Context, input DeleteNamespaceInput, intervals ...interface{}) {
+	ns := &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: input.Name,
+		},
+	}
+	By(fmt.Sprintf("Deleting namespace %s", input.Name))
+	Eventually(func() error {
+		return input.Deleter.Delete(context.TODO(), ns)
+	}, intervals...).Should(Succeed())
+}
+
+// WatchNamespaceEventsInput is the input type for WatchNamespaceEvents.
+type WatchNamespaceEventsInput struct {
+	ClientSet *kubernetes.Clientset
+	Namespace string
+	LogPath   string
+}
+
+// WatchNamespaceEvents creates a watcher that streams namespace events into a file namespace
+func WatchNamespaceEvents(ctx context.Context, input WatchNamespaceEventsInput) {
+	logFile := path.Join(input.LogPath, "resources", input.Namespace, "events.log")
+	fmt.Fprintf(GinkgoWriter, "Creating directory: %s\n", filepath.Dir(logFile))
+	Expect(os.MkdirAll(filepath.Dir(logFile), 0755)).To(Succeed())
+
+	f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	Expect(err).NotTo(HaveOccurred())
+	defer f.Close()
+
+	informerFactory := informers.NewSharedInformerFactoryWithOptions(
+		input.ClientSet,
+		10*time.Minute,
+		informers.WithNamespace(input.Namespace),
+	)
+	eventInformer := informerFactory.Core().V1().Events().Informer()
+	eventInformer.AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: func(obj interface{}) {
+			e := obj.(*corev1.Event)
+			f.WriteString(fmt.Sprintf("[New Event] %s/%s\n\tresource: %s/%s/%s\n\treason: %s\n\tmessage: %s\n\tfull: %#v\n",
+				e.Namespace, e.Name, e.InvolvedObject.APIVersion, e.InvolvedObject.Kind, e.InvolvedObject.Name, e.Reason, e.Message, e))
+		},
+		UpdateFunc: func(_, obj interface{}) {
+			e := obj.(*corev1.Event)
+			f.WriteString(fmt.Sprintf("[Updated Event] %s/%s\n\tresource: %s/%s/%s\n\treason: %s\n\tmessage: %s\n\tfull: %#v\n",
+				e.Namespace, e.Name, e.InvolvedObject.APIVersion, e.InvolvedObject.Kind, e.InvolvedObject.Name, e.Reason, e.Message, e))
+		},
+		DeleteFunc: func(obj interface{}) {},
+	})
+
+	stopInformer := make(chan struct{})
+	defer close(stopInformer)
+	informerFactory.Start(stopInformer)
+	<-ctx.Done()
+	stopInformer <- struct{}{}
 }
