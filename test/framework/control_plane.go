@@ -345,6 +345,7 @@ type AssertAllClusterAPIResourcesAreGoneInput struct {
 }
 
 // AssertAllClusterAPIResourcesAreGone ensures that all known Cluster API resources have been remvoed.
+// Deprecated. Please use GetCAPIResources instead
 func AssertAllClusterAPIResourcesAreGone(ctx context.Context, input AssertAllClusterAPIResourcesAreGoneInput) {
 	if options.SkipResourceCleanup {
 		return

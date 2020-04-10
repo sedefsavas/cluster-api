@@ -102,7 +102,7 @@ var _ = Describe("Docker Upgrade", func() {
 		// Insatll a networking solution on the workload cluster
 		workloadClient, err := mgmt.GetWorkloadClient(ctx, cluster.Namespace, cluster.Name)
 		Expect(err).ToNot(HaveOccurred())
-		applyYAMLURLInput := framework.ApplyYAMLURLInput{
+		applyYAMLURLInput := framework.ApplyYAMLInput{
 			Client:        workloadClient,
 			HTTPGetter:    http.DefaultClient,
 			NetworkingURL: "https://docs.projectcalico.org/manifests/calico.yaml",
