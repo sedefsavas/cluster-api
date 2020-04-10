@@ -32,6 +32,7 @@ import (
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
+	"sigs.k8s.io/cluster-api/util"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -174,7 +175,14 @@ type CreateNamespaceInput struct {
 }
 
 // CreateNamespace is used to create a namespace object.
+// If name is empty, a "test-" + util.RandomString(6) name will be generated.
 func CreateNamespace(ctx context.Context, input CreateNamespaceInput, intervals ...interface{}) *corev1.Namespace {
+	Expect(ctx).NotTo(BeNil(), "ctx is required for DeleteNamespace")
+	Expect(input.Creator).NotTo(BeNil(), "input.Creator is required for CreateNamespace")
+	if input.Name == "" {
+		input.Name = fmt.Sprintf("test-%s", util.RandomString(6))
+	}
+
 	ns := &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: input.Name,
@@ -196,6 +204,9 @@ type DeleteNamespaceInput struct {
 
 // DeleteNamespace is used to delete namespace object.
 func DeleteNamespace(ctx context.Context, input DeleteNamespaceInput, intervals ...interface{}) {
+	Expect(ctx).NotTo(BeNil(), "ctx is required for DeleteNamespace")
+	Expect(input.Deleter).NotTo(BeNil(), "input.Deleter is required for DeleteNamespace")
+	Expect(input.Name).NotTo(BeEmpty(), "input.Name is required for DeleteNamespace")
 	ns := &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: input.Name,
@@ -210,13 +221,28 @@ func DeleteNamespace(ctx context.Context, input DeleteNamespaceInput, intervals 
 // WatchNamespaceEventsInput is the input type for WatchNamespaceEvents.
 type WatchNamespaceEventsInput struct {
 	ClientSet *kubernetes.Clientset
-	Namespace string
+	Name      string
 	LogPath   string
 }
 
-// WatchNamespaceEvents creates a watcher that streams namespace events into a file namespace
+// WatchNamespaceEvents creates a watcher that streams namespace events into a file.
+// Example usage:
+//    ctx, cancelWatches := context.WithCancel(context.Background())
+//    go func() {
+//    	defer GinkgoRecover()
+//    	framework.WatchNamespaceEvents(ctx, framework.WatchNamespaceEventsInput{
+//    		ClientSet: clientSet,
+//    		Name: namespace.Name,
+//    		LogPath:   logPath,
+//    	})
+//    }()
+//    defer cancelWatches()
 func WatchNamespaceEvents(ctx context.Context, input WatchNamespaceEventsInput) {
-	logFile := path.Join(input.LogPath, "resources", input.Namespace, "events.log")
+	Expect(ctx).NotTo(BeNil(), "ctx is required for WatchNamespaceEvents")
+	Expect(input.ClientSet).NotTo(BeNil(), "input.ClientSet is required for WatchNamespaceEvents")
+	Expect(input.Name).NotTo(BeEmpty(), "input.Name is required for WatchNamespaceEvents")
+
+	logFile := path.Join(input.LogPath, "resources", input.Name, "events.log")
 	fmt.Fprintf(GinkgoWriter, "Creating directory: %s\n", filepath.Dir(logFile))
 	Expect(os.MkdirAll(filepath.Dir(logFile), 0755)).To(Succeed())
 
@@ -227,7 +253,7 @@ func WatchNamespaceEvents(ctx context.Context, input WatchNamespaceEventsInput) 
 	informerFactory := informers.NewSharedInformerFactoryWithOptions(
 		input.ClientSet,
 		10*time.Minute,
-		informers.WithNamespace(input.Namespace),
+		informers.WithNamespace(input.Name),
 	)
 	eventInformer := informerFactory.Core().V1().Events().Informer()
 	eventInformer.AddEventHandler(cache.ResourceEventHandlerFuncs{
