@@ -28,7 +28,6 @@ import (
 
 	"github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
 	appsv1 "k8s.io/api/apps/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -74,7 +73,6 @@ func GetCAPIResources(ctx context.Context, input GetCAPIResourcesInput) []*unstr
 	Expect(ctx).NotTo(BeNil(), "ctx is required for GetCAPIResources")
 	Expect(input.Lister).NotTo(BeNil(), "input.Deleter is required for GetCAPIResources")
 	Expect(input.Namespace).NotTo(BeEmpty(), "input.Namespace is required for GetCAPIResources")
-
 	types := getClusterAPITypes(ctx, input.Lister)
 
 	objList := []*unstructured.Unstructured{}
@@ -198,7 +196,6 @@ func DumpAllResources(ctx context.Context, input DumpAllResourcesInput) {
 	Expect(ctx).NotTo(BeNil(), "ctx is required for DumpAllResources")
 	Expect(input.Lister).NotTo(BeNil(), "input.Deleter is required for DumpAllResources")
 	Expect(input.Namespace).NotTo(BeEmpty(), "input.Namespace is required for DumpAllResources")
-
 	resources := GetCAPIResources(ctx, GetCAPIResourcesInput{
 		Lister:    input.Lister,
 		Namespace: input.Namespace,
