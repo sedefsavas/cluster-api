@@ -66,25 +66,26 @@ func (c BaseCluster) Teardown(context.Context) {}
 // For clusters not created by the E2E framework it returns the name of the cluster as defined in the kubeconfig file
 // or unknown in case of error in retrieving it.
 func (c BaseCluster) GetName() string {
+	unknown := "unknown"
 	config, err := clientcmd.LoadFromFile(c.kubeconfigPath)
 	if err != nil {
-		return "unknown"
+		return unknown
 	}
 
 	if config.CurrentContext == "" {
-		return "unknown"
+		return unknown
 	}
 
 	v, ok := config.Contexts[config.CurrentContext]
 	if !ok {
-		return "unknown"
+		return unknown
 	}
 
 	if v.Cluster != "" {
 		return v.Cluster
 	}
 
-	return "unknown"
+	return unknown
 }
 
 // GetKubeconfigPath returns the path to the kubeconfig file for the cluster.
