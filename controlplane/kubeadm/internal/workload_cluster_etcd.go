@@ -140,7 +140,7 @@ func (w *Workload) ReconcileEtcdMembers(ctx context.Context) error {
 		return err
 	}
 
-	errList := []error{}
+	errs := []error{}
 	for _, node := range controlPlaneNodes.Items {
 		name := node.Name
 
@@ -156,29 +156,28 @@ func (w *Workload) ReconcileEtcdMembers(ctx context.Context) error {
 		}
 		// Check if any member's node is missing from workload cluster
 		// If any, delete it with best effort
-		for _, m := range members {
+		for _, member := range members {
 			isFound := false
 			for _, node := range controlPlaneNodes.Items {
-
-				name := node.Name
-				if m.Name == name {
+				if member.Name == node.Name {
 					isFound = true
 					break
 				}
 			}
+			// Stop here if we found the member to be in the list of control plane nodes.
+			if isFound {
+				continue
+			}
+			if err := w.removeMemberForNode(ctx, member.Name); err != nil {
+				errs = append(errs, err)
+			}
 
-			if !isFound {
-				if err := w.removeMemberForNode(ctx, m.Name); err != nil {
-					errList = append(errList, err)
-				}
-
-				if err := w.RemoveNodeFromKubeadmConfigMap(ctx, m.Name); err != nil {
-					errList = append(errList, err)
-				}
+			if err := w.RemoveNodeFromKubeadmConfigMap(ctx, member.Name); err != nil {
+				errs = append(errs, err)
 			}
 		}
 	}
-	return kerrors.NewAggregate(errList)
+	return kerrors.NewAggregate(errs)
 }
 
 // UpdateEtcdVersionInKubeadmConfigMap sets the imageRepository or the imageTag or both in the kubeadm config map.
