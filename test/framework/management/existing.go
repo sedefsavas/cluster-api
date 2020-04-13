@@ -37,13 +37,13 @@ type BaseCluster struct {
 }
 
 // NewBaseCluster returns a BaseCluster given a KubeconfigPath and the scheme defining the types hosted in the cluster.
-func NewBaseCluster(KubeconfigPath string, scheme *runtime.Scheme) *BaseCluster {
+func NewBaseCluster(kubeconfigPath string, scheme *runtime.Scheme) *BaseCluster {
 	// If a kubeconfig file isn't provided, find one in the standard locations.
-	if KubeconfigPath == "" {
-		KubeconfigPath = clientcmd.NewDefaultClientConfigLoadingRules().GetDefaultFilename()
+	if kubeconfigPath == "" {
+		kubeconfigPath = clientcmd.NewDefaultClientConfigLoadingRules().GetDefaultFilename()
 	}
 	return &BaseCluster{
-		kubeconfigPath: KubeconfigPath,
+		kubeconfigPath: kubeconfigPath,
 		scheme:         scheme,
 	}
 }

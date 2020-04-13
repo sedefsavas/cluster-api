@@ -38,8 +38,8 @@ type CreateRepositoryInput struct {
 	E2EConfig        *E2EConfig
 }
 
-// CreateRepository creates a clusterctl local repository based on the e2e test config, and the returns the path
-// to a clusterctl config file to be used for working with such repository.
+// CreateRepository creates a clusterctl local repository based on the e2e test config and returns the path
+// to a clusterctl config file to be used for working with that repository.
 func CreateRepository(ctx context.Context, input CreateRepositoryInput) string {
 	Expect(input.E2EConfig).ToNot(BeNil(), "Invalid argument. input.E2EConfig can't be nil when calling CreateRepository")
 	Expect(os.MkdirAll(input.RepositoryFolder, 0755)).To(Succeed(), "Failed to create the clusterctl local repository folder %s", input.RepositoryFolder)
@@ -91,7 +91,7 @@ func CreateRepository(ctx context.Context, input CreateRepositoryInput) string {
 			"overridesFolder": overridePath,
 		},
 	}
-	for key, value := range input.E2EConfig.Variables {
+	for key, value := range input.E2EConfig.ClusterctlVariables {
 		clusterctlConfigFile.Values[key] = value
 	}
 	clusterctlConfigFile.write()
