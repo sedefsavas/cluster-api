@@ -87,7 +87,6 @@ func (r *KubeadmControlPlaneReconciler) scaleDownControlPlane(
 		return ctrl.Result{}, &capierrors.RequeueAfterError{RequeueAfter: deleteRequeueAfter}
 	}
 
-	// We don't want to health check at the beginning of this method to avoid blocking re-entrancy
 	if err := r.reconcileHealth(ctx, cluster, kcp, controlPlane); err != nil {
 		return ctrl.Result{}, &capierrors.RequeueAfterError{RequeueAfter: healthCheckFailedRequeueAfter}
 	}
