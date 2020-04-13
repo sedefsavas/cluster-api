@@ -25,11 +25,13 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"time"
 
 	. "github.com/onsi/gomega"
 
 	"github.com/pkg/errors"
+	"k8s.io/apimachinery/pkg/util/version"
 	clusterctlv1 "sigs.k8s.io/cluster-api/cmd/clusterctl/api/v1alpha3"
 	clusterctlconfig "sigs.k8s.io/cluster-api/cmd/clusterctl/client/config"
 	"sigs.k8s.io/cluster-api/test/framework"
@@ -38,6 +40,13 @@ import (
 )
 
 // Provides access to the configuration for an e2e test.
+
+const (
+	kubernetesVersion        = "KUBERNETES_VERSION"
+	kubernetesUpgradeVersion = "KUBERNETES_UPGRADE_VERSION"
+	controlPlaneMachineCount = "CONTROL_PLANE_MACHINE_COUNT"
+	workerMachineCount       = "WORKER_MACHINE_COUNT"
+)
 
 // LoadE2EConfigInput is the input for LoadE2EConfig.
 type LoadE2EConfigInput struct {
@@ -80,10 +89,13 @@ type E2EConfig struct {
 	// The test will adapt to the selected infrastructure provider
 	Providers []ProviderConfig `json:"providers,omitempty"`
 
-	// Variables to be added to the clusterctl config file
+	// ClusterctlVariables to be added to the clusterctl config file
 	// Please note that clusterctl read variables from OS environment variables as well, so you can avoid to hard code
 	// sensitive data in the config file.
-	Variables map[string]string `json:"variables,omitempty"`
+	ClusterctlVariables map[string]string `json:"clusterctlVariables,omitempty"`
+
+	// TestVariables are used in e2e tests
+	TestVariables map[string]string `json:"testVariables,omitempty"`
 
 	// Intervals to be used for long operations during tests
 	Intervals map[string][]string `json:"intervals,omitempty"`
@@ -144,6 +156,9 @@ func (c *E2EConfig) Defaults() {
 		if containerImage.LoadBehavior == "" {
 			containerImage.LoadBehavior = framework.MustLoadImage
 		}
+	}
+	if c.GetControlPlaneMachineCount() == 0 {
+		c.ClusterctlVariables[controlPlaneMachineCount] = "1"
 	}
 }
 
@@ -217,23 +232,25 @@ func (c *E2EConfig) Validate() error {
 			return errInvalidArg("Providers[%d].Type=%q", i, providerConfig.Type)
 		}
 
-		// Providers version should have a name.
-		// Providers version.type should be one of [url, kustomize].
-		// Providers version.replacements.old should be a valid regex.
-		for j, version := range providerConfig.Versions {
-			if version.Name == "" {
+		// Providers providerVersion should have a name.
+		// Providers providerVersion.type should be one of [url, kustomize].
+		// Providers providerVersion.replacements.old should be a valid regex.
+		for j, providerVersion := range providerConfig.Versions {
+			if providerVersion.Name == "" {
 				return errEmptyArg(fmt.Sprintf("Providers[%d].Sources[%d].Name", i, j))
 			}
-			//TODO: check if name is a valid semantic version
-			switch version.Type {
+			if _, err := version.ParseSemantic(providerVersion.Name); err != nil {
+				return errInvalidArg("Providers[%d].Sources[%d].Name=%q", i, j, providerVersion.Name)
+			}
+			switch providerVersion.Type {
 			case framework.URLSource, framework.KustomizeSource:
-				if version.Value == "" {
+				if providerVersion.Value == "" {
 					return errEmptyArg(fmt.Sprintf("Providers[%d].Sources[%d].Value", i, j))
 				}
 			default:
-				return errInvalidArg("Providers[%d].Sources[%d].Type=%q", i, j, version.Type)
+				return errInvalidArg("Providers[%d].Sources[%d].Type=%q", i, j, providerVersion.Type)
 			}
-			for k, replacement := range version.Replacements {
+			for k, replacement := range providerVersion.Replacements {
 				if _, err := regexp.Compile(replacement.Old); err != nil {
 					return errInvalidArg("Providers[%d].Sources[%d].Replacements[%d].Old=%q: %v", i, j, k, replacement.Old, err)
 				}
@@ -310,6 +327,23 @@ func (c *E2EConfig) Validate() error {
 		}
 	}
 
+	// If kubernetesVersion is nil or not valid, return error.
+	k8sVersion := c.GetKubernetesVersion()
+	if k8sVersion == "" {
+		return errEmptyArg(fmt.Sprintf("ClusterctlVariables[%s]", kubernetesVersion))
+	} else {
+		if _, err := version.ParseSemantic(k8sVersion); err != nil {
+			return errInvalidArg("ClusterctlVariables[%s]=%q", kubernetesVersion, k8sVersion)
+		}
+	}
+
+	// If kubernetesUpgradeVersion is not valid, return error.
+	k8sUpgradeVersion := c.GetKubernetesUpgradeVersion()
+	if k8sVersion != "" {
+		if _, err := version.ParseSemantic(k8sUpgradeVersion); err != nil {
+			return errInvalidArg("TestVariables[%s]=%q", kubernetesUpgradeVersion, k8sUpgradeVersion)
+		}
+	}
 	return nil
 }
 
@@ -348,4 +382,57 @@ func (c *E2EConfig) GetIntervals(spec, key string) []interface{} {
 		intervalsInterfaces[i] = intervals[i]
 	}
 	return intervalsInterfaces
+}
+
+// GetKubernetesVersion returns the kubernetes version provided in e2e config.
+func (c *E2EConfig) GetVariable(varName string) string {
+	version, ok := c.ClusterctlVariables[varName]
+	if !ok {
+		return ""
+	}
+	return version
+}
+
+// GetControlPlaneMachineCount returns controlPlaneMachineCount provided in e2e config.
+// If it is nil, return 0.
+func (c *E2EConfig) GetControlPlaneMachineCount() int64 {
+	cpCountStr := c.GetVariable(controlPlaneMachineCount)
+	if cpCountStr == "" {
+		return 0
+	}
+
+	cpCount, err := strconv.ParseInt(cpCountStr, 10, 64)
+	Expect(err).NotTo(HaveOccurred())
+	return cpCount
+}
+
+// GetWorkerMachineCount returns workerMachineCount provided in e2e config.
+// If it is nil, return 0.
+func (c *E2EConfig) GetWorkerMachineCount() int64 {
+	wCountStr := c.GetVariable(workerMachineCount)
+	if wCountStr == "" {
+		return 0
+	}
+
+	wCount, err := strconv.ParseInt(wCountStr, 10, 64)
+	Expect(err).NotTo(HaveOccurred())
+	return wCount
+}
+
+// GetKubernetesVersion returns the kubernetes version provided in e2e config.
+func (c *E2EConfig) GetKubernetesVersion() string {
+	version, ok := c.ClusterctlVariables[kubernetesVersion]
+	if !ok {
+		return ""
+	}
+	return version
+}
+
+// GetKubernetesUpgradeVersion returns the kubernetes version to be used during upgrade provided in e2e config.
+func (c *E2EConfig) GetKubernetesUpgradeVersion() string {
+	version, ok := c.TestVariables[kubernetesUpgradeVersion]
+	if !ok {
+		return ""
+	}
+	return version
 }

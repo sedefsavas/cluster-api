@@ -44,14 +44,14 @@ var _ = Describe("When following the Cluster API quick-start", func() {
 		})
 	})
 
+
 	It("Should create a workload cluster", func() {
 		settings := createClusterTemplateInput{getClusterTemplateInput{
 			flavor:      clusterctl.DefaultFlavor,
 			clusterName: fmt.Sprintf("cluster-%s", util.RandomString(6)),
-			//TODO: read from variables
-			kubernetesVersion:        "v1.17.0",
-			controlPlaneMachineCount: 1,
-			workerMachineCount:       1,
+			kubernetesVersion:        e2eConfig.GetKubernetesVersion(),
+			controlPlaneMachineCount: e2eConfig.GetControlPlaneMachineCount(),
+			workerMachineCount:       e2eConfig.GetWorkerMachineCount(),
 		}}
 
 		Byf("Creating the a cluster name %s using %s template (%s, %d control-planes, %d workers)",
