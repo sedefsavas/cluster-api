@@ -26,6 +26,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
 	corev1 "k8s.io/api/core/v1"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
@@ -33,6 +34,7 @@ import (
 	"sigs.k8s.io/cluster-api/test/framework/clusterctl"
 	"sigs.k8s.io/cluster-api/test/framework/discovery"
 	"sigs.k8s.io/cluster-api/util"
+	"sigs.k8s.io/cluster-api/util/patch"
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -249,6 +251,42 @@ func waitForMachineDeployments(spec *SpecContext, cluster *clusterv1.Cluster) []
 		}, spec.getIntervals("wait-worker-nodes")...)
 	}
 	return machineDeployments
+}
+
+type upgradeKCPInput struct {
+	cluster      *clusterv1.Cluster
+	controlPlane *controlplanev1.KubeadmControlPlane
+	etcdImageTag string
+	dnsImageTag  string
+}
+
+func upgradeKCP(spec *SpecContext, input upgradeKCPInput) []clusterv1.Machine {
+	client := getClient(spec.managementCluster)
+
+	By("Patching the new kubernetes version to KCP")
+	patchHelper, err := patch.NewHelper(input.controlPlane, client)
+	Expect(err).ToNot(HaveOccurred())
+	input.controlPlane.Spec.Version = e2eConfig.GetKubernetesUpgradeVersion()
+	Expect(input.controlPlane.Spec.Version).NotTo(BeNil())
+	Expect(patchHelper.Patch(ctx, input.controlPlane)).To(Succeed())
+
+	By("Waiting for machines to have the upgraded kubernetes version")
+	machines := discovery.GetMachinesByCluster(context.TODO(), discovery.GetMachinesByClusterInput{
+		Lister:      client,
+		ClusterName: input.cluster.Name,
+		Namespace:   input.cluster.Namespace,
+	})
+
+	framework.WaitForMachinesToBeUpgraded(ctx, framework.WaitForMachinesToBeUpgradedInput{
+		Lister:            client,
+		Cluster:           input.cluster,
+		Machines:          machines,
+		MachineCount:      int(*input.controlPlane.Spec.Replicas),
+		KubernetesVersion: input.controlPlane.Spec.Version,
+	}, spec.getIntervals("wait-machine-upgrade")...)
+
+	//TODO: add etcd, DNS, and kube-proxy checks too
+	return machines
 }
 
 func dumpResources(spec *SpecContext) {

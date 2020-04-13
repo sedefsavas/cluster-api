@@ -384,3 +384,30 @@ func AssertAllClusterAPIResourcesAreGone(ctx context.Context, input AssertAllClu
 	Expect(input.Lister.List(ctx, sl, opt)).To(Succeed())
 	Expect(sl.Items).To(HaveLen(0))
 }
+
+// WaitForMachinesToBeUpgradedInput is the input for WaitForMachinesToBeUpgraded.
+type WaitForMachinesToBeUpgradedInput struct {
+	Lister            Lister
+	Cluster           *clusterv1.Cluster
+	Machines []clusterv1.Machine
+	KubernetesVersion string
+	MachineCount int
+}
+
+// WaitForMachinesToBeUpgraded waits until all machines are upgraded to the correct kubernetes version.
+func WaitForMachinesToBeUpgraded(ctx context.Context, input WaitForMachinesToBeUpgradedInput, intervals ...interface{}) {
+	By("ensuring all machines have upgraded kubernetes")
+	Eventually(func() (int, error) {
+		upgraded := 0
+		for _, machine := range input.Machines {
+			if *machine.Spec.Version == input.KubernetesVersion{
+				upgraded++
+			}
+		}
+		if len(input.Machines) > upgraded {
+			return 0, errors.New("old nodes remain")
+		}
+		return upgraded, nil
+	}, intervals...).Should(Equal(input.MachineCount))
+
+}

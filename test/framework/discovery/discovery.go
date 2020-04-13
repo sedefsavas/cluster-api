@@ -183,6 +183,24 @@ func GetMachineDeploymentsByCluster(ctx context.Context, input GetMachineDeploym
 	return deployments
 }
 
+type GetMachinesByClusterInput struct {
+	Lister      framework.Lister
+	ClusterName string
+	Namespace   string
+}
+
+// GetMachinesByCluster returns the Machine objects for a cluster.
+// Important! this method relies on labels that are created by the CAPI controllers during the first reconciliation, so
+// it is necessary to ensure this is already happened before calling it.
+func GetMachinesByCluster(ctx context.Context, input GetMachinesByClusterInput) []clusterv1.Machine {
+	options := append(byClusterOptions(input.ClusterName, input.Namespace),controlPlaneMachineOptions()...)
+
+	machineList := &clusterv1.MachineList{}
+	Expect(input.Lister.List(ctx, machineList, options...)).To(Succeed(), "Failed to list MachineList object for Cluster %s/%s", input.Namespace, input.ClusterName)
+
+	return machineList.Items
+}
+
 // DumpAllResourcesInput is the input for DumpAllResources.
 type DumpAllResourcesInput struct {
 	Lister    framework.Lister
@@ -242,5 +260,12 @@ func byClusterOptions(name, namespace string) []client.ListOption {
 		client.MatchingLabels{
 			clusterv1.ClusterLabelName: name,
 		},
+	}
+}
+
+// controlPlaneMachineOptions returns a set of ListOptions that allows to get all machine objects belonging to control plane.
+func controlPlaneMachineOptions() []client.ListOption {
+	return []client.ListOption{
+		client.HasLabels{clusterv1.MachineControlPlaneLabelName},
 	}
 }

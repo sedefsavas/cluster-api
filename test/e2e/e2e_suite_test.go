@@ -89,6 +89,9 @@ var (
 
 	// managementCluster to be used for the e2e tests.
 	managementCluster framework.ManagementCluster
+
+	// ctx is the context to be used in the tests.
+	ctx = context.Background()
 )
 
 // Using a SynchronizedBeforeSuite for controlling how to create resources shared across ParallelNodes (~ginkgo threads).
