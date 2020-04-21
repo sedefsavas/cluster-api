@@ -18,14 +18,16 @@ package framework
 
 import (
 	"context"
+	"fmt"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pkg/errors"
 
+	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	"sigs.k8s.io/cluster-api/util/patch"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -136,4 +138,50 @@ func DiscoveryAndWaitForMachineDeployments(ctx context.Context, input DiscoveryA
 		}, intervals...)
 	}
 	return machineDeployments
+}
+
+// UpgradeMachineDeploymentAndWaitInput is the input type for UpgradeMachineDeploymentAndWait.
+type UpgradeMachineDeploymentAndWaitInput struct {
+	ClusterProxy                ClusterProxy
+	Cluster                     *clusterv1.Cluster
+	UpgradeVersion              string
+	WaitForMachinesToBeUpgraded []interface{}
+	MachineDeployments          []*clusterv1.MachineDeployment
+}
+
+// UpgradeMachineDeploymentAndWait upgrades a machine deployment and waits for its machines to be upgraded.
+func UpgradeMachineDeploymentAndWait(ctx context.Context, input UpgradeMachineDeploymentAndWaitInput) {
+	Expect(ctx).NotTo(BeNil(), "ctx is required for UpgradeMachineDeploymentAndWait")
+	Expect(input.ClusterProxy).ToNot(BeNil(), "Invalid argument. input.ClusterProxy can't be nil when calling UpgradeMachineDeploymentAndWait")
+	Expect(input.Cluster).ToNot(BeNil(), "Invalid argument. input.Cluster can't be nil when calling UpgradeMachineDeploymentAndWait")
+	Expect(input.UpgradeVersion).ToNot(BeNil(), "Invalid argument. input.UpgradeVersion can't be nil when calling UpgradeMachineDeploymentAndWait")
+	Expect(input.MachineDeployments).ToNot(BeEmpty(), "Invalid argument. input.MachineDeployments can't be empty when calling UpgradeMachineDeploymentAndWait")
+
+	mgmtClient := input.ClusterProxy.GetClient()
+
+	for _, deployment := range input.MachineDeployments {
+		fmt.Fprintf(GinkgoWriter, "Patching the new kubernetes version to Machine Deployment\n")
+
+		patchHelper, err := patch.NewHelper(deployment, mgmtClient)
+		Expect(err).ToNot(HaveOccurred())
+
+		deployment.Spec.Template.Spec.Version = &input.UpgradeVersion
+		Expect(patchHelper.Patch(context.Background(), deployment)).To(Succeed())
+
+		fmt.Fprintf(GinkgoWriter, "Waiting for machines to have the upgraded kubernetes version\n")
+		WaitForMachineDeploymentMachinesToBeUpgraded(ctx, WaitForMachineDeploymentMachinesToBeUpgradedInput{
+			Lister:         mgmtClient,
+			Cluster:        input.Cluster,
+			MachineCount:   int(*deployment.Spec.Replicas),
+			UpgradeVersion: input.UpgradeVersion,
+			Deployment:     *deployment,
+		}, input.WaitForMachinesToBeUpgraded...)
+	}
+}
+
+// machineDeploymentOptions returns a set of ListOptions that allows to get all machine objects belonging to a machine deployment.
+func machineDeploymentOptions(deployment clusterv1.MachineDeployment) []client.ListOption {
+	return []client.ListOption{
+		client.MatchingLabels(deployment.Spec.Selector.MatchLabels),
+	}
 }

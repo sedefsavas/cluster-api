@@ -72,7 +72,8 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 		Expect(input.E2EConfig.Variables).To(HaveKey(clusterctl.KubernetesVersion))
 		Expect(input.E2EConfig.Variables).To(HaveKey(clusterctl.CNIPath))
 
-		cluster, controlPlane, _ = clusterctl.ApplyClusterTemplateAndWait(ctx, clusterctl.ApplyClusterTemplateAndWaitInput{
+		var mds []*clusterv1.MachineDeployment
+		cluster, controlPlane, mds = clusterctl.ApplyClusterTemplateAndWait(ctx, clusterctl.ApplyClusterTemplateAndWaitInput{
 			ClusterProxy: input.BootstrapClusterProxy,
 			ConfigCluster: clusterctl.ConfigClusterInput{
 				LogFolder:                filepath.Join(input.ArtifactFolder, "clusters", input.BootstrapClusterProxy.GetName()),
@@ -104,6 +105,15 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 			WaitForMachinesToBeUpgraded: input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 			WaitForDNSUpgrade:           input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 			WaitForEtcdUpgrade:          input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
+		})
+
+		By("Upgrading Machine Deployment Kubernetes version to a valid version")
+		framework.UpgradeMachineDeploymentAndWait(context.TODO(), framework.UpgradeMachineDeploymentAndWaitInput{
+			ClusterProxy:                input.BootstrapClusterProxy,
+			Cluster:                     cluster,
+			UpgradeVersion:              "v1.17.2",
+			WaitForMachinesToBeUpgraded: input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
+			MachineDeployments:          mds,
 		})
 
 		By("PASSED!")
