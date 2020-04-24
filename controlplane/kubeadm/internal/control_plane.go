@@ -100,11 +100,12 @@ func (c *ControlPlane) MachinesNeedingUpgrade() FilterableMachineCollection {
 		return c.Machines.AnyFilter(
 			machinefilters.Not(machinefilters.MatchesConfigurationHash(c.SpecHash())),
 			machinefilters.OlderThan(c.KCP.Spec.UpgradeAfter),
-		)
+		).Filter(machinefilters.Not(machinefilters.HasDeletionTimestamp))
 	}
 
 	return c.Machines.Filter(
 		machinefilters.Not(machinefilters.MatchesConfigurationHash(c.SpecHash())),
+		machinefilters.Not(machinefilters.HasDeletionTimestamp),
 	)
 }
 
