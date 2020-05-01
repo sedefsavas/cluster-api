@@ -205,31 +205,6 @@ func AssertControlPlaneFailureDomains(ctx context.Context, input AssertControlPl
 	Expect(failureDomainCounts).To(Equal(input.ExpectedFailureDomains))
 }
 
-type GetMachinesByClusterInput struct {
-	Lister      Lister
-	ClusterName string
-	Namespace   string
-}
-
-// GetControlPlaneMachinesByCluster returns the Machine objects for a cluster.
-// Important! this method relies on labels that are created by the CAPI controllers during the first reconciliation, so
-// it is necessary to ensure this is already happened before calling it.
-func GetControlPlaneMachinesByCluster(ctx context.Context, input GetMachinesByClusterInput) []clusterv1.Machine {
-	options := append(byClusterOptions(input.ClusterName, input.Namespace), controlPlaneMachineOptions()...)
-
-	machineList := &clusterv1.MachineList{}
-	Expect(input.Lister.List(ctx, machineList, options...)).To(Succeed(), "Failed to list MachineList object for Cluster %s/%s", input.Namespace, input.ClusterName)
-
-	return machineList.Items
-}
-
-// controlPlaneMachineOptions returns a set of ListOptions that allows to get all machine objects belonging to control plane.
-func controlPlaneMachineOptions() []client.ListOption {
-	return []client.ListOption{
-		client.HasLabels{clusterv1.MachineControlPlaneLabelName},
-	}
-}
-
 // DiscoveryAndWaitForControlPlaneInitializedInput is the input type for DiscoveryAndWaitForControlPlaneInitialized.
 type DiscoveryAndWaitForControlPlaneInitializedInput struct {
 	Lister  Lister
@@ -336,7 +311,7 @@ func UpgradeControlPlaneAndWaitForUpgrade(ctx context.Context, input UpgradeCont
 	Expect(patchHelper.Patch(ctx, input.ControlPlane)).To(Succeed())
 
 	fmt.Fprintf(GinkgoWriter, "Waiting for machines to have the upgraded kubernetes version\n")
-	WaitForMachinesToBeUpgraded(ctx, WaitForMachinesToBeUpgradedInput{
+	WaitForControlPlaneMachinesToBeUpgraded(ctx, WaitForControlPlaneMachinesToBeUpgradedInput{
 		Lister:                   mgmtClient,
 		Cluster:                  input.Cluster,
 		MachineCount:             int(*input.ControlPlane.Spec.Replicas),
@@ -365,4 +340,11 @@ func UpgradeControlPlaneAndWaitForUpgrade(ctx context.Context, input UpgradeCont
 		ListOptions: &client.ListOptions{LabelSelector: lblSelector},
 		Condition:   EtcdImageTagCondition(input.EtcdImageTag, int(*input.ControlPlane.Spec.Replicas)),
 	}, input.WaitForEtcdUpgrade...)
+}
+
+// controlPlaneMachineOptions returns a set of ListOptions that allows to get all machine objects belonging to control plane.
+func controlPlaneMachineOptions() []client.ListOption {
+	return []client.ListOption{
+		client.HasLabels{clusterv1.MachineControlPlaneLabelName},
+	}
 }

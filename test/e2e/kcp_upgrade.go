@@ -76,7 +76,6 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 	})
 
 	It("Should successfully upgrade Kubernetes, DNS, kube-proxy, and etcd in a single control plane cluster", func() {
-
 		By("Creating a workload cluster")
 		Expect(input.E2EConfig.Variables).To(HaveKey(clusterctl.KubernetesVersion))
 		Expect(input.E2EConfig.Variables).To(HaveKey(clusterctl.CNIPath))
@@ -103,12 +102,11 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 
 		By("Upgrading Kubernetes, DNS, kube-proxy, and etcd versions")
 		framework.UpgradeControlPlaneAndWaitForUpgrade(ctx, framework.UpgradeControlPlaneAndWaitForUpgradeInput{
-			ClusterProxy: input.BootstrapClusterProxy,
-			Cluster:      cluster,
-			ControlPlane: controlPlane,
-			//Valid image tags for v1.17.2
-			EtcdImageTag:                "3.4.3-0",
-			DNSImageTag:                 "1.6.7",
+			ClusterProxy:                input.BootstrapClusterProxy,
+			Cluster:                     cluster,
+			ControlPlane:                controlPlane,
+			EtcdImageTag:                input.GetEtcdCurrentVersion(),
+			DNSImageTag:                 input.GetCoreDNSCurrentVersion(),
 			KubernetesUpgradeVersion:    input.E2EConfig.GetKubernetesVersion(),
 			WaitForMachinesToBeUpgraded: input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 			WaitForDNSUpgrade:           input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
@@ -157,6 +155,61 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 			WaitForEtcdUpgrade:          input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 		})
 
+		By("PASSED!")
+	})
+
+	It("Should successfully upgrade Machine deployment and remediate with MachineHealthCheck", func() {
+
+		By("Creating a workload cluster")
+		Expect(input.E2EConfig.Variables).To(HaveKey(clusterctl.KubernetesVersion))
+		Expect(input.E2EConfig.Variables).To(HaveKey(clusterctl.CNIPath))
+
+		var mds []*clusterv1.MachineDeployment
+		cluster, controlPlane, mds = clusterctl.ApplyClusterTemplateAndWait(ctx, clusterctl.ApplyClusterTemplateAndWaitInput{
+			ClusterProxy: input.BootstrapClusterProxy,
+			ConfigCluster: clusterctl.ConfigClusterInput{
+				LogFolder:                filepath.Join(input.ArtifactFolder, "clusters", input.BootstrapClusterProxy.GetName()),
+				ClusterctlConfigPath:     input.ClusterctlConfigPath,
+				KubeconfigPath:           input.BootstrapClusterProxy.GetKubeconfigPath(),
+				InfrastructureProvider:   clusterctl.DefaultInfrastructureProvider,
+				Flavor:                   clusterctl.DefaultFlavor,
+				Namespace:                namespace.Name,
+				ClusterName:              fmt.Sprintf("cluster-%s", util.RandomString(6)),
+				KubernetesVersion:        input.GetPreviousKubernetesVersion(),
+				ControlPlaneMachineCount: pointer.Int64Ptr(1),
+				WorkerMachineCount:       pointer.Int64Ptr(1),
+			},
+			CNIManifestPath:              input.E2EConfig.GetCNIPath(),
+			WaitForClusterIntervals:      input.E2EConfig.GetIntervals(specName, "wait-cluster"),
+			WaitForControlPlaneIntervals: input.E2EConfig.GetIntervals(specName, "wait-control-plane"),
+			WaitForMachineDeployments:    input.E2EConfig.GetIntervals(specName, "wait-worker-nodes"),
+		})
+
+		By("Upgrading MachineDeployment's Kubernetes version to a valid version")
+		framework.UpgradeMachineDeploymentAndWait(context.TODO(), framework.UpgradeMachineDeploymentAndWaitInput{
+			ClusterProxy:                input.BootstrapClusterProxy,
+			Cluster:                     cluster,
+			UpgradeVersion:              input.E2EConfig.GetKubernetesVersion(),
+			WaitForMachinesToBeUpgraded: input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
+			MachineDeployments:          mds,
+		})
+
+		By("Creating a MachineHealthCheck and wait for remediation")
+		framework.ApplyMachineHealthCheckAndWait(context.TODO(), framework.ApplyMachineHealthCheckAndWaitInput{
+			ClusterProxy:              input.BootstrapClusterProxy,
+			Cluster:                   cluster,
+			ControlPlane:              controlPlane,
+			WaitForMachineDeployments: input.E2EConfig.GetIntervals(specName, "wait-worker-nodes"),
+			MachineDeployments:        mds,
+		})
+
+		By("Upgrading Machine Deployment Infrastructure ref and wait for rolling upgrade")
+		framework.UpgradeMachineDeploymentInfrastructureRefAndWait(context.TODO(), framework.UpgradeMachineDeploymentInfrastructureRefAndWaitInput{
+			ClusterProxy:                input.BootstrapClusterProxy,
+			Cluster:                     cluster,
+			WaitForMachinesToBeUpgraded: input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
+			MachineDeployments:          mds,
+		})
 		By("PASSED!")
 	})
 
