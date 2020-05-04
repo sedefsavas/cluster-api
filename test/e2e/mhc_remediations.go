@@ -28,13 +28,14 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/utils/pointer"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/test/framework"
 	"sigs.k8s.io/cluster-api/test/framework/clusterctl"
 	"sigs.k8s.io/cluster-api/util"
 )
 
-// QuickStartSpecInput is the input for QuickStartSpec.
-type QuickStartSpecInput struct {
+// MHCRemediationSpecInput is the input for MHCRemediationSpec.
+type MHCRemediationSpecInput struct {
 	E2EConfig             *clusterctl.E2EConfig
 	ClusterctlConfigPath  string
 	BootstrapClusterProxy framework.ClusterProxy
@@ -42,16 +43,15 @@ type QuickStartSpecInput struct {
 	SkipCleanup           bool
 }
 
-// QuickStartSpec implements a spec that mimics the operation described in the Cluster API quick start, that is
-// creating a workload cluster.
-// This test is meant to provide a first, fast signal to detect regression; it is recommended to use it as a PR blocker test.
-func QuickStartSpec(ctx context.Context, inputGetter func() QuickStartSpecInput) {
+// MHCRemediationSpec implements a test that verifies that Machines are remediated by MHC during unhealthy conditions.
+func MHCRemediationSpec(ctx context.Context, inputGetter func() MHCRemediationSpecInput) {
 	var (
-		specName      = "quick-start"
-		input         QuickStartSpecInput
+		specName      = "mhc-remediation"
+		input         MHCRemediationSpecInput
 		namespace     *corev1.Namespace
 		cancelWatches context.CancelFunc
 		cluster       *clusterv1.Cluster
+		controlPlane  *controlplanev1.KubeadmControlPlane
 	)
 
 	BeforeEach(func() {
@@ -61,7 +61,6 @@ func QuickStartSpec(ctx context.Context, inputGetter func() QuickStartSpecInput)
 		Expect(input.ClusterctlConfigPath).To(BeAnExistingFile(), "Invalid argument. input.ClusterctlConfigPath must be an existing file when calling %s spec", specName)
 		Expect(input.BootstrapClusterProxy).ToNot(BeNil(), "Invalid argument. input.BootstrapClusterProxy can't be nil when calling %s spec", specName)
 		Expect(os.MkdirAll(input.ArtifactFolder, 0755)).To(Succeed(), "Invalid argument. input.ArtifactFolder can't be created for %s spec", specName)
-
 		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionCurrent))
 		Expect(input.E2EConfig.Variables).To(HaveKey(CNIPath))
 
@@ -69,11 +68,12 @@ func QuickStartSpec(ctx context.Context, inputGetter func() QuickStartSpecInput)
 		namespace, cancelWatches = setupSpecNamespace(ctx, specName, input.BootstrapClusterProxy, input.ArtifactFolder)
 	})
 
-	It("Should create a workload cluster", func() {
+	It("Should successfully remediate unhealthy machines with MachineHealthCheck", func() {
 
 		By("Creating a workload cluster")
 
-		cluster, _, _ = clusterctl.ApplyClusterTemplateAndWait(ctx, clusterctl.ApplyClusterTemplateAndWaitInput{
+		var mds []*clusterv1.MachineDeployment
+		cluster, controlPlane, mds = clusterctl.ApplyClusterTemplateAndWait(ctx, clusterctl.ApplyClusterTemplateAndWaitInput{
 			ClusterProxy: input.BootstrapClusterProxy,
 			ConfigCluster: clusterctl.ConfigClusterInput{
 				LogFolder:                filepath.Join(input.ArtifactFolder, "clusters", input.BootstrapClusterProxy.GetName()),
@@ -91,6 +91,15 @@ func QuickStartSpec(ctx context.Context, inputGetter func() QuickStartSpecInput)
 			WaitForClusterIntervals:      input.E2EConfig.GetIntervals(specName, "wait-cluster"),
 			WaitForControlPlaneIntervals: input.E2EConfig.GetIntervals(specName, "wait-control-plane"),
 			WaitForMachineDeployments:    input.E2EConfig.GetIntervals(specName, "wait-worker-nodes"),
+		})
+
+		By("Creating a MachineHealthCheck and wait for remediation")
+		framework.ApplyMachineHealthCheckAndWait(context.TODO(), framework.ApplyMachineHealthCheckAndWaitInput{
+			ClusterProxy:              input.BootstrapClusterProxy,
+			Cluster:                   cluster,
+			ControlPlane:              controlPlane,
+			MachineDeployments:        mds,
+			WaitForMachineDeployments: input.E2EConfig.GetIntervals(specName, "wait-worker-nodes"),
 		})
 
 		By("PASSED!")

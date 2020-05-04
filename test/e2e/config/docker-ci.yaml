@@ -61,7 +61,7 @@ providers:
     targetName: "cluster-template.yaml"
 
 variables:
-  KUBERNETES_VERSION: "v1.18.2"
+  KUBERNETES_VERSION_CURRENT: "v1.18.2"
   ETCD_VERSION_CURRENT: "3.4.3-0"
   COREDNS_VERSION_CURRENT: "1.6.7"
   KUBERNETES_VERSION_UPGRADE_FROM: "v1.17.2"
