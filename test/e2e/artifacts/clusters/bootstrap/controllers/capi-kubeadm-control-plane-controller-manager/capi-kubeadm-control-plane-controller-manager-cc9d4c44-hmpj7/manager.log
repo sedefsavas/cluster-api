@@ -1,0 +1,8 @@
+I0504 07:33:52.911602       1 listener.go:44] controller-runtime/metrics "msg"="metrics server is starting to listen"  "addr"="127.0.0.1:8080"
+I0504 07:33:52.911838       1 main.go:143] setup "msg"="starting manager"  "version"=""
+I0504 07:33:52.912283       1 internal.go:356] controller-runtime/manager "msg"="starting metrics server"  "path"="/metrics"
+I0504 07:33:52.912905       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="kubeadmcontrolplane" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"version":"","infrastructureTemplate":{},"kubeadmConfigSpec":{}},"status":{"initialized":false,"ready":false}}}
+I0504 07:33:53.014066       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="kubeadmcontrolplane" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}},"status":{"bootstrapReady":false,"infrastructureReady":false}}}
+I0504 07:33:53.114637       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="kubeadmcontrolplane" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"infrastructureReady":false,"controlPlaneInitialized":false}}}
+I0504 07:33:53.215284       1 controller.go:171] controller-runtime/controller "msg"="Starting Controller"  "controller"="kubeadmcontrolplane"
+I0504 07:33:53.215346       1 controller.go:190] controller-runtime/controller "msg"="Starting workers"  "controller"="kubeadmcontrolplane" "worker count"=10

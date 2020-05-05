@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-bifpfa-md-0","namespace":"mhc-remediation-8eu8lz"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-05T05:58:33Z"
+  generation: 1
+  name: cluster-bifpfa-md-0
+  namespace: mhc-remediation-8eu8lz
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-bifpfa
+    uid: 358b0892-1210-4662-91e2-10656f1cf343
+  resourceVersion: "1235"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-8eu8lz/dockermachinetemplates/cluster-bifpfa-md-0
+  uid: 1ce1648b-a3b0-4d74-91d9-56e597bee9c1
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

@@ -1,0 +1,30 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  creationTimestamp: "2020-05-04T07:59:49Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-pfplay
+    e2e.x-k8s.io: triggered4
+  name: mhc-cluster-pfplayj4nbfe
+  namespace: mhc-remediation-bk7oy6
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-pfplay
+    uid: 85f5ba59-e056-4169-9c8a-ba506c42fa2c
+  resourceVersion: "1822"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-bk7oy6/machinehealthchecks/mhc-cluster-pfplayj4nbfe
+  uid: 8e244f22-236d-43be-98bc-75ec16bba345
+spec:
+  clusterName: cluster-pfplay
+  maxUnhealthy: 100%
+  nodeStartupTimeout: 10m0s
+  selector: {}
+  unhealthyConditions:
+  - status: "False"
+    timeout: 30s
+    type: E2ENodeHealthy
+status:
+  currentHealthy: 2
+  expectedMachines: 2

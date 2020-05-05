@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T07:50:15Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-epxh4y
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "1900721893"
+  name: cluster-epxh4y-control-plane-z6ttc
+  namespace: md-upgrades-6lezdp
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-epxh4y-control-plane
+    uid: 7d57257e-5431-48cf-a6a4-3186c54dc5e6
+  resourceVersion: "1446"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-6lezdp/machines/cluster-epxh4y-control-plane-z6ttc
+  uid: 3e9631e3-21b9-4aa9-b998-dc67737497c2
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-epxh4y-control-plane-9d8jc
+      namespace: md-upgrades-6lezdp
+      uid: d37215ee-f71b-4622-ab50-8850b0d42f74
+    dataSecretName: cluster-epxh4y-control-plane-9d8jc
+  clusterName: cluster-epxh4y
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-epxh4y-control-plane-rs7kb
+    namespace: md-upgrades-6lezdp
+    uid: 37567b44-13d6-4caf-b17e-f8fd2e47f011
+  providerID: docker:////cluster-epxh4y-cluster-epxh4y-control-plane-z6ttc
+  version: v1.17.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T07:50:55Z"
+  nodeRef:
+    name: cluster-epxh4y-cluster-epxh4y-control-plane-z6ttc
+    uid: 873c6dab-295a-4f79-a46e-90ef6f1f381b
+  phase: Running

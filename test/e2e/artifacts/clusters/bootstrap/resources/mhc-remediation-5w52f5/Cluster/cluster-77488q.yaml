@@ -1,0 +1,35 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"Cluster","metadata":{"annotations":{},"name":"cluster-77488q","namespace":"mhc-remediation-5w52f5"},"spec":{"clusterNetwork":{"pods":{"cidrBlocks":["192.168.0.0/16"]},"serviceDomain":"cluster.local","services":{"cidrBlocks":["10.128.0.0/12"]}},"controlPlaneRef":{"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","name":"cluster-77488q-control-plane"},"infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","name":"cluster-77488q"}}}
+  creationTimestamp: "2020-05-05T05:37:11Z"
+  generation: 1
+  name: cluster-77488q
+  namespace: mhc-remediation-5w52f5
+  resourceVersion: "1494"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-5w52f5/clusters/cluster-77488q
+  uid: c5560abf-f6e9-4192-91d9-042bb9e6b652
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.128.0.0/12
+  controlPlaneEndpoint:
+    host: ""
+    port: 0
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-77488q-control-plane
+    namespace: mhc-remediation-5w52f5
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerCluster
+    name: cluster-77488q
+    namespace: mhc-remediation-5w52f5

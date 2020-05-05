@@ -1,0 +1,42 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"Cluster","metadata":{"annotations":{},"name":"cluster-yrvwe8","namespace":"kcp-upgrade-70qgf8"},"spec":{"clusterNetwork":{"pods":{"cidrBlocks":["192.168.0.0/16"]},"serviceDomain":"cluster.local","services":{"cidrBlocks":["10.128.0.0/12"]}},"controlPlaneRef":{"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","name":"cluster-yrvwe8-control-plane"},"infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","name":"cluster-yrvwe8"}}}
+  creationTimestamp: "2020-05-04T04:44:02Z"
+  finalizers:
+  - cluster.cluster.x-k8s.io
+  generation: 2
+  name: cluster-yrvwe8
+  namespace: kcp-upgrade-70qgf8
+  resourceVersion: "3062"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-70qgf8/clusters/cluster-yrvwe8
+  uid: 1c7c5ae1-1ce7-4f23-9d4c-cb1937f15d76
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.128.0.0/12
+  controlPlaneEndpoint:
+    host: 172.17.0.4
+    port: 6443
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-yrvwe8-control-plane
+    namespace: kcp-upgrade-70qgf8
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerCluster
+    name: cluster-yrvwe8
+    namespace: kcp-upgrade-70qgf8
+status:
+  controlPlaneInitialized: true
+  controlPlaneReady: true
+  infrastructureReady: true
+  phase: Provisioned

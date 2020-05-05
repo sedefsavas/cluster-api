@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-05T07:08:00Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-aoc36q
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "1644888700"
+  name: cluster-aoc36q-control-plane-9sbj8
+  namespace: mhc-remediation-9d09j5
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-aoc36q-control-plane
+    uid: e392b2b3-fe45-42d8-a74c-ee851c6dba3b
+  resourceVersion: "1396"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-9d09j5/machines/cluster-aoc36q-control-plane-9sbj8
+  uid: bce46fae-f51e-4d72-b46f-e7bbafb530dd
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-aoc36q-control-plane-j47nd
+      namespace: mhc-remediation-9d09j5
+      uid: b8b67a5a-ba51-4e60-bc9d-3e80d003418c
+    dataSecretName: cluster-aoc36q-control-plane-j47nd
+  clusterName: cluster-aoc36q
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-aoc36q-control-plane-b82xk
+    namespace: mhc-remediation-9d09j5
+    uid: 72fc3809-4dbf-445b-ab9c-181e51025d05
+  providerID: docker:////cluster-aoc36q-cluster-aoc36q-control-plane-9sbj8
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-05T07:08:32Z"
+  nodeRef:
+    name: cluster-aoc36q-cluster-aoc36q-control-plane-9sbj8
+    uid: 58a9d1c3-4f6c-47dc-9e8d-ad652f155254
+  phase: Running

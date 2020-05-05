@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T08:04:44Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-2vqbvj
+    cluster.x-k8s.io/deployment-name: cluster-2vqbvj-md-0
+    machine-template-hash: "2897756447"
+  name: cluster-2vqbvj-md-0-7rbxk
+  namespace: kcp-upgrade-aabcpg
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-2vqbvj-md-0-6dfcc9b88c-lsfpn
+    uid: c88dce51-e9e4-4766-bb16-a13902669a80
+  resourceVersion: "3272"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-aabcpg/dockermachines/cluster-2vqbvj-md-0-7rbxk
+  uid: b6c77d10-0f3c-4d0f-8d16-4328b2355a15
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-2vqbvj-cluster-2vqbvj-md-0-6dfcc9b88c-lsfpn
+status:
+  ready: true

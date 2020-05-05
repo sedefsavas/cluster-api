@@ -1,0 +1,48 @@
+apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+kind: KubeadmControlPlane
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","metadata":{"annotations":{},"name":"cluster-77488q-control-plane","namespace":"mhc-remediation-5w52f5"},"spec":{"infrastructureTemplate":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-77488q-control-plane"},"kubeadmConfigSpec":{"clusterConfiguration":{"apiServer":{"certSANs":["localhost","127.0.0.1"]},"controllerManager":{"extraArgs":{"enable-hostpath-provisioner":"true"}}},"initConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}},"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}},"replicas":1,"version":"v1.18.2"}}
+  creationTimestamp: "2020-05-05T05:37:11Z"
+  generation: 1
+  name: cluster-77488q-control-plane
+  namespace: mhc-remediation-5w52f5
+  resourceVersion: "1496"
+  selfLink: /apis/controlplane.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-5w52f5/kubeadmcontrolplanes/cluster-77488q-control-plane
+  uid: d52b6b6d-953b-4638-bd5c-4028b945f12f
+spec:
+  infrastructureTemplate:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachineTemplate
+    name: cluster-77488q-control-plane
+    namespace: mhc-remediation-5w52f5
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        certSANs:
+        - localhost
+        - 127.0.0.1
+      controllerManager:
+        extraArgs:
+          enable-hostpath-provisioner: "true"
+      dns: {}
+      etcd: {}
+      networking: {}
+      scheduler: {}
+    initConfiguration:
+      localAPIEndpoint:
+        advertiseAddress: ""
+        bindPort: 0
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+    joinConfiguration:
+      discovery: {}
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+  replicas: 1
+  version: v1.18.2

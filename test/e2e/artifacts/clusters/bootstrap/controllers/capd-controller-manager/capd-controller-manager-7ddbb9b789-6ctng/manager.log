@@ -1,0 +1,40 @@
+I0504 04:31:29.747113       1 request.go:565] Throttling request took 78.3785ms, request: GET:https://10.96.0.1:443/apis/rbac.authorization.k8s.io/v1?timeout=32s
+I0504 04:31:29.796854       1 request.go:565] Throttling request took 128.0652ms, request: GET:https://10.96.0.1:443/apis/rbac.authorization.k8s.io/v1beta1?timeout=32s
+I0504 04:31:29.847111       1 request.go:565] Throttling request took 178.1367ms, request: GET:https://10.96.0.1:443/apis/apiextensions.k8s.io/v1?timeout=32s
+I0504 04:31:29.896750       1 request.go:565] Throttling request took 227.648ms, request: GET:https://10.96.0.1:443/apis/clusterctl.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0504 04:31:29.946866       1 request.go:565] Throttling request took 277.7618ms, request: GET:https://10.96.0.1:443/apis/admissionregistration.k8s.io/v1beta1?timeout=32s
+I0504 04:31:29.996911       1 request.go:565] Throttling request took 327.7813ms, request: GET:https://10.96.0.1:443/apis/infrastructure.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0504 04:31:30.047009       1 request.go:565] Throttling request took 377.8508ms, request: GET:https://10.96.0.1:443/apis/bootstrap.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0504 04:31:30.096995       1 request.go:565] Throttling request took 427.7997ms, request: GET:https://10.96.0.1:443/apis/controlplane.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0504 04:31:30.146746       1 request.go:565] Throttling request took 477.4948ms, request: GET:https://10.96.0.1:443/apis/exp.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0504 04:31:30.198055       1 request.go:565] Throttling request took 528.6019ms, request: GET:https://10.96.0.1:443/apis/bootstrap.cluster.x-k8s.io/v1alpha2?timeout=32s
+I0504 04:31:30.246955       1 request.go:565] Throttling request took 577.631ms, request: GET:https://10.96.0.1:443/apis/storage.k8s.io/v1beta1?timeout=32s
+I0504 04:31:30.297444       1 request.go:565] Throttling request took 628.0655ms, request: GET:https://10.96.0.1:443/apis/cert-manager.io/v1alpha2?timeout=32s
+I0504 04:31:30.346884       1 request.go:565] Throttling request took 677.5155ms, request: GET:https://10.96.0.1:443/apis/cluster.x-k8s.io/v1alpha3?timeout=32s
+I0504 04:31:30.396958       1 request.go:565] Throttling request took 727.5268ms, request: GET:https://10.96.0.1:443/apis/cluster.x-k8s.io/v1alpha2?timeout=32s
+I0504 04:31:30.447005       1 request.go:565] Throttling request took 777.3425ms, request: GET:https://10.96.0.1:443/apis/admissionregistration.k8s.io/v1?timeout=32s
+I0504 04:31:30.452897       1 main.go:90] setup "msg"="starting manager"  
+I0504 04:31:30.454230       1 shared_informer.go:227] caches populated
+I0504 04:31:30.457752       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockermachine" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{},"status":{"ready":false}}}
+I0504 04:31:30.458289       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockercluster" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"ready":false}}}
+I0504 04:31:30.458845       1 reflector.go:150] Starting reflector *v1alpha3.DockerMachine (9m57.027943793s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 04:31:30.458906       1 reflector.go:185] Listing and watching *v1alpha3.DockerMachine from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 04:31:30.459380       1 reflector.go:150] Starting reflector *v1alpha3.DockerCluster (9m48.285942388s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 04:31:30.459420       1 reflector.go:185] Listing and watching *v1alpha3.DockerCluster from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 04:31:30.558789       1 shared_informer.go:227] caches populated
+I0504 04:31:30.559453       1 shared_informer.go:227] caches populated
+I0504 04:31:30.559774       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockercluster" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"infrastructureReady":false,"controlPlaneInitialized":false}}}
+I0504 04:31:30.560043       1 reflector.go:150] Starting reflector *v1alpha3.Cluster (10m19.283812838s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 04:31:30.560097       1 reflector.go:185] Listing and watching *v1alpha3.Cluster from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 04:31:30.560712       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockermachine" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}},"status":{"bootstrapReady":false,"infrastructureReady":false}}}
+I0504 04:31:30.560937       1 reflector.go:150] Starting reflector *v1alpha3.Machine (10m58.009878746s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 04:31:30.561086       1 reflector.go:185] Listing and watching *v1alpha3.Machine from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 04:31:30.660393       1 shared_informer.go:227] caches populated
+I0504 04:31:30.660510       1 controller.go:171] controller-runtime/controller "msg"="Starting Controller"  "controller"="dockercluster"
+I0504 04:31:30.660552       1 shared_informer.go:227] caches populated
+I0504 04:31:30.660783       1 controller.go:190] controller-runtime/controller "msg"="Starting workers"  "controller"="dockercluster" "worker count"=1
+I0504 04:31:30.661236       1 shared_informer.go:227] caches populated
+I0504 04:31:30.661372       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockermachine" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"ready":false}}}
+I0504 04:31:30.661439       1 controller.go:171] controller-runtime/controller "msg"="Starting Controller"  "controller"="dockermachine"
+I0504 04:31:30.661511       1 shared_informer.go:227] caches populated
+I0504 04:31:30.661701       1 controller.go:190] controller-runtime/controller "msg"="Starting workers"  "controller"="dockermachine" "worker count"=10

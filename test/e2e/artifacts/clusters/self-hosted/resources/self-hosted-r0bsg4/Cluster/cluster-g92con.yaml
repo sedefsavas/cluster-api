@@ -1,0 +1,42 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"Cluster","metadata":{"annotations":{},"name":"cluster-g92con","namespace":"self-hosted-r0bsg4"},"spec":{"clusterNetwork":{"pods":{"cidrBlocks":["192.168.0.0/16"]},"serviceDomain":"cluster.local","services":{"cidrBlocks":["10.128.0.0/12"]}},"controlPlaneRef":{"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","name":"cluster-g92con-control-plane"},"infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","name":"cluster-g92con"}}}
+  creationTimestamp: "2020-05-04T05:39:42Z"
+  finalizers:
+  - cluster.cluster.x-k8s.io
+  generation: 2
+  name: cluster-g92con
+  namespace: self-hosted-r0bsg4
+  resourceVersion: "1393"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/clusters/cluster-g92con
+  uid: ec90e82a-bc9b-4762-91bc-f508ab3627c3
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.128.0.0/12
+  controlPlaneEndpoint:
+    host: 172.17.0.7
+    port: 6443
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-g92con-control-plane
+    namespace: self-hosted-r0bsg4
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerCluster
+    name: cluster-g92con
+    namespace: self-hosted-r0bsg4
+status:
+  controlPlaneInitialized: true
+  controlPlaneReady: true
+  infrastructureReady: true
+  phase: Provisioned

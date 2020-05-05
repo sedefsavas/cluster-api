@@ -34,11 +34,12 @@ import (
 
 // Test suite constants for e2e config variables
 const (
-	KubernetesVersionCurrent              = "KUBERNETES_VERSION_CURRENT"
+	KubernetesVersion                     = "KUBERNETES_VERSION"
 	CNIPath                               = "CNI"
-	KubernetesVersionPrevious             = "KUBERNETES_VERSION_UPGRADE_FROM"
-	EtcdVersionCurrent                    = "ETCD_VERSION_CURRENT"
-	CoreDNSVersionCurrent                 = "COREDNS_VERSION_CURRENT"
+	KubernetesVersionUpgradeFrom          = "KUBERNETES_VERSION_UPGRADE_FROM"
+	KubernetesVersionUpgradeTo            = "KUBERNETES_VERSION_UPGRADE_TO"
+	EtcdVersionUpgradeTo                  = "ETCD_VERSION_UPGRADE_TO"
+	CoreDNSVersionUpgradeTo               = "COREDNS_VERSION_UPGRADE_TO"
 	MinimumCAPISupportedKubernetesVersion = "KUBERNETES_VERSION_MINIMUM_CAPI_SUPPORTED"
 )
 

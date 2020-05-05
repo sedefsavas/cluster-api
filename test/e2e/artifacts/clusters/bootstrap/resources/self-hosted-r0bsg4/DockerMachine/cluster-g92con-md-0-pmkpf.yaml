@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T05:40:00Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-g92con
+    cluster.x-k8s.io/deployment-name: cluster-g92con-md-0
+    machine-template-hash: "1313313511"
+  name: cluster-g92con-md-0-pmkpf
+  namespace: self-hosted-r0bsg4
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-g92con-md-0-5757757955-2rb5p
+    uid: d29b99ca-332d-4510-b6ad-4fa8e8f87ddf
+  resourceVersion: "2876"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/dockermachines/cluster-g92con-md-0-pmkpf
+  uid: 60cb9d37-973d-4c30-b94b-c1f7fd5352f4
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-g92con-cluster-g92con-md-0-5757757955-2rb5p
+status:
+  ready: true

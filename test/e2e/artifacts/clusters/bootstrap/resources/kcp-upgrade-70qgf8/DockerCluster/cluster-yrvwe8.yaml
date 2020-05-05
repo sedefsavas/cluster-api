@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-yrvwe8","namespace":"kcp-upgrade-70qgf8"}}
+  creationTimestamp: "2020-05-04T04:44:02Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-yrvwe8
+  name: cluster-yrvwe8
+  namespace: kcp-upgrade-70qgf8
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-yrvwe8
+    uid: 1c7c5ae1-1ce7-4f23-9d4c-cb1937f15d76
+  resourceVersion: "2612"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-70qgf8/dockerclusters/cluster-yrvwe8
+  uid: 3536e85d-61c4-4f0a-973f-06107b4dde96
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.4
+    port: 6443
+status:
+  ready: true

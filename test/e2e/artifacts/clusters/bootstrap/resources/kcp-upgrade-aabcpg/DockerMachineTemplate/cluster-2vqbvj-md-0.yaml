@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-2vqbvj-md-0","namespace":"kcp-upgrade-aabcpg"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-04T08:04:44Z"
+  generation: 1
+  name: cluster-2vqbvj-md-0
+  namespace: kcp-upgrade-aabcpg
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-2vqbvj
+    uid: 8e5209b7-7eba-4318-99ed-d31d93848931
+  resourceVersion: "2977"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-aabcpg/dockermachinetemplates/cluster-2vqbvj-md-0
+  uid: 6c84d08d-1adc-403a-9933-e0d4e343593a
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

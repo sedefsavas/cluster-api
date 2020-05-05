@@ -1,0 +1,41 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"Cluster","metadata":{"annotations":{},"name":"cluster-6iwetq","namespace":"quick-start-hphm5o"},"spec":{"clusterNetwork":{"pods":{"cidrBlocks":["192.168.0.0/16"]},"serviceDomain":"cluster.local","services":{"cidrBlocks":["10.128.0.0/12"]}},"controlPlaneRef":{"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","name":"cluster-6iwetq-control-plane"},"infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","name":"cluster-6iwetq"}}}
+  creationTimestamp: "2020-05-04T05:33:24Z"
+  finalizers:
+  - cluster.cluster.x-k8s.io
+  generation: 2
+  name: cluster-6iwetq
+  namespace: quick-start-hphm5o
+  resourceVersion: "1422"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-hphm5o/clusters/cluster-6iwetq
+  uid: 6bc353fe-08fd-4067-b259-b1fb62eadd94
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.128.0.0/12
+  controlPlaneEndpoint:
+    host: 172.17.0.4
+    port: 6443
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-6iwetq-control-plane
+    namespace: quick-start-hphm5o
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerCluster
+    name: cluster-6iwetq
+    namespace: quick-start-hphm5o
+status:
+  controlPlaneInitialized: true
+  infrastructureReady: true
+  phase: Provisioned

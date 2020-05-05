@@ -1,0 +1,22 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-7fudtx","namespace":"mhc-remediation-lts13r"}}
+  creationTimestamp: "2020-05-05T05:54:31Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-7fudtx
+  name: cluster-7fudtx
+  namespace: mhc-remediation-lts13r
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-7fudtx
+    uid: 2ba23694-625a-44bb-90f8-56d1dbe8afde
+  resourceVersion: "1305"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-lts13r/dockerclusters/cluster-7fudtx
+  uid: cd8b18fc-2af5-4125-b58f-cb20c39dab1f

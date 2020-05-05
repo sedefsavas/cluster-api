@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-05T06:49:03Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-phfhaj-md-0-588656c94-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-phfhaj
+    mhc: unhealthy
+  name: cluster-phfhaj-md-0-588656c94-6mmf9
+  namespace: mhc-remediation-umgvbe
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-phfhaj-md-0-588656c94
+    uid: 60139eba-6f53-41b9-9394-7f23b8fa880b
+  resourceVersion: "1856"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-umgvbe/machines/cluster-phfhaj-md-0-588656c94-6mmf9
+  uid: c2fac843-f3c4-4a74-b90d-dbf4faa04456
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-phfhaj-md-0-v6mww
+      namespace: mhc-remediation-umgvbe
+      uid: 6dcae67e-6ddf-40bc-a4a3-2bca2a3fde0c
+    dataSecretName: cluster-phfhaj-md-0-v6mww
+  clusterName: cluster-phfhaj
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-phfhaj-md-0-kr922
+    namespace: mhc-remediation-umgvbe
+    uid: 6e635bf7-295e-4d3a-aa17-e281b29f3f0e
+  providerID: docker:////cluster-phfhaj-cluster-phfhaj-md-0-588656c94-6mmf9
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-05T06:50:00Z"
+  nodeRef:
+    name: cluster-phfhaj-cluster-phfhaj-md-0-588656c94-6mmf9
+    uid: f73a93e1-850d-491c-8af4-53d1b855ae40
+  phase: Running

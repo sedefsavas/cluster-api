@@ -1,0 +1,25 @@
+I0505 05:35:50.115732       1 request.go:565] Throttling request took 61.8085ms, request: GET:https://10.96.0.1:443/apis/apiextensions.k8s.io/v1beta1?timeout=32s
+I0505 05:35:50.165239       1 request.go:565] Throttling request took 111.0988ms, request: GET:https://10.96.0.1:443/apis/certificates.k8s.io/v1beta1?timeout=32s
+I0505 05:35:50.215284       1 request.go:565] Throttling request took 161.0272ms, request: GET:https://10.96.0.1:443/apis/scheduling.k8s.io/v1?timeout=32s
+I0505 05:35:50.265374       1 request.go:565] Throttling request took 210.984ms, request: GET:https://10.96.0.1:443/apis/coordination.k8s.io/v1?timeout=32s
+I0505 05:35:50.315790       1 request.go:565] Throttling request took 260.8947ms, request: GET:https://10.96.0.1:443/apis/scheduling.k8s.io/v1beta1?timeout=32s
+I0505 05:35:50.366854       1 request.go:565] Throttling request took 311.815ms, request: GET:https://10.96.0.1:443/apis/bootstrap.cluster.x-k8s.io/v1alpha2?timeout=32s
+I0505 05:35:50.415330       1 request.go:565] Throttling request took 359.9723ms, request: GET:https://10.96.0.1:443/apis/exp.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0505 05:35:50.465497       1 request.go:565] Throttling request took 409.9413ms, request: GET:https://10.96.0.1:443/apis/infrastructure.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0505 05:35:50.517662       1 request.go:565] Throttling request took 462.3645ms, request: GET:https://10.96.0.1:443/apis/controlplane.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0505 05:35:50.565006       1 request.go:565] Throttling request took 508.6432ms, request: GET:https://10.96.0.1:443/apis/cert-manager.io/v1alpha2?timeout=32s
+I0505 05:35:50.615214       1 request.go:565] Throttling request took 558.6274ms, request: GET:https://10.96.0.1:443/apis/cluster.x-k8s.io/v1alpha3?timeout=32s
+I0505 05:35:50.666526       1 request.go:565] Throttling request took 609.7629ms, request: GET:https://10.96.0.1:443/apis/coordination.k8s.io/v1beta1?timeout=32s
+I0505 05:35:50.715552       1 request.go:565] Throttling request took 657.8232ms, request: GET:https://10.96.0.1:443/apis/clusterctl.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0505 05:35:50.765943       1 request.go:565] Throttling request took 708.0422ms, request: GET:https://10.96.0.1:443/apis/node.k8s.io/v1beta1?timeout=32s
+I0505 05:35:50.817800       1 request.go:565] Throttling request took 759.7693ms, request: GET:https://10.96.0.1:443/apis/cluster.x-k8s.io/v1alpha2?timeout=32s
+I0505 05:35:50.827843       1 main.go:90] setup "msg"="starting manager"  
+I0505 05:35:50.828736       1 shared_informer.go:227] caches populated
+I0505 05:35:50.829527       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockermachine" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{},"status":{"ready":false}}}
+I0505 05:35:50.829643       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockercluster" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"ready":false}}}
+I0505 05:35:50.829774       1 reflector.go:150] Starting reflector *v1alpha3.DockerMachine (10m1.624198981s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0505 05:35:50.829861       1 reflector.go:150] Starting reflector *v1alpha3.DockerCluster (10m38.065673264s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0505 05:35:50.830245       1 reflector.go:185] Listing and watching *v1alpha3.DockerCluster from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0505 05:35:50.829897       1 reflector.go:185] Listing and watching *v1alpha3.DockerMachine from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0505 05:35:50.930479       1 shared_informer.go:227] caches populated
+I0505 05:35:50.930873       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockercluster" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"i

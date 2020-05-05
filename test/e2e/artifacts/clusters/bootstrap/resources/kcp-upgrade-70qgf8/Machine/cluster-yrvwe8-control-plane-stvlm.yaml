@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T04:46:36Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-yrvwe8
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "3485582269"
+  name: cluster-yrvwe8-control-plane-stvlm
+  namespace: kcp-upgrade-70qgf8
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-yrvwe8-control-plane
+    uid: 95683735-36fc-499c-9cdd-3393fe61585f
+  resourceVersion: "3511"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-70qgf8/machines/cluster-yrvwe8-control-plane-stvlm
+  uid: dd528e43-cb5e-470e-97dd-2b99645dcd30
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-yrvwe8-control-plane-tqrrk
+      namespace: kcp-upgrade-70qgf8
+      uid: a8292c67-0907-4830-adc4-52184d91493c
+    dataSecretName: cluster-yrvwe8-control-plane-tqrrk
+  clusterName: cluster-yrvwe8
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-yrvwe8-control-plane-qx99q
+    namespace: kcp-upgrade-70qgf8
+    uid: ce853f8f-57ae-4c20-af84-2ef12656b73c
+  providerID: docker:////cluster-yrvwe8-cluster-yrvwe8-control-plane-stvlm
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T04:47:27Z"
+  nodeRef:
+    name: cluster-yrvwe8-cluster-yrvwe8-control-plane-stvlm
+    uid: c602ed8c-1faf-4d88-90f7-ed084f25fd2f
+  phase: Running

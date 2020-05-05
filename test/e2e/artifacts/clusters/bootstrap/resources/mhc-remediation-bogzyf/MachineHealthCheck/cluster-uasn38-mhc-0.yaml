@@ -1,0 +1,31 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-uasn38-mhc-0","namespace":"mhc-remediation-bogzyf"},"spec":{"clusterName":"cluster-uasn38","maxUnhealthy":"40%","selector":{"matchLabels":{"mhc":"unhealthy"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-05T06:32:15Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-uasn38
+  name: cluster-uasn38-mhc-0
+  namespace: mhc-remediation-bogzyf
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-uasn38
+    uid: 58488669-9e37-44d2-9415-91390e6480e9
+  resourceVersion: "1237"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-bogzyf/machinehealthchecks/cluster-uasn38-mhc-0
+  uid: df30f45a-ca4d-47da-b1b7-f65c4e89c73e
+spec:
+  clusterName: cluster-uasn38
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      mhc: unhealthy
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy

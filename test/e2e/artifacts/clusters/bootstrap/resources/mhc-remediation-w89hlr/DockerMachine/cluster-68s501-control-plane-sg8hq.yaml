@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T05:52:52Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-68s501
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "190236608"
+  name: cluster-68s501-control-plane-sg8hq
+  namespace: mhc-remediation-w89hlr
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-68s501-control-plane
+    uid: b83b63d7-b470-422b-87ce-c6360cffb59c
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-68s501-control-plane-trl79
+    uid: 2736bf8e-25aa-4dd3-bde0-32fef3d88820
+  resourceVersion: "1445"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-w89hlr/dockermachines/cluster-68s501-control-plane-sg8hq
+  uid: 251b90d2-9543-40d9-9be3-0ef9494cd107
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-68s501-cluster-68s501-control-plane-trl79
+status:
+  loadBalancerConfigured: true
+  ready: true

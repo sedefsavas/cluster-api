@@ -1,0 +1,26 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","metadata":{"annotations":{},"name":"cluster-uasn38-md-0","namespace":"mhc-remediation-bogzyf"},"spec":{"template":{"spec":{"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}}}}}
+  creationTimestamp: "2020-05-05T06:32:15Z"
+  generation: 1
+  name: cluster-uasn38-md-0
+  namespace: mhc-remediation-bogzyf
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-uasn38
+    uid: 58488669-9e37-44d2-9415-91390e6480e9
+  resourceVersion: "1243"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-bogzyf/kubeadmconfigtemplates/cluster-uasn38-md-0
+  uid: 22c29fab-eb4d-4c45-b090-e636677a5730
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: /var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%

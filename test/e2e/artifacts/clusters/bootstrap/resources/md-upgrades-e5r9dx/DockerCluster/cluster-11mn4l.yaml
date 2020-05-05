@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-11mn4l","namespace":"md-upgrades-e5r9dx"}}
+  creationTimestamp: "2020-05-04T08:01:00Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-11mn4l
+  name: cluster-11mn4l
+  namespace: md-upgrades-e5r9dx
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-11mn4l
+    uid: 4f1ad3ad-745a-4424-9b86-104ce1b3e367
+  resourceVersion: "1932"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-e5r9dx/dockerclusters/cluster-11mn4l
+  uid: 278bcb01-1391-4a9c-82fc-71bf8a40c67e
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

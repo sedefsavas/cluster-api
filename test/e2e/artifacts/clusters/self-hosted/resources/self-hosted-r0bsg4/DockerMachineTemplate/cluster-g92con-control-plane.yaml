@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-g92con-control-plane","namespace":"self-hosted-r0bsg4"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-04T05:39:44Z"
+  generation: 1
+  name: cluster-g92con-control-plane
+  namespace: self-hosted-r0bsg4
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-g92con
+    uid: ec90e82a-bc9b-4762-91bc-f508ab3627c3
+  resourceVersion: "1344"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/dockermachinetemplates/cluster-g92con-control-plane
+  uid: 01d0064c-9f4a-4c96-a02e-bf7dd621b171
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

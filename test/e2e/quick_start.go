@@ -62,7 +62,7 @@ func QuickStartSpec(ctx context.Context, inputGetter func() QuickStartSpecInput)
 		Expect(input.BootstrapClusterProxy).ToNot(BeNil(), "Invalid argument. input.BootstrapClusterProxy can't be nil when calling %s spec", specName)
 		Expect(os.MkdirAll(input.ArtifactFolder, 0755)).To(Succeed(), "Invalid argument. input.ArtifactFolder can't be created for %s spec", specName)
 
-		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionCurrent))
+		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersion))
 		Expect(input.E2EConfig.Variables).To(HaveKey(CNIPath))
 
 		// Setup a Namespace where to host objects for this spec and create a watcher for the namespace events.
@@ -83,7 +83,7 @@ func QuickStartSpec(ctx context.Context, inputGetter func() QuickStartSpecInput)
 				Flavor:                   clusterctl.DefaultFlavor,
 				Namespace:                namespace.Name,
 				ClusterName:              fmt.Sprintf("cluster-%s", util.RandomString(6)),
-				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersionCurrent),
+				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersion),
 				ControlPlaneMachineCount: pointer.Int64Ptr(1),
 				WorkerMachineCount:       pointer.Int64Ptr(1),
 			},

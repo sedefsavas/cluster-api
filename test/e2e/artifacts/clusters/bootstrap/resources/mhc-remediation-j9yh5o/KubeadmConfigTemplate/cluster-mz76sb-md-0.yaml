@@ -1,0 +1,26 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","metadata":{"annotations":{},"name":"cluster-mz76sb-md-0","namespace":"mhc-remediation-j9yh5o"},"spec":{"template":{"spec":{"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}}}}}
+  creationTimestamp: "2020-05-05T06:42:45Z"
+  generation: 1
+  name: cluster-mz76sb-md-0
+  namespace: mhc-remediation-j9yh5o
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-mz76sb
+    uid: 4b64617f-40d4-4200-84b8-bc2c9f9e1df1
+  resourceVersion: "1246"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-j9yh5o/kubeadmconfigtemplates/cluster-mz76sb-md-0
+  uid: e3efe2e7-a3bb-4850-8cd5-2f85e6b1547a
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: /var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%

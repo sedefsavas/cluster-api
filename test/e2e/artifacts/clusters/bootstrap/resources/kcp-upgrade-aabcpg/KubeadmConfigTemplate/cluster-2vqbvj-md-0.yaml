@@ -1,0 +1,26 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","metadata":{"annotations":{},"name":"cluster-2vqbvj-md-0","namespace":"kcp-upgrade-aabcpg"},"spec":{"template":{"spec":{"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}}}}}
+  creationTimestamp: "2020-05-04T08:04:44Z"
+  generation: 1
+  name: cluster-2vqbvj-md-0
+  namespace: kcp-upgrade-aabcpg
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-2vqbvj
+    uid: 8e5209b7-7eba-4318-99ed-d31d93848931
+  resourceVersion: "2978"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-aabcpg/kubeadmconfigtemplates/cluster-2vqbvj-md-0
+  uid: ecfdd49e-061e-4675-af20-6b35be9362a0
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: /var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%

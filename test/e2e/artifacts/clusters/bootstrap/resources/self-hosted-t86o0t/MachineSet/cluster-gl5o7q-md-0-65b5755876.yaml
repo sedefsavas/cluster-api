@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-04T08:22:14Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-gl5o7q
+    cluster.x-k8s.io/deployment-name: cluster-gl5o7q-md-0
+    machine-template-hash: "2161311432"
+  name: cluster-gl5o7q-md-0-65b5755876
+  namespace: self-hosted-t86o0t
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-gl5o7q-md-0
+    uid: 443e1982-23e3-4df9-906a-193310f9b71f
+  resourceVersion: "7523"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-t86o0t/machinesets/cluster-gl5o7q-md-0-65b5755876
+  uid: ea1ef753-d311-4f6b-b13f-a37a61d80e3a
+spec:
+  clusterName: cluster-gl5o7q
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-gl5o7q
+      cluster.x-k8s.io/deployment-name: cluster-gl5o7q-md-0
+      machine-template-hash: "2161311432"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-gl5o7q
+        cluster.x-k8s.io/deployment-name: cluster-gl5o7q-md-0
+        machine-template-hash: "2161311432"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-gl5o7q-md-0
+      clusterName: cluster-gl5o7q
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-gl5o7q-md-0
+      version: v1.16.4
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-gl5o7q,cluster.x-k8s.io/deployment-name=cluster-gl5o7q-md-0,machine-template-hash=2161311432

@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-04T05:39:44Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-g92con
+    cluster.x-k8s.io/deployment-name: cluster-g92con-md-0
+    machine-template-hash: "1313313511"
+  name: cluster-g92con-md-0-5757757955
+  namespace: self-hosted-r0bsg4
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-g92con-md-0
+    uid: ad330068-bb0b-4c2e-b412-9f4ff41cc38c
+  resourceVersion: "1384"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/machinesets/cluster-g92con-md-0-5757757955
+  uid: 224765cc-4273-4873-8285-7600141d64f8
+spec:
+  clusterName: cluster-g92con
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-g92con
+      cluster.x-k8s.io/deployment-name: cluster-g92con-md-0
+      machine-template-hash: "1313313511"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-g92con
+        cluster.x-k8s.io/deployment-name: cluster-g92con-md-0
+        machine-template-hash: "1313313511"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-g92con-md-0
+      clusterName: cluster-g92con
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-g92con-md-0
+      version: v1.16.4
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-g92con,cluster.x-k8s.io/deployment-name=cluster-g92con-md-0,machine-template-hash=1313313511

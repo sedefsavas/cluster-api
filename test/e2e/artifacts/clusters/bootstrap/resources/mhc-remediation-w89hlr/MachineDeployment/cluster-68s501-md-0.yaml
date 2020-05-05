@@ -1,0 +1,61 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineDeployment","metadata":{"annotations":{},"name":"cluster-68s501-md-0","namespace":"mhc-remediation-w89hlr"},"spec":{"clusterName":"cluster-68s501","replicas":1,"selector":{"matchLabels":null},"template":{"spec":{"bootstrap":{"configRef":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","name":"cluster-68s501-md-0"}},"clusterName":"cluster-68s501","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-68s501-md-0"},"version":"v1.17.2"}}}}
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-04T05:52:48Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-68s501
+  name: cluster-68s501-md-0
+  namespace: mhc-remediation-w89hlr
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-68s501
+    uid: e6d8a3cc-31f6-4cb0-848d-bd7bd7e1cb1b
+  resourceVersion: "1963"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-w89hlr/machinedeployments/cluster-68s501-md-0
+  uid: 4b730c92-f0b4-450f-aff5-a9b7ff043e72
+spec:
+  clusterName: cluster-68s501
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-68s501
+      cluster.x-k8s.io/deployment-name: cluster-68s501-md-0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-68s501
+        cluster.x-k8s.io/deployment-name: cluster-68s501-md-0
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-68s501-md-0
+      clusterName: cluster-68s501
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-68s501-md-0
+      version: v1.17.2
+status:
+  availableReplicas: 1
+  observedGeneration: 1
+  phase: Running
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-68s501,cluster.x-k8s.io/deployment-name=cluster-68s501-md-0
+  updatedReplicas: 1

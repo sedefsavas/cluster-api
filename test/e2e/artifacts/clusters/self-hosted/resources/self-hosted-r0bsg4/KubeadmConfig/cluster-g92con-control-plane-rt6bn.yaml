@@ -1,0 +1,56 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T05:39:45Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-g92con
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "506475344"
+  name: cluster-g92con-control-plane-rt6bn
+  namespace: self-hosted-r0bsg4
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-g92con-control-plane
+    uid: e30c9769-ffdd-4c2c-a153-6260e709a3b1
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-g92con-control-plane-j79qt
+    uid: 4b0627ed-8327-46b3-9b0c-075b642c1305
+  resourceVersion: "1372"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/kubeadmconfigs/cluster-g92con-control-plane-rt6bn
+  uid: e3cc2601-c81d-423f-9548-6b901e912f0c
+spec:
+  clusterConfiguration:
+    apiServer:
+      certSANs:
+      - localhost
+      - 127.0.0.1
+    certificatesDir: /etc/kubernetes/pki
+    clusterName: cluster-g92con
+    controlPlaneEndpoint: 172.17.0.7:6443
+    controllerManager:
+      extraArgs:
+        enable-hostpath-provisioner: "true"
+    dns: {}
+    etcd: {}
+    kubernetesVersion: v1.16.4
+    networking:
+      dnsDomain: cluster.local
+      podSubnet: 192.168.0.0/16
+      serviceSubnet: 10.128.0.0/12
+    scheduler: {}
+  initConfiguration:
+    localAPIEndpoint:
+      advertiseAddress: ""
+      bindPort: 0
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-g92con-control-plane-rt6bn
+  ready: true

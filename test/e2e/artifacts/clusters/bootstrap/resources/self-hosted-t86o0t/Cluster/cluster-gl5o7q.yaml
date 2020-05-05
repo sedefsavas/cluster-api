@@ -1,0 +1,42 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"Cluster","metadata":{"annotations":{},"name":"cluster-gl5o7q","namespace":"self-hosted-t86o0t"},"spec":{"clusterNetwork":{"pods":{"cidrBlocks":["192.168.0.0/16"]},"serviceDomain":"cluster.local","services":{"cidrBlocks":["10.128.0.0/12"]}},"controlPlaneRef":{"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","name":"cluster-gl5o7q-control-plane"},"infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","name":"cluster-gl5o7q"}}}
+  creationTimestamp: "2020-05-04T08:22:13Z"
+  finalizers:
+  - cluster.cluster.x-k8s.io
+  generation: 2
+  name: cluster-gl5o7q
+  namespace: self-hosted-t86o0t
+  resourceVersion: "7535"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-t86o0t/clusters/cluster-gl5o7q
+  uid: 3cf05fd7-e100-4cc8-a51b-f654ca4aff78
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.128.0.0/12
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-gl5o7q-control-plane
+    namespace: self-hosted-t86o0t
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerCluster
+    name: cluster-gl5o7q
+    namespace: self-hosted-t86o0t
+status:
+  controlPlaneInitialized: true
+  controlPlaneReady: true
+  infrastructureReady: true
+  phase: Provisioned

@@ -20,6 +20,10 @@ import (
 	"context"
 	"fmt"
 
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/cluster-api/util/patch"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
@@ -27,6 +31,7 @@ import (
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
 )
 
+// GetMachinesByMachineDeploymentsInput is the input for GetMachinesByMachineDeployments.
 type GetMachinesByMachineDeploymentsInput struct {
 	Lister            Lister
 	ClusterName       string
@@ -53,6 +58,34 @@ func GetMachinesByMachineDeployments(ctx context.Context, input GetMachinesByMac
 	return machineList.Items
 }
 
+// GetMachinesByMachineHealthCheckInput is the input for GetMachinesByMachineHealthCheck.
+type GetMachinesByMachineHealthCheckInput struct {
+	Lister             Lister
+	ClusterName        string
+	Namespace          string
+	MachineHealthCheck clusterv1.MachineHealthCheck
+}
+
+// GetMachinesByMachineHealthCheckInput returns Machine objects for a cluster that match with MachineHealthCheck selector.
+// Important! this method relies on labels that are created by the CAPI controllers during the first reconciliation, so
+// it is necessary to ensure this is already happened before calling it.
+func GetMachinesByMachineHealthCheck(ctx context.Context, input GetMachinesByMachineHealthCheckInput) []clusterv1.Machine {
+	Expect(ctx).NotTo(BeNil(), "ctx is required for GetMachinesByMachineDeployments")
+	Expect(input.Lister).ToNot(BeNil(), "Invalid argument. input.Lister can't be nil when calling GetMachinesByMachineHealthCheck")
+	Expect(input.ClusterName).ToNot(BeEmpty(), "Invalid argument. input.ClusterName can't be empty when calling GetMachinesByMachineHealthCheck")
+	Expect(input.Namespace).ToNot(BeEmpty(), "Invalid argument. input.Namespace can't be empty when calling GetMachinesByMachineHealthCheck")
+	Expect(input.MachineHealthCheck).ToNot(BeNil(), "Invalid argument. input.MachineHealthCheck can't be nil when calling GetMachinesByMachineHealthCheck")
+
+	opts := byClusterOptions(input.ClusterName, input.Namespace)
+	opts = append(opts, machineHealthCheckOptions(input.MachineHealthCheck)...)
+
+	machineList := &clusterv1.MachineList{}
+	Expect(input.Lister.List(ctx, machineList, opts...)).To(Succeed(), "Failed to list MachineList object for Cluster %s/%s", input.Namespace, input.ClusterName)
+
+	return machineList.Items
+}
+
+// GetControlPlaneMachinesByClusterInput is the input for GetControlPlaneMachinesByCluster.
 type GetControlPlaneMachinesByClusterInput struct {
 	Lister      Lister
 	ClusterName string
@@ -152,4 +185,30 @@ func WaitForMachineDeploymentMachinesToBeUpgraded(ctx context.Context, input Wai
 		}
 		return upgraded, nil
 	}, intervals...).Should(Equal(input.MachineCount))
+}
+
+// PatchNodeConditionInput is the input for PatchNodeCondition.
+type PatchNodeConditionInput struct {
+	ClusterProxy  ClusterProxy
+	Cluster       *clusterv1.Cluster
+	NodeCondition corev1.NodeCondition
+	Machine       clusterv1.Machine
+}
+
+// PatchNodeCondition patches a node condition to any one of the machines with a node ref.
+func PatchNodeCondition(ctx context.Context, input PatchNodeConditionInput) {
+	Expect(ctx).NotTo(BeNil(), "ctx is required for PatchNodeConditions")
+	Expect(input.ClusterProxy).ToNot(BeNil(), "Invalid argument. input.ClusterProxy can't be nil when calling PatchNodeConditions")
+	Expect(input.Cluster).ToNot(BeNil(), "Invalid argument. input.Cluster can't be nil when calling PatchNodeConditions")
+	Expect(input.NodeCondition).ToNot(BeNil(), "Invalid argument. input.NodeCondition can't be nil when calling PatchNodeConditions")
+	Expect(input.Machine).ToNot(BeNil(), "Invalid argument. input.Machine can't be nil when calling PatchNodeConditions")
+
+	fmt.Fprintf(GinkgoWriter, "Patching the node condition to the node\n")
+	Expect(input.Machine.Status.NodeRef).ToNot(BeNil())
+	node := &corev1.Node{}
+	Expect(input.ClusterProxy.GetWorkloadCluster(ctx, input.Cluster.Namespace, input.Cluster.Name).GetClient().Get(ctx, types.NamespacedName{Name: input.Machine.Status.NodeRef.Name, Namespace: input.Machine.Status.NodeRef.Namespace}, node)).To(Succeed())
+	patchHelper, err := patch.NewHelper(node, input.ClusterProxy.GetWorkloadCluster(ctx, input.Cluster.Namespace, input.Cluster.Name).GetClient())
+	Expect(err).ToNot(HaveOccurred())
+	node.Status.Conditions = append(node.Status.Conditions, input.NodeCondition)
+	Expect(patchHelper.Patch(ctx, node)).To(Succeed())
 }

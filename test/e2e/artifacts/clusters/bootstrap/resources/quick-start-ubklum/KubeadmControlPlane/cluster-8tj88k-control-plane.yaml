@@ -1,0 +1,66 @@
+apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+kind: KubeadmControlPlane
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","metadata":{"annotations":{},"name":"cluster-8tj88k-control-plane","namespace":"quick-start-ubklum"},"spec":{"infrastructureTemplate":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-8tj88k-control-plane"},"kubeadmConfigSpec":{"clusterConfiguration":{"apiServer":{"certSANs":["localhost","127.0.0.1"]},"controllerManager":{"extraArgs":{"enable-hostpath-provisioner":"true"}}},"initConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}},"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}},"replicas":1,"version":"v1.18.2"}}
+  creationTimestamp: "2020-05-04T08:22:38Z"
+  finalizers:
+  - kubeadm.controlplane.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-8tj88k
+  name: cluster-8tj88k-control-plane
+  namespace: quick-start-ubklum
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-8tj88k
+    uid: f7bbbcd5-16cb-49af-8fa3-a760fa4f3c67
+  resourceVersion: "7968"
+  selfLink: /apis/controlplane.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-ubklum/kubeadmcontrolplanes/cluster-8tj88k-control-plane
+  uid: d6ec21c5-4b58-431b-934b-da9d8ff3d952
+spec:
+  infrastructureTemplate:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachineTemplate
+    name: cluster-8tj88k-control-plane
+    namespace: quick-start-ubklum
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        certSANs:
+        - localhost
+        - 127.0.0.1
+      controllerManager:
+        extraArgs:
+          enable-hostpath-provisioner: "true"
+      dns: {}
+      etcd: {}
+      networking: {}
+      scheduler: {}
+    initConfiguration:
+      localAPIEndpoint:
+        advertiseAddress: ""
+        bindPort: 0
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+    joinConfiguration:
+      discovery: {}
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+  replicas: 1
+  version: v1.18.2
+status:
+  initialized: true
+  ready: true
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-8tj88k,cluster.x-k8s.io/control-plane=
+  updatedReplicas: 1

@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-04T04:44:02Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-yrvwe8
+    cluster.x-k8s.io/deployment-name: cluster-yrvwe8-md-0
+    machine-template-hash: "1652671481"
+  name: cluster-yrvwe8-md-0-5b96bc58d5
+  namespace: kcp-upgrade-70qgf8
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-yrvwe8-md-0
+    uid: e0e68991-8df5-4c07-bc27-becf02a8ebe9
+  resourceVersion: "2977"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-70qgf8/machinesets/cluster-yrvwe8-md-0-5b96bc58d5
+  uid: 7db1c5ab-f226-4f58-a118-41ac14f6e810
+spec:
+  clusterName: cluster-yrvwe8
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-yrvwe8
+      cluster.x-k8s.io/deployment-name: cluster-yrvwe8-md-0
+      machine-template-hash: "1652671481"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-yrvwe8
+        cluster.x-k8s.io/deployment-name: cluster-yrvwe8-md-0
+        machine-template-hash: "1652671481"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-yrvwe8-md-0
+      clusterName: cluster-yrvwe8
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-yrvwe8-md-0
+      version: v1.17.2
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-yrvwe8,cluster.x-k8s.io/deployment-name=cluster-yrvwe8-md-0,machine-template-hash=1652671481

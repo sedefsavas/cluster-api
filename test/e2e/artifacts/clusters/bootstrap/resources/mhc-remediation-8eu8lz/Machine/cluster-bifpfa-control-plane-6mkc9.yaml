@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-05T05:58:36Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-bifpfa
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2112422270"
+  name: cluster-bifpfa-control-plane-6mkc9
+  namespace: mhc-remediation-8eu8lz
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-bifpfa-control-plane
+    uid: 0d6a4498-61c8-4024-b873-69fa910d12fe
+  resourceVersion: "1452"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-8eu8lz/machines/cluster-bifpfa-control-plane-6mkc9
+  uid: e374323f-3c29-41cd-b3c5-4ea3b3d9a6a8
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-bifpfa-control-plane-vjhm9
+      namespace: mhc-remediation-8eu8lz
+      uid: 2e8e0188-6a0f-4f4f-9edb-699166d719ff
+    dataSecretName: cluster-bifpfa-control-plane-vjhm9
+  clusterName: cluster-bifpfa
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-bifpfa-control-plane-w744j
+    namespace: mhc-remediation-8eu8lz
+    uid: fc24be96-a563-4f7f-bda1-b301b51cbf55
+  providerID: docker:////cluster-bifpfa-cluster-bifpfa-control-plane-6mkc9
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-05T05:59:15Z"
+  nodeRef:
+    name: cluster-bifpfa-cluster-bifpfa-control-plane-6mkc9
+    uid: f446f5ad-47ce-409e-8cd9-14984f197543
+  phase: Running

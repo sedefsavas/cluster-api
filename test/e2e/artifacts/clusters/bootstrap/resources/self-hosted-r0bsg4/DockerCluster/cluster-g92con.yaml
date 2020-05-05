@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-g92con","namespace":"self-hosted-r0bsg4"}}
+  creationTimestamp: "2020-05-04T05:39:59Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-g92con
+  name: cluster-g92con
+  namespace: self-hosted-r0bsg4
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-g92con
+    uid: e6a920b7-f145-477a-a062-0a1fa53733f0
+  resourceVersion: "2831"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/dockerclusters/cluster-g92con
+  uid: a6b64165-01b7-444b-9491-aac3b795d29b
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.7
+    port: 6443
+status:
+  ready: true

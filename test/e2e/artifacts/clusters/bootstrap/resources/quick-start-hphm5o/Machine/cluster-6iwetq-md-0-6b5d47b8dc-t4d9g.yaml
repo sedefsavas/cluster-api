@@ -1,0 +1,45 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T05:33:25Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-6iwetq-md-0-6b5d47b8dc-
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6iwetq
+    cluster.x-k8s.io/deployment-name: cluster-6iwetq-md-0
+    machine-template-hash: "2618036487"
+  name: cluster-6iwetq-md-0-6b5d47b8dc-t4d9g
+  namespace: quick-start-hphm5o
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-6iwetq-md-0-6b5d47b8dc
+    uid: f2683728-4277-4bd7-bf10-e6397cc94e67
+  resourceVersion: "1427"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-hphm5o/machines/cluster-6iwetq-md-0-6b5d47b8dc-t4d9g
+  uid: 22f8b5bd-f9cf-4aff-83fa-03416aef3fc0
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-6iwetq-md-0-q97vn
+      namespace: quick-start-hphm5o
+      uid: 8c9adba4-db7d-41e0-88c9-a71267604447
+    dataSecretName: cluster-6iwetq-md-0-q97vn
+  clusterName: cluster-6iwetq
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-6iwetq-md-0-tlnb8
+    namespace: quick-start-hphm5o
+    uid: 7934911a-f213-47a7-9ed4-a07f792ed4eb
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  lastUpdated: "2020-05-04T05:34:04Z"
+  phase: Provisioning

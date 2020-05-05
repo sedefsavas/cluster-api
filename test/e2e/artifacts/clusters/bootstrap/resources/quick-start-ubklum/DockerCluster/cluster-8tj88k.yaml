@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-8tj88k","namespace":"quick-start-ubklum"}}
+  creationTimestamp: "2020-05-04T08:22:38Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-8tj88k
+  name: cluster-8tj88k
+  namespace: quick-start-ubklum
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-8tj88k
+    uid: f7bbbcd5-16cb-49af-8fa3-a760fa4f3c67
+  resourceVersion: "7681"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-ubklum/dockerclusters/cluster-8tj88k
+  uid: 7baed9b8-772d-4a37-8c59-1fb9bcc32e2c
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

@@ -1,0 +1,42 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"Cluster","metadata":{"annotations":{},"name":"cluster-pfplay","namespace":"mhc-remediation-bk7oy6"},"spec":{"clusterNetwork":{"pods":{"cidrBlocks":["192.168.0.0/16"]},"serviceDomain":"cluster.local","services":{"cidrBlocks":["10.128.0.0/12"]}},"controlPlaneRef":{"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","name":"cluster-pfplay-control-plane"},"infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","name":"cluster-pfplay"}}}
+  creationTimestamp: "2020-05-04T07:58:37Z"
+  finalizers:
+  - cluster.cluster.x-k8s.io
+  generation: 2
+  name: cluster-pfplay
+  namespace: mhc-remediation-bk7oy6
+  resourceVersion: "1499"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-bk7oy6/clusters/cluster-pfplay
+  uid: 85f5ba59-e056-4169-9c8a-ba506c42fa2c
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.128.0.0/12
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-pfplay-control-plane
+    namespace: mhc-remediation-bk7oy6
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerCluster
+    name: cluster-pfplay
+    namespace: mhc-remediation-bk7oy6
+status:
+  controlPlaneInitialized: true
+  controlPlaneReady: true
+  infrastructureReady: true
+  phase: Provisioned

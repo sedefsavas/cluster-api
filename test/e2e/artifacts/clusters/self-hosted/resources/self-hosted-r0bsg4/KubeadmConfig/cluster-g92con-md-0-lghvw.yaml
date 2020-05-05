@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T05:39:45Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-g92con
+    cluster.x-k8s.io/deployment-name: cluster-g92con-md-0
+    machine-template-hash: "1313313511"
+  name: cluster-g92con-md-0-lghvw
+  namespace: self-hosted-r0bsg4
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-g92con-md-0-5757757955-2rb5p
+    uid: 289ef1cd-fc9e-48b4-b644-d094bdabfd65
+  resourceVersion: "1371"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/kubeadmconfigs/cluster-g92con-md-0-lghvw
+  uid: d5ff1fc0-bdf6-435e-9be1-cb16bc6ea730
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.7:6443
+        caCertHashes:
+        - sha256:a0264a09fbcf031f91a1fd7fbf2ffb84ebde6fed6e01a9355e207566596e1510
+        token: ot2hz0.qe9j5yup6q56xc5o
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-g92con-md-0-lghvw
+  ready: true

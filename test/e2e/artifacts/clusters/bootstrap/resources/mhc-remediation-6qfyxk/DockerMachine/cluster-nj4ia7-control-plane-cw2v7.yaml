@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-05T06:37:25Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-nj4ia7
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "3741786070"
+  name: cluster-nj4ia7-control-plane-cw2v7
+  namespace: mhc-remediation-6qfyxk
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-nj4ia7-control-plane
+    uid: e51b402b-0fac-43ea-b98b-7bf4e7cc579a
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-nj4ia7-control-plane-r6cxf
+    uid: 3b75f0dd-f2c2-44ef-ba97-e85cc93301d4
+  resourceVersion: "1439"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-6qfyxk/dockermachines/cluster-nj4ia7-control-plane-cw2v7
+  uid: 75a3c78f-bb87-4425-bb55-e2004bca1ce0
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-nj4ia7-cluster-nj4ia7-control-plane-r6cxf
+status:
+  loadBalancerConfigured: true
+  ready: true

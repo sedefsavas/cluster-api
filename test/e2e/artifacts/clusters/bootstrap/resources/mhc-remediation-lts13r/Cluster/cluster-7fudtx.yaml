@@ -1,0 +1,39 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"Cluster","metadata":{"annotations":{},"name":"cluster-7fudtx","namespace":"mhc-remediation-lts13r"},"spec":{"clusterNetwork":{"pods":{"cidrBlocks":["192.168.0.0/16"]},"serviceDomain":"cluster.local","services":{"cidrBlocks":["10.128.0.0/12"]}},"controlPlaneRef":{"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","name":"cluster-7fudtx-control-plane"},"infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","name":"cluster-7fudtx"}}}
+  creationTimestamp: "2020-05-05T05:54:31Z"
+  finalizers:
+  - cluster.cluster.x-k8s.io
+  generation: 1
+  name: cluster-7fudtx
+  namespace: mhc-remediation-lts13r
+  resourceVersion: "1314"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-lts13r/clusters/cluster-7fudtx
+  uid: 2ba23694-625a-44bb-90f8-56d1dbe8afde
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.128.0.0/12
+  controlPlaneEndpoint:
+    host: ""
+    port: 0
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-7fudtx-control-plane
+    namespace: mhc-remediation-lts13r
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerCluster
+    name: cluster-7fudtx
+    namespace: mhc-remediation-lts13r
+status:
+  phase: Provisioning

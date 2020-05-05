@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T08:00:29Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-pfplay
+    cluster.x-k8s.io/deployment-name: cluster-pfplay-md-0
+    machine-template-hash: "2647210693"
+  name: cluster-pfplay-md-0-vpjkk
+  namespace: mhc-remediation-bk7oy6
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-pfplay-md-0-6b8c654bf7-zdtqk
+    uid: acb40f01-0b8a-41ba-ac33-d5c40228872e
+  resourceVersion: "1723"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-bk7oy6/kubeadmconfigs/cluster-pfplay-md-0-vpjkk
+  uid: 11c2aa90-1870-4e86-bc39-6a50078b5a26
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:fc837272e04c5135df079b66d40a3f21ec00a19c5e378c3ed0d4067a3f61440a
+        token: zj3794.ts9559d4fvi6thab
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-pfplay-md-0-vpjkk
+  ready: true

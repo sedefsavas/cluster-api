@@ -1,0 +1,35 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T05:40:00Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-g92con
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "506475344"
+  name: cluster-g92con-control-plane-j4fdh
+  namespace: self-hosted-r0bsg4
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-g92con-control-plane
+    uid: b27540bf-468d-4c6d-8325-a80e36d0f8b7
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-g92con-control-plane-j79qt
+    uid: 6c5d969d-8e78-4a4e-979d-8a69a5aa4435
+  resourceVersion: "2878"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/dockermachines/cluster-g92con-control-plane-j4fdh
+  uid: b8f763f6-3e35-44a5-9b21-1fdb312a8c55
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-g92con-cluster-g92con-control-plane-j79qt
+status:
+  ready: true

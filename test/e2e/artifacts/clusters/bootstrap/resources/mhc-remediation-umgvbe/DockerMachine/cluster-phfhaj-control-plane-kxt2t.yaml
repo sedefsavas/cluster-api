@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-05T06:49:05Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-phfhaj
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "1075570301"
+  name: cluster-phfhaj-control-plane-kxt2t
+  namespace: mhc-remediation-umgvbe
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-phfhaj-control-plane
+    uid: d9d2d8a2-91ba-4490-96d7-be057fad69b4
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-phfhaj-control-plane-rfgz6
+    uid: b198bfd0-6bf3-4407-b737-81408df81c50
+  resourceVersion: "1413"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-umgvbe/dockermachines/cluster-phfhaj-control-plane-kxt2t
+  uid: 72edf306-9820-4beb-a395-12843d02b326
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-phfhaj-cluster-phfhaj-control-plane-rfgz6
+status:
+  loadBalancerConfigured: true
+  ready: true

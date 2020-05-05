@@ -1,0 +1,55 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "2"
+  creationTimestamp: "2020-05-04T07:51:44Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-epxh4y
+    cluster.x-k8s.io/deployment-name: cluster-epxh4y-md-0
+    machine-template-hash: "1584996775"
+  name: cluster-epxh4y-md-0-59d8ffbcc9
+  namespace: md-upgrades-6lezdp
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-epxh4y-md-0
+    uid: 98e14a06-40fa-41a6-9210-23222f5c71f6
+  resourceVersion: "2252"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-6lezdp/machinesets/cluster-epxh4y-md-0-59d8ffbcc9
+  uid: 85fad230-107e-4a19-945e-0b0cd5df3fb5
+spec:
+  clusterName: cluster-epxh4y
+  deletePolicy: Random
+  replicas: 0
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-epxh4y
+      cluster.x-k8s.io/deployment-name: cluster-epxh4y-md-0
+      machine-template-hash: "1584996775"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-epxh4y
+        cluster.x-k8s.io/deployment-name: cluster-epxh4y-md-0
+        machine-template-hash: "1584996775"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-epxh4y-md-0
+      clusterName: cluster-epxh4y
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-epxh4y-md-0
+      version: v1.18.2
+status:
+  observedGeneration: 2
+  selector: cluster.x-k8s.io/cluster-name=cluster-epxh4y,cluster.x-k8s.io/deployment-name=cluster-epxh4y-md-0,machine-template-hash=1584996775

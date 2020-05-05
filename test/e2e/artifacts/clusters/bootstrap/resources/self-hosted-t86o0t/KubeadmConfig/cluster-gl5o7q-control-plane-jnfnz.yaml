@@ -1,0 +1,56 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T08:22:14Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-gl5o7q
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "3846785284"
+  name: cluster-gl5o7q-control-plane-jnfnz
+  namespace: self-hosted-t86o0t
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-gl5o7q-control-plane
+    uid: 8e479ae5-a024-49a7-8c67-378d419c1614
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-gl5o7q-control-plane-mtpld
+    uid: b8d7b286-7113-4a4a-a2ff-fab3a50f81e8
+  resourceVersion: "7515"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-t86o0t/kubeadmconfigs/cluster-gl5o7q-control-plane-jnfnz
+  uid: 83d43ad0-d267-4646-9a0f-1f3b465d2078
+spec:
+  clusterConfiguration:
+    apiServer:
+      certSANs:
+      - localhost
+      - 127.0.0.1
+    certificatesDir: /etc/kubernetes/pki
+    clusterName: cluster-gl5o7q
+    controlPlaneEndpoint: 172.17.0.3:6443
+    controllerManager:
+      extraArgs:
+        enable-hostpath-provisioner: "true"
+    dns: {}
+    etcd: {}
+    kubernetesVersion: v1.16.4
+    networking:
+      dnsDomain: cluster.local
+      podSubnet: 192.168.0.0/16
+      serviceSubnet: 10.128.0.0/12
+    scheduler: {}
+  initConfiguration:
+    localAPIEndpoint:
+      advertiseAddress: ""
+      bindPort: 0
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-gl5o7q-control-plane-jnfnz
+  ready: true

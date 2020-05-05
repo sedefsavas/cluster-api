@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-k2gwtx-control-plane","namespace":"mhc-remediation-uddm7a"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-05T06:18:04Z"
+  generation: 1
+  name: cluster-k2gwtx-control-plane
+  namespace: mhc-remediation-uddm7a
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-k2gwtx
+    uid: f580d29e-67d7-4927-a5f6-a7ca188ed9bc
+  resourceVersion: "1307"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-uddm7a/dockermachinetemplates/cluster-k2gwtx-control-plane
+  uid: 25f4cb1f-6425-4293-a041-41cb264dc6fd
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

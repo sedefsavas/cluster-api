@@ -1,0 +1,45 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T04:50:38Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-yrvwe8
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "3485582269"
+  name: cluster-yrvwe8-control-plane-fmtsb
+  namespace: kcp-upgrade-70qgf8
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-yrvwe8-control-plane
+    uid: 95683735-36fc-499c-9cdd-3393fe61585f
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-yrvwe8-control-plane-x2tp6
+    uid: c0c394e7-947f-4391-9844-26727980f3bb
+  resourceVersion: "4273"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-70qgf8/kubeadmconfigs/cluster-yrvwe8-control-plane-fmtsb
+  uid: cf40082d-eb5e-4132-9b0b-8eb673ebc846
+spec:
+  joinConfiguration:
+    controlPlane:
+      localAPIEndpoint:
+        advertiseAddress: ""
+        bindPort: 0
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.4:6443
+        caCertHashes:
+        - sha256:4b2dc7227b448629723b375007cd98ed77500d535ced26d7c8801c1c7dd6c788
+        token: 759fsd.ooj0nka12y4074pb
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-yrvwe8-control-plane-fmtsb
+  ready: true

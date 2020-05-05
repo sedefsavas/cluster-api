@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-11mn4l-control-plane","namespace":"md-upgrades-e5r9dx"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-04T08:01:00Z"
+  generation: 1
+  name: cluster-11mn4l-control-plane
+  namespace: md-upgrades-e5r9dx
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-11mn4l
+    uid: 4f1ad3ad-745a-4424-9b86-104ce1b3e367
+  resourceVersion: "1936"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-e5r9dx/dockermachinetemplates/cluster-11mn4l-control-plane
+  uid: 89cd4d78-bcbe-41de-8598-4fd2d18c04cf
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

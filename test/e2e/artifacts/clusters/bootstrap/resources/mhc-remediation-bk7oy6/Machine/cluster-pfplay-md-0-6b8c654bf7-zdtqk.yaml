@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T08:00:29Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-pfplay-md-0-6b8c654bf7-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-pfplay
+    cluster.x-k8s.io/deployment-name: cluster-pfplay-md-0
+    machine-template-hash: "2647210693"
+  name: cluster-pfplay-md-0-6b8c654bf7-zdtqk
+  namespace: mhc-remediation-bk7oy6
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-pfplay-md-0-6b8c654bf7
+    uid: 79711946-5dd4-460f-bd66-783f59a13260
+  resourceVersion: "1778"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-bk7oy6/machines/cluster-pfplay-md-0-6b8c654bf7-zdtqk
+  uid: acb40f01-0b8a-41ba-ac33-d5c40228872e
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-pfplay-md-0-vpjkk
+      namespace: mhc-remediation-bk7oy6
+      uid: 11c2aa90-1870-4e86-bc39-6a50078b5a26
+    dataSecretName: cluster-pfplay-md-0-vpjkk
+  clusterName: cluster-pfplay
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-pfplay-md-0-rkvpr
+    namespace: mhc-remediation-bk7oy6
+    uid: 91ecdd9f-ee91-4b1c-a1a9-f91a351a5cc5
+  providerID: docker:////cluster-pfplay-cluster-pfplay-md-0-6b8c654bf7-zdtqk
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T08:00:39Z"
+  nodeRef:
+    name: cluster-pfplay-cluster-pfplay-md-0-6b8c654bf7-zdtqk
+    uid: 51271874-1000-47b5-9428-e69a5ba63b41
+  phase: Running

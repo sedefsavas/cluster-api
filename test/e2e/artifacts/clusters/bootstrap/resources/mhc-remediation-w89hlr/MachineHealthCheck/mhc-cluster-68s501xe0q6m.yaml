@@ -1,0 +1,30 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  creationTimestamp: "2020-05-04T05:54:21Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-68s501
+    e2e.x-k8s.io: triggered6
+  name: mhc-cluster-68s501xe0q6m
+  namespace: mhc-remediation-w89hlr
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-68s501
+    uid: e6d8a3cc-31f6-4cb0-848d-bd7bd7e1cb1b
+  resourceVersion: "1966"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-w89hlr/machinehealthchecks/mhc-cluster-68s501xe0q6m
+  uid: bf8b0498-1d28-426a-b514-e978667159ef
+spec:
+  clusterName: cluster-68s501
+  maxUnhealthy: 100%
+  nodeStartupTimeout: 10m0s
+  selector: {}
+  unhealthyConditions:
+  - status: "False"
+    timeout: 30s
+    type: E2ENodeHealthy
+status:
+  currentHealthy: 2
+  expectedMachines: 2

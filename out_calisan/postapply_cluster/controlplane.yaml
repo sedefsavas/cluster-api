@@ -1,0 +1,73 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  name: postapply-cluster-controlplane-0
+  namespace: default
+spec:
+  clusterConfiguration:
+    apiServer:
+      extraArgs:
+        cloud-provider: external
+    controllerManager:
+      extraArgs:
+        cloud-provider: external
+    imageRepository: k8s.gcr.io
+  initConfiguration:
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        cloud-provider: external
+      name: '{{ ds.meta_data.hostname }}'
+  preKubeadmCommands:
+  - hostname "{{ ds.meta_data.hostname }}"
+  - echo "::1         ipv6-localhost ipv6-loopback" >/etc/hosts
+  - echo "127.0.0.1   localhost {{ ds.meta_data.hostname }}" >>/etc/hosts
+  - echo "{{ ds.meta_data.hostname }}" >/etc/hostname
+  users:
+  - name: capv
+    sshAuthorizedKeys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAPyBcuZpshNB1OYV74QlDDYIlDITJgSBgX3Yq1I3iRAA4bHgkiFFUmg+pX/3che23l6NoH9aIAA1Ia/Mi732HZgWZ/uPpCln2izEX5i1Gjpg7FcS5yPpOSCpoiLE7QzU0PKn5Sy/dakllp5FjP56lqYZHH3s6MITYFcttprtHfrPga5jVyHtqayyV8McPRu3S38Mf3GZvxCr5fUGUv6p1lqNRoi6usPJRbgYsj7vEpN0juM2mdjgLCFNLuQbgt/q464zxSD4Ft7npaWeks0xlDTgPm6vb26JpaUnxl0JPwqAz7mTeXmKfYz9r/BMoc8Cex9mOrVTqT7AxAYbEGrG7 ssavas@ssavas-a01.vmware.com
+    sudo: ALL=(ALL) NOPASSWD:ALL
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: postapply-cluster
+    cluster.x-k8s.io/control-plane: "true"
+  name: postapply-cluster-controlplane-0
+  namespace: default
+spec:
+  clusterName: postapply-cluster
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: postapply-cluster-controlplane-0
+      namespace: default
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: VSphereMachine
+    name: postapply-cluster-controlplane-0
+    namespace: default
+  version: 1.16.2
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: VSphereMachine
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: postapply-cluster
+    cluster.x-k8s.io/control-plane: "true"
+  name: postapply-cluster-controlplane-0
+  namespace: default
+spec:
+  datacenter: SDDC-Datacenter
+  diskGiB: 20
+  memoryMiB: 2048
+  network:
+    devices:
+    - dhcp4: true
+      dhcp6: false
+      networkName: sddc-cgw-network-5
+  numCPUs: 2
+  template: ubuntu-1804-kube-v1.16.2

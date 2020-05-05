@@ -1,0 +1,25 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T05:33:25Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6iwetq
+    cluster.x-k8s.io/deployment-name: cluster-6iwetq-md-0
+    machine-template-hash: "2618036487"
+  name: cluster-6iwetq-md-0-tlnb8
+  namespace: quick-start-hphm5o
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-6iwetq-md-0-6b5d47b8dc-t4d9g
+    uid: 22f8b5bd-f9cf-4aff-83fa-03416aef3fc0
+  resourceVersion: "1246"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-hphm5o/dockermachines/cluster-6iwetq-md-0-tlnb8
+  uid: 7934911a-f213-47a7-9ed4-a07f792ed4eb
+spec:
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock

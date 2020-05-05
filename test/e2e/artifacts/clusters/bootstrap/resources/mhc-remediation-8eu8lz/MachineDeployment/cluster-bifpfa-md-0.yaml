@@ -1,0 +1,61 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineDeployment","metadata":{"annotations":{},"name":"cluster-bifpfa-md-0","namespace":"mhc-remediation-8eu8lz"},"spec":{"clusterName":"cluster-bifpfa","replicas":1,"selector":{"matchLabels":null},"template":{"spec":{"bootstrap":{"configRef":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","name":"cluster-bifpfa-md-0"}},"clusterName":"cluster-bifpfa","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-bifpfa-md-0"},"version":"v1.18.2"}}}}
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-05T05:58:33Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-bifpfa
+  name: cluster-bifpfa-md-0
+  namespace: mhc-remediation-8eu8lz
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-bifpfa
+    uid: 358b0892-1210-4662-91e2-10656f1cf343
+  resourceVersion: "1588"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-8eu8lz/machinedeployments/cluster-bifpfa-md-0
+  uid: e7d10de4-76b6-4579-a2c7-986c61ff3d97
+spec:
+  clusterName: cluster-bifpfa
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-bifpfa
+      cluster.x-k8s.io/deployment-name: cluster-bifpfa-md-0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-bifpfa
+        cluster.x-k8s.io/deployment-name: cluster-bifpfa-md-0
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-bifpfa-md-0
+      clusterName: cluster-bifpfa
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-bifpfa-md-0
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  observedGeneration: 1
+  phase: Running
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-bifpfa,cluster.x-k8s.io/deployment-name=cluster-bifpfa-md-0
+  updatedReplicas: 1

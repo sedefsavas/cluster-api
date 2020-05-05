@@ -26,8 +26,8 @@ import (
 
 var _ = Describe("When testing MachineDeployment upgrades", func() {
 
-	MDUpgradesSpec(context.TODO(), func() MDUpgradesSpecInput {
-		return MDUpgradesSpecInput{
+	MachineDeploymentUpgradesSpec(context.TODO(), func() MachineDeploymentUpgradesSpecInput {
+		return MachineDeploymentUpgradesSpecInput{
 			E2EConfig:             e2eConfig,
 			ClusterctlConfigPath:  clusterctlConfigPath,
 			BootstrapClusterProxy: bootstrapClusterProxy,

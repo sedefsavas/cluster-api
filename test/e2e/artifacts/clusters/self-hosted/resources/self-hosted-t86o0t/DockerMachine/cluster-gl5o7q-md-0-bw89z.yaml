@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T08:22:01Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-gl5o7q
+    cluster.x-k8s.io/deployment-name: cluster-gl5o7q-md-0
+    machine-template-hash: "2161311432"
+  name: cluster-gl5o7q-md-0-bw89z
+  namespace: self-hosted-t86o0t
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-gl5o7q-md-0-65b5755876-hdpgq
+    uid: d1418dba-6028-4458-b7ca-fa77821bac19
+  resourceVersion: "1277"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-t86o0t/dockermachines/cluster-gl5o7q-md-0-bw89z
+  uid: e8bd5381-9fd2-41d5-8b89-0ab59151e7f0
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-gl5o7q-cluster-gl5o7q-md-0-65b5755876-hdpgq
+status:
+  ready: true

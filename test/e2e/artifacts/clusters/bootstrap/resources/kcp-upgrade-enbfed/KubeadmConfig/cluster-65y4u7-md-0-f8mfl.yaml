@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T04:38:39Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-65y4u7
+    cluster.x-k8s.io/deployment-name: cluster-65y4u7-md-0
+    machine-template-hash: "1298113586"
+  name: cluster-65y4u7-md-0-f8mfl
+  namespace: kcp-upgrade-enbfed
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-65y4u7-md-0-56fd5579db-lqzpx
+    uid: bcbb1c3e-db56-4158-8718-7fc31f861880
+  resourceVersion: "1449"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-enbfed/kubeadmconfigs/cluster-65y4u7-md-0-f8mfl
+  uid: 16a7cec9-87ac-42b9-b7c6-cd69fe97217e
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.4:6443
+        caCertHashes:
+        - sha256:e31cb594160eeed45170678ad104ed3aafa8d2064beef5aa82bb3768cc0ca15c
+        token: 95a03h.t5oshc3a3edn97ko
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-65y4u7-md-0-f8mfl
+  ready: true

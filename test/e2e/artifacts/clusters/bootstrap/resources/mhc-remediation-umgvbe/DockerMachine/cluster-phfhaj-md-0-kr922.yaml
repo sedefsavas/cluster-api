@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-05T06:49:03Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-phfhaj
+    cluster.x-k8s.io/deployment-name: cluster-phfhaj-md-0
+    machine-template-hash: "144212750"
+  name: cluster-phfhaj-md-0-kr922
+  namespace: mhc-remediation-umgvbe
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-phfhaj-md-0-588656c94-6mmf9
+    uid: c2fac843-f3c4-4a74-b90d-dbf4faa04456
+  resourceVersion: "1493"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-umgvbe/dockermachines/cluster-phfhaj-md-0-kr922
+  uid: 6e635bf7-295e-4d3a-aa17-e281b29f3f0e
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-phfhaj-cluster-phfhaj-md-0-588656c94-6mmf9
+status:
+  ready: true

@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-6louek","namespace":"kcp-upgrade-ej3pg1"}}
+  creationTimestamp: "2020-05-04T08:09:28Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6louek
+  name: cluster-6louek
+  namespace: kcp-upgrade-ej3pg1
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-6louek
+    uid: 69d3625c-76f8-4a26-9174-3bbe43dd2783
+  resourceVersion: "4227"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ej3pg1/dockerclusters/cluster-6louek
+  uid: b22fe063-8461-4ee0-bf61-bc9ac356f1a5
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

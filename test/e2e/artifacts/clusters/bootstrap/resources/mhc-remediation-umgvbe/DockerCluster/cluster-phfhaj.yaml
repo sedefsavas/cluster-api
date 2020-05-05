@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-phfhaj","namespace":"mhc-remediation-umgvbe"}}
+  creationTimestamp: "2020-05-05T06:49:03Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-phfhaj
+  name: cluster-phfhaj
+  namespace: mhc-remediation-umgvbe
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-phfhaj
+    uid: 927cb0c0-3028-4da8-a312-271b3b9d8cbe
+  resourceVersion: "1259"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-umgvbe/dockerclusters/cluster-phfhaj
+  uid: 84aceb45-872a-4aa7-96a1-12b4da11fa65
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

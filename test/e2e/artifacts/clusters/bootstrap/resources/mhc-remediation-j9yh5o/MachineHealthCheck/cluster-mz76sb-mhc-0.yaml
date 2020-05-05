@@ -1,0 +1,33 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-mz76sb-mhc-0","namespace":"mhc-remediation-j9yh5o"},"spec":{"clusterName":"cluster-mz76sb","maxUnhealthy":"40%","selector":{"matchLabels":{"mhc":"unhealthy"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-05T06:42:45Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-mz76sb
+  name: cluster-mz76sb-mhc-0
+  namespace: mhc-remediation-j9yh5o
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-mz76sb
+    uid: 4b64617f-40d4-4200-84b8-bc2c9f9e1df1
+  resourceVersion: "1717"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-j9yh5o/machinehealthchecks/cluster-mz76sb-mhc-0
+  uid: 1aca952c-88a3-4204-8f4d-3c4754d33de5
+spec:
+  clusterName: cluster-mz76sb
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      mhc: unhealthy
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy
+status:
+  expectedMachines: 1

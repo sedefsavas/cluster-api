@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-05T06:42:48Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-mz76sb
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "1227734025"
+  name: cluster-mz76sb-control-plane-d9j67
+  namespace: mhc-remediation-j9yh5o
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-mz76sb-control-plane
+    uid: 4e093182-2f20-4842-b06a-9452caaef608
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-mz76sb-control-plane-rgndk
+    uid: 045fb25a-a0ba-43dd-8291-92e4bddefd40
+  resourceVersion: "1435"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-j9yh5o/dockermachines/cluster-mz76sb-control-plane-d9j67
+  uid: 09bb4b79-550a-4775-80ea-a83281c4c9a6
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-mz76sb-cluster-mz76sb-control-plane-rgndk
+status:
+  loadBalancerConfigured: true
+  ready: true

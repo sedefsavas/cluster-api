@@ -1,0 +1,19 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-77488q-md-0","namespace":"mhc-remediation-5w52f5"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-05T05:37:11Z"
+  generation: 1
+  name: cluster-77488q-md-0
+  namespace: mhc-remediation-5w52f5
+  resourceVersion: "1497"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-5w52f5/dockermachinetemplates/cluster-77488q-md-0
+  uid: 5fce532e-97f1-4efb-ad0c-374b00c6e919
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

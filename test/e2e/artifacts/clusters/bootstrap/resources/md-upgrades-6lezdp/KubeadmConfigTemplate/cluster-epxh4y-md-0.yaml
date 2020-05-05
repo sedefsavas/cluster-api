@@ -1,0 +1,26 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","metadata":{"annotations":{},"name":"cluster-epxh4y-md-0","namespace":"md-upgrades-6lezdp"},"spec":{"template":{"spec":{"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}}}}}
+  creationTimestamp: "2020-05-04T07:50:12Z"
+  generation: 1
+  name: cluster-epxh4y-md-0
+  namespace: md-upgrades-6lezdp
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-epxh4y
+    uid: 0db92b47-dace-40dc-8c08-52e63334da76
+  resourceVersion: "1247"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-6lezdp/kubeadmconfigtemplates/cluster-epxh4y-md-0
+  uid: e4b55e15-e997-4ff1-a39f-00b512286fa2
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: /var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%

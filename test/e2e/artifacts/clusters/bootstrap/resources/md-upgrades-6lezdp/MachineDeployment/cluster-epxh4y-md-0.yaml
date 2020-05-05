@@ -1,0 +1,61 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineDeployment","metadata":{"annotations":{},"name":"cluster-epxh4y-md-0","namespace":"md-upgrades-6lezdp"},"spec":{"clusterName":"cluster-epxh4y","replicas":1,"selector":{"matchLabels":null},"template":{"spec":{"bootstrap":{"configRef":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","name":"cluster-epxh4y-md-0"}},"clusterName":"cluster-epxh4y","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-epxh4y-md-0"},"version":"v1.17.2"}}}}
+    machinedeployment.clusters.x-k8s.io/revision: "3"
+  creationTimestamp: "2020-05-04T07:50:13Z"
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-epxh4y
+  name: cluster-epxh4y-md-0
+  namespace: md-upgrades-6lezdp
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-epxh4y
+    uid: 0db92b47-dace-40dc-8c08-52e63334da76
+  resourceVersion: "2254"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-6lezdp/machinedeployments/cluster-epxh4y-md-0
+  uid: 98e14a06-40fa-41a6-9210-23222f5c71f6
+spec:
+  clusterName: cluster-epxh4y
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-epxh4y
+      cluster.x-k8s.io/deployment-name: cluster-epxh4y-md-0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-epxh4y
+        cluster.x-k8s.io/deployment-name: cluster-epxh4y-md-0
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-epxh4y-md-0
+      clusterName: cluster-epxh4y
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-epxh4y-md-0-qufsx2
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  observedGeneration: 3
+  phase: Running
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-epxh4y,cluster.x-k8s.io/deployment-name=cluster-epxh4y-md-0
+  updatedReplicas: 1

@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-pfplay-control-plane","namespace":"mhc-remediation-bk7oy6"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-04T07:58:37Z"
+  generation: 1
+  name: cluster-pfplay-control-plane
+  namespace: mhc-remediation-bk7oy6
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-pfplay
+    uid: 85f5ba59-e056-4169-9c8a-ba506c42fa2c
+  resourceVersion: "1228"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-bk7oy6/dockermachinetemplates/cluster-pfplay-control-plane
+  uid: 777b5b8e-6957-4e35-8c6a-548f8ccefd9f
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

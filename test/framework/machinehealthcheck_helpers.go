@@ -19,151 +19,173 @@ package framework
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"time"
+
+	"sigs.k8s.io/cluster-api/util/patch"
+
+	"k8s.io/apimachinery/pkg/types"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
-	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
-	"sigs.k8s.io/cluster-api/util"
-	"sigs.k8s.io/cluster-api/util/patch"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-type ApplyMachineHealthCheckAndWaitInput struct {
+// DiscoverMachineHealthCheckAndWaitInput is the input for DiscoverMachineHealthCheckAndWait.
+type DiscoverMachineHealthCheckAndWaitInput struct {
 	ClusterProxy              ClusterProxy
 	Cluster                   *clusterv1.Cluster
-	ControlPlane              *controlplanev1.KubeadmControlPlane
 	MachineDeployments        []*clusterv1.MachineDeployment
-	WaitForMachineDeployments []interface{}
+	WaitForMachineRemediation []interface{}
 }
 
-func ApplyMachineHealthCheckAndWait(ctx context.Context, input ApplyMachineHealthCheckAndWaitInput) {
-	Expect(ctx).NotTo(BeNil(), "ctx is required for ApplyMachineHealthCheckAndWait")
-	Expect(input.ClusterProxy).ToNot(BeNil(), "Invalid argument. input.ClusterProxy can't be nil when calling ApplyMachineHealthCheckAndWait")
-	Expect(input.Cluster).ToNot(BeNil(), "Invalid argument. input.Cluster can't be nil when calling ApplyMachineHealthCheckAndWait")
-	Expect(input.MachineDeployments).ToNot(BeEmpty(), "Invalid argument. input.MachineDeployments can't be empty when calling ApplyMachineHealthCheckAndWait")
+// DiscoverMachineHealthCheckAndWait patches an unhealthy node condition to one node in each MachineDeployment and then wait for remediation.
+func DiscoverMachineHealthChecksAndWait(ctx context.Context, input DiscoverMachineHealthCheckAndWaitInput) {
+	Expect(ctx).NotTo(BeNil(), "ctx is required for DiscoverMachineHealthChecksAndWait")
+	Expect(input.ClusterProxy).ToNot(BeNil(), "Invalid argument. input.ClusterProxy can't be nil when calling DiscoverMachineHealthChecksAndWait")
+	Expect(input.Cluster).ToNot(BeNil(), "Invalid argument. input.Cluster can't be nil when calling DiscoverMachineHealthChecksAndWait")
+	Expect(input.MachineDeployments).ToNot(BeEmpty(), "Invalid argument. input.MachineDeployments can't be empty when calling DiscoverMachineHealthChecksAndWait")
 
-	fmt.Fprintf(GinkgoWriter, "Creating MachineHealthCheck instance\n")
-	mhc := GenerateMachineHealthCheck(input.Cluster)
-	Expect(input.ClusterProxy.GetClient().Create(ctx, mhc)).ShouldNot(HaveOccurred())
+	machineHealthChecks := GetMachineHealthChecksByCluster(ctx, GetMachineHealthChecksByClusterInput{
+		Lister:      input.ClusterProxy.GetClient(),
+		ClusterName: input.Cluster.Name,
+		Namespace:   input.Cluster.Namespace,
+	})
 
 	fmt.Fprintf(GinkgoWriter, "Patching an unhealthy condition to nodes and waiting for remediation\n")
-	WaitForMachineHealthCheckToDetectUnhealthyNodeCondition(ctx, WaitForMachineHealthCheckToDetectUnhealthyNodeConditionInput{
-		ClusterProxy:           input.ClusterProxy,
-		Cluster:                input.Cluster,
-		ControlPlane:           input.ControlPlane,
-		MachineDeployments:     input.MachineDeployments,
-		MachineHealthCheckName: mhc.Name,
-	}, input.WaitForMachineDeployments...)
-}
-
-func GenerateMachineHealthCheck(cluster *clusterv1.Cluster) *clusterv1.MachineHealthCheck {
-	mhc := &clusterv1.MachineHealthCheck{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("mhc-%s%s", cluster.Name, util.RandomString(6)),
-			Namespace: cluster.Namespace,
-		},
-		Spec: clusterv1.MachineHealthCheckSpec{
-			ClusterName: cluster.Name,
-			UnhealthyConditions: []clusterv1.UnhealthyCondition{
-				{
-					Type:    corev1.NodeConditionType("E2ENodeHealthy"),
-					Status:  corev1.ConditionFalse,
-					Timeout: metav1.Duration{Duration: 30 * time.Second},
-				},
-			},
-		},
-	}
-	return mhc
-}
-
-// WaitForMachineHealthCheckToDetectUnhealthyNodeConditionInput is the input for WaitForMachineHealthCheckToDetectUnhealthyNodeCondition.
-type WaitForMachineHealthCheckToDetectUnhealthyNodeConditionInput struct {
-	ClusterProxy                 ClusterProxy
-	Cluster                      *clusterv1.Cluster
-	ControlPlane                 *controlplanev1.KubeadmControlPlane
-	MachineDeployments           []*clusterv1.MachineDeployment
-	MachineHealthCheckName       string
-	WaitForControlPlaneIntervals []interface{}
-}
-
-// WaitForMachineHealthCheckToDetectUnhealthyNodeCondition waits until MachineHealthCheck detects nodes with unhealthy condition and starts rolling upgrade.
-func WaitForMachineHealthCheckToDetectUnhealthyNodeCondition(ctx context.Context, input WaitForMachineHealthCheckToDetectUnhealthyNodeConditionInput, intervals ...interface{}) {
-	Expect(ctx).NotTo(BeNil(), "ctx is required for WaitForMachineHealthCheckToDetectUnhealthyNodeCondition")
-	Expect(input.ClusterProxy).ToNot(BeNil(), "Invalid argument. input.ClusterProxy can't be nil when calling WaitForMachineHealthCheckToDetectUnhealthyNodeCondition")
-	Expect(input.Cluster).ToNot(BeNil(), "Invalid argument. input.Cluster can't be nil when calling WaitForMachineHealthCheckToDetectUnhealthyNodeCondition")
-	Expect(input.ControlPlane).ToNot(BeNil(), "Invalid argument. input.ControlPlane can't be nil when calling WaitForMachineHealthCheckToDetectUnhealthyNodeCondition")
-	Expect(input.MachineDeployments).ToNot(BeEmpty(), "Invalid argument. input.MachineDeployments can't be empty when calling WaitForMachineHealthCheckToDetectUnhealthyNodeCondition")
-	Expect(input.MachineHealthCheckName).ToNot(BeEmpty(), "Invalid argument. input.MachineHealthCheckName can't be empty when calling WaitForMachineHealthCheckToDetectUnhealthyNodeCondition")
-
-	fmt.Fprintf(GinkgoWriter, "Checking if MachineHealthCheck machines are initially healthy\n")
-	mhc := &clusterv1.MachineHealthCheck{}
-	Eventually(func() bool {
-		Expect(input.ClusterProxy.GetClient().Get(ctx, client.ObjectKey{Namespace: input.Cluster.Namespace, Name: input.MachineHealthCheckName}, mhc)).To(Succeed())
-		return len(mhc.Spec.UnhealthyConditions) > 0 && mhc.Status.ExpectedMachines > 0 && mhc.Status.CurrentHealthy == mhc.Status.ExpectedMachines
-	}, intervals...).Should(BeTrue())
-
-	fmt.Fprintf(GinkgoWriter, "Patching MachineHealthCheck unhealthy condition to worker nodes\n")
-	unhealthyNodeCondition := corev1.NodeCondition{
-		Type:               mhc.Spec.UnhealthyConditions[0].Type,
-		Status:             mhc.Spec.UnhealthyConditions[0].Status,
-		LastTransitionTime: metav1.Time{Time: time.Now()},
-	}
-	for _, md := range input.MachineDeployments {
-		selectorMap, err := metav1.LabelSelectorAsMap(&md.Spec.Selector)
-		Expect(err).ToNot(HaveOccurred())
-
-		ms := &clusterv1.MachineSetList{}
-		Expect(input.ClusterProxy.GetClient().List(ctx, ms, client.InNamespace(input.Cluster.Namespace), client.MatchingLabels(selectorMap))).To(Succeed())
-		Expect(len(ms.Items)).NotTo(Equal(0))
-
-		machineSet := ms.Items[0]
-		selectorMap, err = metav1.LabelSelectorAsMap(&machineSet.Spec.Selector)
-		Expect(err).ToNot(HaveOccurred())
-		machines := &clusterv1.MachineList{}
-		Expect(input.ClusterProxy.GetClient().List(ctx, machines, client.InNamespace(machineSet.Namespace), client.MatchingLabels(selectorMap))).To(Succeed())
-
-		for _, machine := range machines.Items {
-			node := &corev1.Node{}
-			Expect(input.ClusterProxy.GetWorkloadCluster(ctx, input.Cluster.Namespace, input.Cluster.Name).GetClient().Get(ctx, types.NamespacedName{Name: machine.Status.NodeRef.Name, Namespace: machine.Status.NodeRef.Namespace}, node)).To(Succeed())
-			patchHelper, err := patch.NewHelper(node, input.ClusterProxy.GetWorkloadCluster(ctx, input.Cluster.Namespace, input.Cluster.Name).GetClient())
-			Expect(err).ToNot(HaveOccurred())
-			node.Status.Conditions = append(node.Status.Conditions, unhealthyNodeCondition)
-			Expect(patchHelper.Patch(ctx, node)).To(Succeed())
+	for _, mhc := range machineHealthChecks {
+		if len(mhc.Spec.UnhealthyConditions) < 1 {
+			continue
 		}
+		fmt.Fprintf(GinkgoWriter, "Patching MachineDeployments with MachinehealthCheckLabel\n")
+		for _, md := range input.MachineDeployments {
+			if len(mhc.Spec.Selector.MatchLabels) < 0 {
+				continue
+			}
+			selectorMap, err := metav1.LabelSelectorAsMap(&md.Spec.Selector)
+			Expect(err).ToNot(HaveOccurred())
+
+			ms := &clusterv1.MachineSetList{}
+			Expect(input.ClusterProxy.GetClient().List(ctx, ms, client.InNamespace(input.Cluster.Namespace), client.MatchingLabels(selectorMap))).To(Succeed())
+
+			if len(ms.Items) == 0 {
+				continue
+			}
+			machineSet := ms.Items[0]
+			selectorMap, err = metav1.LabelSelectorAsMap(&machineSet.Spec.Selector)
+			Expect(err).ToNot(HaveOccurred())
+
+			machines := &clusterv1.MachineList{}
+			Expect(input.ClusterProxy.GetClient().List(ctx, machines, client.InNamespace(machineSet.Namespace), client.MatchingLabels(selectorMap))).To(Succeed())
+
+			for _, machine := range machines.Items {
+				patchHelper, err := patch.NewHelper(&machine, input.ClusterProxy.GetClient())
+				Expect(err).ToNot(HaveOccurred())
+				machine.SetLabels(mhc.Spec.Selector.MatchLabels)
+				Expect(patchHelper.Patch(ctx, &machine)).To(Succeed())
+			}
+		}
+
+		machines := GetMachinesByMachineHealthCheck(context.TODO(), GetMachinesByMachineHealthCheckInput{
+			Lister:             input.ClusterProxy.GetClient(),
+			ClusterName:        input.Cluster.Name,
+			Namespace:          input.Cluster.Namespace,
+			MachineHealthCheck: *mhc,
+		})
+		if len(machines) == 0 {
+			continue
+		}
+
+		fmt.Fprintf(GinkgoWriter, "Patching MachineHealthCheck unhealthy condition to one of the nodes\n")
+		unhealthyNodeCondition := corev1.NodeCondition{
+			Type:               mhc.Spec.UnhealthyConditions[0].Type,
+			Status:             mhc.Spec.UnhealthyConditions[0].Status,
+			LastTransitionTime: metav1.Time{Time: time.Now()},
+		}
+		PatchNodeCondition(ctx, PatchNodeConditionInput{
+			ClusterProxy:  input.ClusterProxy,
+			Cluster:       input.Cluster,
+			NodeCondition: unhealthyNodeCondition,
+			Machine:       machines[0],
+		})
 	}
 
-	fmt.Fprintf(GinkgoWriter, "Patching MachineHealthCheck to initiate reconcile\n")
-	Expect(input.ClusterProxy.GetClient().Get(ctx, client.ObjectKey{Namespace: input.Cluster.Namespace, Name: input.MachineHealthCheckName}, mhc)).To(Succeed())
-	patchHelper, err := patch.NewHelper(mhc, input.ClusterProxy.GetClient())
-	Expect(err).ToNot(HaveOccurred())
-	mhc.Labels["e2e.x-k8s.io"] = "triggered"
-	Expect(patchHelper.Patch(ctx, mhc)).To(Succeed())
+	fmt.Fprintf(GinkgoWriter, "Waiting for remediation\n")
+	WaitForMachineHealthCheckToRemediateUnhealthyNodeCondition(ctx, WaitForMachineHealthCheckToRemediateUnhealthyNodeConditionInput{
+		ClusterProxy:        input.ClusterProxy,
+		Cluster:             input.Cluster,
+		MachineHealthChecks: machineHealthChecks,
+	}, input.WaitForMachineRemediation...)
+}
 
-	fmt.Fprintf(GinkgoWriter, "Waiting for MachineHealthCheck to detect unhealthy nodes\n")
-	Eventually(func() bool {
-		Expect(input.ClusterProxy.GetClient().Get(ctx, client.ObjectKey{Namespace: input.Cluster.Namespace, Name: input.MachineHealthCheckName}, mhc)).To(Succeed())
-		return mhc.Status.ExpectedMachines > 0 && mhc.Status.CurrentHealthy != mhc.Status.ExpectedMachines
-	}, intervals...).Should(BeTrue())
+// GetMachineHealthChecksByClusterInput is the input for GetMachineHealthChecksByCluster.
+type GetMachineHealthChecksByClusterInput struct {
+	Lister      Lister
+	ClusterName string
+	Namespace   string
+}
 
-	fmt.Fprintf(GinkgoWriter, "Waiting for MachineHealthCheck to remediate unhealthy nodes\n")
-	counter := 0
-	Eventually(func() bool {
-		// Patching MachineHealthCheck here to avoid waiting for MachineHealthCheck to detect the changes
-		Expect(input.ClusterProxy.GetClient().Get(ctx, client.ObjectKey{Namespace: input.Cluster.Namespace, Name: input.MachineHealthCheckName}, mhc)).To(Succeed())
-		patchHelper, err := patch.NewHelper(mhc, input.ClusterProxy.GetClient())
-		Expect(err).ToNot(HaveOccurred())
-		mhc.Labels["e2e.x-k8s.io"] = "triggered" + strconv.Itoa(counter)
-		Expect(patchHelper.Patch(ctx, mhc)).To(Succeed())
+// GetMachineHealthChecksByCluster returns the MachineHealthCheck objects for a cluster.
+// Important! this method relies on labels that are created by the CAPI controllers during the first reconciliation, so
+// it is necessary to ensure this is already happened before calling it.
+func GetMachineHealthChecksByCluster(ctx context.Context, input GetMachineHealthChecksByClusterInput) []*clusterv1.MachineHealthCheck {
+	machineHealthCheckList := &clusterv1.MachineHealthCheckList{}
+	Expect(input.Lister.List(ctx, machineHealthCheckList, byClusterOptions(input.ClusterName, input.Namespace)...)).To(Succeed(), "Failed to list MachineDeployments object for Cluster %s/%s", input.Namespace, input.ClusterName)
 
-		counter++
-		Expect(input.ClusterProxy.GetClient().Get(ctx, client.ObjectKey{Namespace: input.Cluster.Namespace, Name: input.MachineHealthCheckName}, mhc)).To(Succeed())
-		return mhc.Status.ExpectedMachines > 0 && mhc.Status.CurrentHealthy == mhc.Status.ExpectedMachines
-	}, intervals...).Should(BeTrue())
+	machineHealthChecks := make([]*clusterv1.MachineHealthCheck, len(machineHealthCheckList.Items))
+	for i := range machineHealthCheckList.Items {
+		machineHealthChecks[i] = &machineHealthCheckList.Items[i]
+	}
+	return machineHealthChecks
+}
+
+// machineHealthCheckOptions returns a set of ListOptions that allows to get all machine objects belonging to a MachineHealthCheck.
+func machineHealthCheckOptions(machineHealthCheck clusterv1.MachineHealthCheck) []client.ListOption {
+	return []client.ListOption{
+		client.MatchingLabels(machineHealthCheck.Spec.Selector.MatchLabels),
+	}
+}
+
+// WaitForMachineHealthCheckToRemediateUnhealthyNodeConditionInput is the input for WaitForMachineHealthCheckToRemediateUnhealthyNodeCondition.
+type WaitForMachineHealthCheckToRemediateUnhealthyNodeConditionInput struct {
+	ClusterProxy        ClusterProxy
+	Cluster             *clusterv1.Cluster
+	MachineHealthChecks []*clusterv1.MachineHealthCheck
+}
+
+// WaitForMachineHealthCheckToRemediateUnhealthyNodeCondition patches a node condition to any one of the machines with a node ref.
+func WaitForMachineHealthCheckToRemediateUnhealthyNodeCondition(ctx context.Context, input WaitForMachineHealthCheckToRemediateUnhealthyNodeConditionInput, intervals ...interface{}) {
+	Expect(ctx).NotTo(BeNil(), "ctx is required for PatchNodeConditions")
+	Expect(input.ClusterProxy).ToNot(BeNil(), "Invalid argument. input.ClusterProxy can't be nil when calling PatchNodeConditions")
+	Expect(input.Cluster).ToNot(BeNil(), "Invalid argument. input.Cluster can't be nil when calling PatchNodeConditions")
+
+	for _, mhc := range input.MachineHealthChecks {
+		fmt.Fprintf(GinkgoWriter, "Waiting until the node with unhealthy node condition is remediated\n")
+		Eventually(func() bool {
+			machines := GetMachinesByMachineHealthCheck(context.TODO(), GetMachinesByMachineHealthCheckInput{
+				Lister:             input.ClusterProxy.GetClient(),
+				ClusterName:        input.Cluster.Name,
+				Namespace:          input.Cluster.Namespace,
+				MachineHealthCheck: *mhc,
+			})
+			if len(machines) == 0 {
+				return true
+			}
+
+			for _, machine := range machines {
+				if machine.Status.NodeRef == nil {
+					return false
+				}
+				node := &corev1.Node{}
+				Expect(input.ClusterProxy.GetWorkloadCluster(ctx, input.Cluster.Namespace, input.Cluster.Name).GetClient().Get(ctx, types.NamespacedName{Name: machine.Status.NodeRef.Name, Namespace: machine.Status.NodeRef.Namespace}, node)).To(Succeed())
+				if hasMatchingLabels(mhc.Spec.Selector, node.Labels) {
+					return false
+				}
+			}
+			return true
+		}, intervals...).Should(BeTrue())
+	}
 }

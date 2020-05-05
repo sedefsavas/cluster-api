@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "3"
+  creationTimestamp: "2020-05-04T08:03:24Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-11mn4l
+    cluster.x-k8s.io/deployment-name: cluster-11mn4l-md-0
+    machine-template-hash: "1671279040"
+  name: cluster-11mn4l-md-0-5bc56cf484
+  namespace: md-upgrades-e5r9dx
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-11mn4l-md-0
+    uid: 012de23f-fee3-4de2-9581-2645444e52af
+  resourceVersion: "2832"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-e5r9dx/machinesets/cluster-11mn4l-md-0-5bc56cf484
+  uid: aafce2d3-d505-4d1f-91f1-49f69d518128
+spec:
+  clusterName: cluster-11mn4l
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-11mn4l
+      cluster.x-k8s.io/deployment-name: cluster-11mn4l-md-0
+      machine-template-hash: "1671279040"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-11mn4l
+        cluster.x-k8s.io/deployment-name: cluster-11mn4l-md-0
+        machine-template-hash: "1671279040"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-11mn4l-md-0
+      clusterName: cluster-11mn4l
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-11mn4l-md-0-yeh3is
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-11mn4l,cluster.x-k8s.io/deployment-name=cluster-11mn4l-md-0,machine-template-hash=1671279040

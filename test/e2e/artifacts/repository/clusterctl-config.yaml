@@ -1,0 +1,23 @@
+CNI: ./data/cni/kindnet/kindnet.yaml
+COREDNS_VERSION_CURRENT: 1.6.7
+DOCKER_POD_CIDRS: 192.168.0.0/16
+DOCKER_SERVICE_CIDRS: 10.128.0.0/12
+DOCKER_SERVICE_DOMAIN: cluster.local
+ETCD_VERSION_CURRENT: 3.4.3-0
+KUBERNETES_VERSION_CURRENT: v1.18.2
+KUBERNETES_VERSION_MINIMUM_CAPI_SUPPORTED: v1.16.4
+KUBERNETES_VERSION_UPGRADE_FROM: v1.17.2
+overridesFolder: /Users/ssavas/dev/qa_capi/tilttest/cluster-api/test/e2e/artifacts/repository/overrides
+providers:
+- name: cluster-api
+  type: CoreProvider
+  url: /Users/ssavas/dev/qa_capi/tilttest/cluster-api/test/e2e/artifacts/repository/cluster-api/v0.3.0/components.yaml
+- name: kubeadm
+  type: BootstrapProvider
+  url: /Users/ssavas/dev/qa_capi/tilttest/cluster-api/test/e2e/artifacts/repository/bootstrap-kubeadm/v0.3.0/components.yaml
+- name: kubeadm
+  type: ControlPlaneProvider
+  url: /Users/ssavas/dev/qa_capi/tilttest/cluster-api/test/e2e/artifacts/repository/control-plane-kubeadm/v0.3.0/components.yaml
+- name: docker
+  type: InfrastructureProvider
+  url: /Users/ssavas/dev/qa_capi/tilttest/cluster-api/test/e2e/artifacts/repository/infrastructure-docker/v0.3.0/components.yaml

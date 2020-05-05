@@ -1,0 +1,26 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","metadata":{"annotations":{},"name":"cluster-gl5o7q-md-0","namespace":"self-hosted-t86o0t"},"spec":{"template":{"spec":{"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}}}}}
+  creationTimestamp: "2020-05-04T08:22:14Z"
+  generation: 1
+  name: cluster-gl5o7q-md-0
+  namespace: self-hosted-t86o0t
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-gl5o7q
+    uid: 3cf05fd7-e100-4cc8-a51b-f654ca4aff78
+  resourceVersion: "7486"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-t86o0t/kubeadmconfigtemplates/cluster-gl5o7q-md-0
+  uid: cf5da93c-4497-4cbc-bb6d-caa92f7d4de2
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: /var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%

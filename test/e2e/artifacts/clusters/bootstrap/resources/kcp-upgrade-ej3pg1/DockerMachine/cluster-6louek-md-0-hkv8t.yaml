@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T08:09:28Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6louek
+    cluster.x-k8s.io/deployment-name: cluster-6louek-md-0
+    machine-template-hash: "3315039240"
+  name: cluster-6louek-md-0-hkv8t
+  namespace: kcp-upgrade-ej3pg1
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-6louek-md-0-775947f684-4h4tc
+    uid: 5d6a1614-fa59-4b5c-9e75-9c9599ebda34
+  resourceVersion: "4500"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ej3pg1/dockermachines/cluster-6louek-md-0-hkv8t
+  uid: a007193e-1410-40e7-9155-8727b1b0b5e2
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-6louek-cluster-6louek-md-0-775947f684-4h4tc
+status:
+  ready: true

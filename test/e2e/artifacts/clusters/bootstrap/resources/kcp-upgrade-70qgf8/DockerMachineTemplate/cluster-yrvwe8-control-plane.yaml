@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-yrvwe8-control-plane","namespace":"kcp-upgrade-70qgf8"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-04T04:44:02Z"
+  generation: 1
+  name: cluster-yrvwe8-control-plane
+  namespace: kcp-upgrade-70qgf8
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-yrvwe8
+    uid: 1c7c5ae1-1ce7-4f23-9d4c-cb1937f15d76
+  resourceVersion: "2615"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-70qgf8/dockermachinetemplates/cluster-yrvwe8-control-plane
+  uid: 46eb1099-caa3-47dd-8705-3dbbea8a757f
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

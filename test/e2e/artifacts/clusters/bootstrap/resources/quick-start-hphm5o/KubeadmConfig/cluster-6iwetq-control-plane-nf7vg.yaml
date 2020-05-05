@@ -1,0 +1,56 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T05:33:28Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6iwetq
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "1257912531"
+  name: cluster-6iwetq-control-plane-nf7vg
+  namespace: quick-start-hphm5o
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-6iwetq-control-plane
+    uid: 259788e8-826d-4981-b296-3a76f3a3be4f
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-6iwetq-control-plane-zsknh
+    uid: 5ac2c61b-d2c7-4644-9be3-8e2ffe188cd9
+  resourceVersion: "1283"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-hphm5o/kubeadmconfigs/cluster-6iwetq-control-plane-nf7vg
+  uid: b76e168c-b337-4674-8ad5-08fe5076e067
+spec:
+  clusterConfiguration:
+    apiServer:
+      certSANs:
+      - localhost
+      - 127.0.0.1
+    certificatesDir: /etc/kubernetes/pki
+    clusterName: cluster-6iwetq
+    controlPlaneEndpoint: 172.17.0.4:6443
+    controllerManager:
+      extraArgs:
+        enable-hostpath-provisioner: "true"
+    dns: {}
+    etcd: {}
+    kubernetesVersion: v1.18.2
+    networking:
+      dnsDomain: cluster.local
+      podSubnet: 192.168.0.0/16
+      serviceSubnet: 10.128.0.0/12
+    scheduler: {}
+  initConfiguration:
+    localAPIEndpoint:
+      advertiseAddress: ""
+      bindPort: 0
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-6iwetq-control-plane-nf7vg
+  ready: true

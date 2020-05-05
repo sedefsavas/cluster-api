@@ -1,0 +1,56 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-05T06:49:05Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-phfhaj
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "1075570301"
+  name: cluster-phfhaj-control-plane-4zrxc
+  namespace: mhc-remediation-umgvbe
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-phfhaj-control-plane
+    uid: d9d2d8a2-91ba-4490-96d7-be057fad69b4
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-phfhaj-control-plane-rfgz6
+    uid: b198bfd0-6bf3-4407-b737-81408df81c50
+  resourceVersion: "1284"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-umgvbe/kubeadmconfigs/cluster-phfhaj-control-plane-4zrxc
+  uid: 7b7343c6-2a62-4a0e-9656-976e28b1a11a
+spec:
+  clusterConfiguration:
+    apiServer:
+      certSANs:
+      - localhost
+      - 127.0.0.1
+    certificatesDir: /etc/kubernetes/pki
+    clusterName: cluster-phfhaj
+    controlPlaneEndpoint: 172.17.0.3:6443
+    controllerManager:
+      extraArgs:
+        enable-hostpath-provisioner: "true"
+    dns: {}
+    etcd: {}
+    kubernetesVersion: v1.18.2
+    networking:
+      dnsDomain: cluster.local
+      podSubnet: 192.168.0.0/16
+      serviceSubnet: 10.128.0.0/12
+    scheduler: {}
+  initConfiguration:
+    localAPIEndpoint:
+      advertiseAddress: ""
+      bindPort: 0
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-phfhaj-control-plane-4zrxc
+  ready: true

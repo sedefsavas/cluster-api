@@ -1,0 +1,26 @@
+I0504 16:47:35.469129       1 request.go:565] Throttling request took 89.744876ms, request: GET:https://10.96.0.1:443/apis/coordination.k8s.io/v1?timeout=32s
+I0504 16:47:35.519223       1 request.go:565] Throttling request took 139.681112ms, request: GET:https://10.96.0.1:443/apis/bootstrap.cluster.x-k8s.io/v1alpha2?timeout=32s
+I0504 16:47:35.569079       1 request.go:565] Throttling request took 189.008044ms, request: GET:https://10.96.0.1:443/apis/apiextensions.k8s.io/v1?timeout=32s
+I0504 16:47:35.619032       1 request.go:565] Throttling request took 238.917362ms, request: GET:https://10.96.0.1:443/apis/node.k8s.io/v1beta1?timeout=32s
+I0504 16:47:35.669148       1 request.go:565] Throttling request took 289.023988ms, request: GET:https://10.96.0.1:443/apis/discovery.k8s.io/v1beta1?timeout=32s
+I0504 16:47:35.719073       1 request.go:565] Throttling request took 338.954448ms, request: GET:https://10.96.0.1:443/apis/policy/v1beta1?timeout=32s
+I0504 16:47:35.768869       1 request.go:565] Throttling request took 388.738133ms, request: GET:https://10.96.0.1:443/apis/certificates.k8s.io/v1beta1?timeout=32s
+I0504 16:47:35.818888       1 request.go:565] Throttling request took 438.765766ms, request: GET:https://10.96.0.1:443/apis/storage.k8s.io/v1beta1?timeout=32s
+I0504 16:47:35.868786       1 request.go:565] Throttling request took 488.637528ms, request: GET:https://10.96.0.1:443/apis/rbac.authorization.k8s.io/v1beta1?timeout=32s
+I0504 16:47:35.919127       1 request.go:565] Throttling request took 539.000177ms, request: GET:https://10.96.0.1:443/apis/coordination.k8s.io/v1beta1?timeout=32s
+I0504 16:47:35.968938       1 request.go:565] Throttling request took 588.809857ms, request: GET:https://10.96.0.1:443/apis/cert-manager.io/v1alpha2?timeout=32s
+I0504 16:47:36.018965       1 request.go:565] Throttling request took 638.833906ms, request: GET:https://10.96.0.1:443/apis/bootstrap.cluster.x-k8s.io/v1alpha3?timeout=32s
+I0504 16:47:36.069004       1 request.go:565] Throttling request took 688.872804ms, request: GET:https://10.96.0.1:443/apis/admissionregistration.k8s.io/v1beta1?timeout=32s
+I0504 16:47:36.119042       1 request.go:565] Throttling request took 738.724529ms, request: GET:https://10.96.0.1:443/apis/admissionregistration.k8s.io/v1?timeout=32s
+I0504 16:47:36.169087       1 request.go:565] Throttling request took 788.765457ms, request: GET:https://10.96.0.1:443/apis/storage.k8s.io/v1?timeout=32s
+I0504 16:47:36.173232       1 main.go:90] setup "msg"="starting manager"  
+I0504 16:47:36.173519       1 shared_informer.go:227] caches populated
+I0504 16:47:36.173962       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockercluster" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"ready":false}}}
+I0504 16:47:36.173976       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockermachine" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{},"status":{"ready":false}}}
+I0504 16:47:36.174165       1 reflector.go:150] Starting reflector *v1alpha3.DockerCluster (10m15.462150478s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 16:47:36.174239       1 reflector.go:185] Listing and watching *v1alpha3.DockerCluster from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 16:47:36.174472       1 reflector.go:150] Starting reflector *v1alpha3.DockerMachine (10m0.117664499s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 16:47:36.174502       1 reflector.go:185] Listing and watching *v1alpha3.DockerMachine from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 16:47:36.274356       1 shared_informer.go:227] caches populated
+I0504 16:47:36.274623       1 shared_informer.go:227] caches populated
+I0504 16:47:36.274881       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockermachine" "source"={"Type":{"metadata":{"creationTimestamp"

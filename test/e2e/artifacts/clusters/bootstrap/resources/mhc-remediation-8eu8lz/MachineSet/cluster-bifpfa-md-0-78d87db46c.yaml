@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-05T05:58:33Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-bifpfa
+    cluster.x-k8s.io/deployment-name: cluster-bifpfa-md-0
+    machine-template-hash: "3484386027"
+  name: cluster-bifpfa-md-0-78d87db46c
+  namespace: mhc-remediation-8eu8lz
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-bifpfa-md-0
+    uid: e7d10de4-76b6-4579-a2c7-986c61ff3d97
+  resourceVersion: "1587"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-8eu8lz/machinesets/cluster-bifpfa-md-0-78d87db46c
+  uid: 8fc9a6e6-0209-447d-a20d-c89cbe76397d
+spec:
+  clusterName: cluster-bifpfa
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-bifpfa
+      cluster.x-k8s.io/deployment-name: cluster-bifpfa-md-0
+      machine-template-hash: "3484386027"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-bifpfa
+        cluster.x-k8s.io/deployment-name: cluster-bifpfa-md-0
+        machine-template-hash: "3484386027"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-bifpfa-md-0
+      clusterName: cluster-bifpfa
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-bifpfa-md-0
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-bifpfa,cluster.x-k8s.io/deployment-name=cluster-bifpfa-md-0,machine-template-hash=3484386027

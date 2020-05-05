@@ -1,0 +1,20 @@
+I0504 07:33:51.919558       1 listener.go:44] controller-runtime/metrics "msg"="metrics server is starting to listen"  "addr"="127.0.0.1:8080"
+I0504 07:33:51.919987       1 webhook.go:92] controller-runtime/builder "msg"="skip registering a mutating webhook, admission.Defaulter interface is not implemented"  "GVK"={"Group":"bootstrap.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmConfig"}
+I0504 07:33:51.920023       1 webhook.go:113] controller-runtime/builder "msg"="skip registering a validating webhook, admission.Validator interface is not implemented"  "GVK"={"Group":"bootstrap.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmConfig"}
+I0504 07:33:51.920081       1 server.go:121] controller-runtime/webhook "msg"="registering webhook"  "path"="/convert"
+I0504 07:33:51.920772       1 webhook.go:141] controller-runtime/builder "msg"="conversion webhook enabled"  "object"={"metadata":{"creationTimestamp":null},"spec":{},"status":{}}
+I0504 07:33:51.920818       1 webhook.go:92] controller-runtime/builder "msg"="skip registering a mutating webhook, admission.Defaulter interface is not implemented"  "GVK"={"Group":"bootstrap.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmConfigList"}
+I0504 07:33:51.920830       1 webhook.go:113] controller-runtime/builder "msg"="skip registering a validating webhook, admission.Validator interface is not implemented"  "GVK"={"Group":"bootstrap.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmConfigList"}
+I0504 07:33:51.921132       1 webhook.go:141] controller-runtime/builder "msg"="conversion webhook enabled"  "object"={"metadata":{},"items":null}
+I0504 07:33:51.921190       1 webhook.go:92] controller-runtime/builder "msg"="skip registering a mutating webhook, admission.Defaulter interface is not implemented"  "GVK"={"Group":"bootstrap.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmConfigTemplate"}
+I0504 07:33:51.921203       1 webhook.go:113] controller-runtime/builder "msg"="skip registering a validating webhook, admission.Validator interface is not implemented"  "GVK"={"Group":"bootstrap.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmConfigTemplate"}
+I0504 07:33:51.921339       1 webhook.go:141] controller-runtime/builder "msg"="conversion webhook enabled"  "object"={"metadata":{"creationTimestamp":null},"spec":{"template":{"spec":{}}}}
+I0504 07:33:51.921377       1 webhook.go:92] controller-runtime/builder "msg"="skip registering a mutating webhook, admission.Defaulter interface is not implemented"  "GVK"={"Group":"bootstrap.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmConfigTemplateList"}
+I0504 07:33:51.922144       1 webhook.go:113] controller-runtime/builder "msg"="skip registering a validating webhook, admission.Validator interface is not implemented"  "GVK"={"Group":"bootstrap.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmConfigTemplateList"}
+I0504 07:33:51.922708       1 webhook.go:141] controller-runtime/builder "msg"="conversion webhook enabled"  "object"={"metadata":{},"items":null}
+I0504 07:33:51.922747       1 main.go:151] setup "msg"="starting manager"  "version"=""
+I0504 07:33:51.922967       1 internal.go:356] controller-runtime/manager "msg"="starting metrics server"  "path"="/metrics"
+I0504 07:33:51.923045       1 server.go:141] controller-runtime/webhook/webhooks "msg"="starting webhook server"  
+I0504 07:33:51.923939       1 certwatcher.go:127] controller-runtime/certwatcher "msg"="Updated current TLS certificate"  
+I0504 07:33:51.924243       1 server.go:199] controller-runtime/webhook "msg"="serving webhook server"  "host"="" "port"=9443
+I0504 07:33:51.924780       1 certwatcher.go:83] controller-runtime/certwatcher "msg"="Starting certificate watcher"  

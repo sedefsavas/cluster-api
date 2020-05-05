@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T04:38:39Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-65y4u7-md-0-56fd5579db-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-65y4u7
+    cluster.x-k8s.io/deployment-name: cluster-65y4u7-md-0
+    machine-template-hash: "1298113586"
+  name: cluster-65y4u7-md-0-56fd5579db-lqzpx
+  namespace: kcp-upgrade-enbfed
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-65y4u7-md-0-56fd5579db
+    uid: c6d4b78e-a6f9-44e1-a0a8-18a32b391f6e
+  resourceVersion: "1514"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-enbfed/machines/cluster-65y4u7-md-0-56fd5579db-lqzpx
+  uid: bcbb1c3e-db56-4158-8718-7fc31f861880
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-65y4u7-md-0-f8mfl
+      namespace: kcp-upgrade-enbfed
+      uid: 16a7cec9-87ac-42b9-b7c6-cd69fe97217e
+    dataSecretName: cluster-65y4u7-md-0-f8mfl
+  clusterName: cluster-65y4u7
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-65y4u7-md-0-d85lv
+    namespace: kcp-upgrade-enbfed
+    uid: 48e032c0-9438-4370-83ef-91b78a709da9
+  providerID: docker:////cluster-65y4u7-cluster-65y4u7-md-0-56fd5579db-lqzpx
+  version: v1.17.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T04:39:39Z"
+  nodeRef:
+    name: cluster-65y4u7-cluster-65y4u7-md-0-56fd5579db-lqzpx
+    uid: 31bfb725-5e26-4615-a21d-4ade79de2df6
+  phase: Running

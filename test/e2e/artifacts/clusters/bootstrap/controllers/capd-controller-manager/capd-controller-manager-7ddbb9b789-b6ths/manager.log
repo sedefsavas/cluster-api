@@ -1,0 +1,26 @@
+I0504 16:49:56.396807       1 request.go:565] Throttling request took 79.86448ms, request: GET:https://10.96.0.1:443/apis/coordination.k8s.io/v1beta1?timeout=32s
+I0504 16:49:56.446730       1 request.go:565] Throttling request took 129.794867ms, request: GET:https://10.96.0.1:443/apis/node.k8s.io/v1beta1?timeout=32s
+I0504 16:49:56.496792       1 request.go:565] Throttling request took 179.711832ms, request: GET:https://10.96.0.1:443/apis/apps/v1?timeout=32s
+I0504 16:49:56.546976       1 request.go:565] Throttling request took 229.765385ms, request: GET:https://10.96.0.1:443/apis/authorization.k8s.io/v1beta1?timeout=32s
+I0504 16:49:56.596813       1 request.go:565] Throttling request took 279.589972ms, request: GET:https://10.96.0.1:443/apis/autoscaling/v1?timeout=32s
+I0504 16:49:56.646897       1 request.go:565] Throttling request took 329.660218ms, request: GET:https://10.96.0.1:443/apis/storage.k8s.io/v1?timeout=32s
+I0504 16:49:56.696822       1 request.go:565] Throttling request took 379.575657ms, request: GET:https://10.96.0.1:443/apis/authorization.k8s.io/v1?timeout=32s
+I0504 16:49:56.747298       1 request.go:565] Throttling request took 429.766629ms, request: GET:https://10.96.0.1:443/apis/events.k8s.io/v1beta1?timeout=32s
+I0504 16:49:56.797460       1 request.go:565] Throttling request took 479.865018ms, request: GET:https://10.96.0.1:443/apis/rbac.authorization.k8s.io/v1?timeout=32s
+I0504 16:49:56.846994       1 request.go:565] Throttling request took 527.555981ms, request: GET:https://10.96.0.1:443/apis/authentication.k8s.io/v1?timeout=32s
+I0504 16:49:56.896888       1 request.go:565] Throttling request took 577.449377ms, request: GET:https://10.96.0.1:443/apis/rbac.authorization.k8s.io/v1beta1?timeout=32s
+I0504 16:49:56.947039       1 request.go:565] Throttling request took 627.598407ms, request: GET:https://10.96.0.1:443/apis/extensions/v1beta1?timeout=32s
+I0504 16:49:56.996915       1 request.go:565] Throttling request took 677.476822ms, request: GET:https://10.96.0.1:443/apis/autoscaling/v2beta1?timeout=32s
+I0504 16:49:57.046917       1 request.go:565] Throttling request took 727.471689ms, request: GET:https://10.96.0.1:443/apis/authentication.k8s.io/v1beta1?timeout=32s
+I0504 16:49:57.096957       1 request.go:565] Throttling request took 776.618747ms, request: GET:https://10.96.0.1:443/apis/policy/v1beta1?timeout=32s
+I0504 16:49:57.103764       1 main.go:90] setup "msg"="starting manager"  
+I0504 16:49:57.104311       1 shared_informer.go:227] caches populated
+I0504 16:49:57.104901       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockercluster" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"ready":false}}}
+I0504 16:49:57.105022       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockermachine" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{},"status":{"ready":false}}}
+I0504 16:49:57.105392       1 reflector.go:150] Starting reflector *v1alpha3.DockerCluster (10m50.744103866s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 16:49:57.105485       1 reflector.go:185] Listing and watching *v1alpha3.DockerCluster from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 16:49:57.105719       1 reflector.go:150] Starting reflector *v1alpha3.DockerMachine (10m59.202534387s) from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 16:49:57.105758       1 reflector.go:185] Listing and watching *v1alpha3.DockerMachine from pkg/mod/k8s.io/client-go@v0.17.2/tools/cache/reflector.go:105
+I0504 16:49:57.205747       1 shared_informer.go:227] caches populated
+I0504 16:49:57.205923       1 shared_informer.go:227] caches populated
+I0504 16:49:57.206305       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="dockercluster" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status"

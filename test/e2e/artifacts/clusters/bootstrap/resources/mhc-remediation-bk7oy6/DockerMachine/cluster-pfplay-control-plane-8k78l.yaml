@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T07:58:39Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-pfplay
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "812072398"
+  name: cluster-pfplay-control-plane-8k78l
+  namespace: mhc-remediation-bk7oy6
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-pfplay-control-plane
+    uid: b1bb21f7-1924-4c58-9678-ca88d24e682e
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-pfplay-control-plane-ptdmj
+    uid: e9f0c390-a8b6-4480-b04c-f5ef4f7ca952
+  resourceVersion: "1372"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-bk7oy6/dockermachines/cluster-pfplay-control-plane-8k78l
+  uid: c14a5185-102d-4e45-a651-668c1234d97b
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-pfplay-cluster-pfplay-control-plane-ptdmj
+status:
+  loadBalancerConfigured: true
+  ready: true

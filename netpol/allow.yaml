@@ -1,0 +1,19 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: api-allow
+spec:
+  podSelector:
+    matchLabels:
+      app: python
+#       - {}         # select all pods
+  ingress:
+#   - {}   # allow all
+
+#   - from: # select all pods from all ns
+#       - namespaceSelector: {}
+
+  - from: # add label to ns
+      - namespaceSelector:
+          matchLabels:
+            app: python

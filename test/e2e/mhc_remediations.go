@@ -28,14 +28,13 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/utils/pointer"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
-	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/test/framework"
 	"sigs.k8s.io/cluster-api/test/framework/clusterctl"
 	"sigs.k8s.io/cluster-api/util"
 )
 
-// MHCRemediationSpecInput is the input for MHCRemediationSpec.
-type MHCRemediationSpecInput struct {
+// MachineRemediationSpecInput is the input for MachineRemediationSpec.
+type MachineRemediationSpecInput struct {
 	E2EConfig             *clusterctl.E2EConfig
 	ClusterctlConfigPath  string
 	BootstrapClusterProxy framework.ClusterProxy
@@ -43,15 +42,14 @@ type MHCRemediationSpecInput struct {
 	SkipCleanup           bool
 }
 
-// MHCRemediationSpec implements a test that verifies that Machines are remediated by MHC during unhealthy conditions.
-func MHCRemediationSpec(ctx context.Context, inputGetter func() MHCRemediationSpecInput) {
+// MachineRemediationSpec implements a test that verifies that Machines are remediated by MHC during unhealthy conditions.
+func MachineRemediationSpec(ctx context.Context, inputGetter func() MachineRemediationSpecInput) {
 	var (
 		specName      = "mhc-remediation"
-		input         MHCRemediationSpecInput
+		input         MachineRemediationSpecInput
 		namespace     *corev1.Namespace
 		cancelWatches context.CancelFunc
 		cluster       *clusterv1.Cluster
-		controlPlane  *controlplanev1.KubeadmControlPlane
 	)
 
 	BeforeEach(func() {
@@ -61,7 +59,7 @@ func MHCRemediationSpec(ctx context.Context, inputGetter func() MHCRemediationSp
 		Expect(input.ClusterctlConfigPath).To(BeAnExistingFile(), "Invalid argument. input.ClusterctlConfigPath must be an existing file when calling %s spec", specName)
 		Expect(input.BootstrapClusterProxy).ToNot(BeNil(), "Invalid argument. input.BootstrapClusterProxy can't be nil when calling %s spec", specName)
 		Expect(os.MkdirAll(input.ArtifactFolder, 0755)).To(Succeed(), "Invalid argument. input.ArtifactFolder can't be created for %s spec", specName)
-		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionCurrent))
+		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersion))
 		Expect(input.E2EConfig.Variables).To(HaveKey(CNIPath))
 
 		// Setup a Namespace where to host objects for this spec and create a watcher for the namespace events.
@@ -73,7 +71,7 @@ func MHCRemediationSpec(ctx context.Context, inputGetter func() MHCRemediationSp
 		By("Creating a workload cluster")
 
 		var mds []*clusterv1.MachineDeployment
-		cluster, controlPlane, mds = clusterctl.ApplyClusterTemplateAndWait(ctx, clusterctl.ApplyClusterTemplateAndWaitInput{
+		cluster, _, mds = clusterctl.ApplyClusterTemplateAndWait(ctx, clusterctl.ApplyClusterTemplateAndWaitInput{
 			ClusterProxy: input.BootstrapClusterProxy,
 			ConfigCluster: clusterctl.ConfigClusterInput{
 				LogFolder:                filepath.Join(input.ArtifactFolder, "clusters", input.BootstrapClusterProxy.GetName()),
@@ -83,7 +81,7 @@ func MHCRemediationSpec(ctx context.Context, inputGetter func() MHCRemediationSp
 				Flavor:                   clusterctl.DefaultFlavor,
 				Namespace:                namespace.Name,
 				ClusterName:              fmt.Sprintf("cluster-%s", util.RandomString(6)),
-				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersionCurrent),
+				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersion),
 				ControlPlaneMachineCount: pointer.Int64Ptr(1),
 				WorkerMachineCount:       pointer.Int64Ptr(1),
 			},
@@ -94,12 +92,11 @@ func MHCRemediationSpec(ctx context.Context, inputGetter func() MHCRemediationSp
 		})
 
 		By("Creating a MachineHealthCheck and wait for remediation")
-		framework.ApplyMachineHealthCheckAndWait(context.TODO(), framework.ApplyMachineHealthCheckAndWaitInput{
-			ClusterProxy:              input.BootstrapClusterProxy,
-			Cluster:                   cluster,
-			ControlPlane:              controlPlane,
-			MachineDeployments:        mds,
-			WaitForMachineDeployments: input.E2EConfig.GetIntervals(specName, "wait-worker-nodes"),
+		framework.DiscoverMachineHealthChecksAndWait(context.TODO(), framework.DiscoverMachineHealthCheckAndWaitInput{
+			ClusterProxy:                input.BootstrapClusterProxy,
+			Cluster:                     cluster,
+			MachineDeployments:          mds,
+			WaitForMachinesToBeUpgraded: input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 		})
 
 		By("PASSED!")

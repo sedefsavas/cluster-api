@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T04:44:02Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-yrvwe8
+    cluster.x-k8s.io/deployment-name: cluster-yrvwe8-md-0
+    machine-template-hash: "1652671481"
+  name: cluster-yrvwe8-md-0-87pvw
+  namespace: kcp-upgrade-70qgf8
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-yrvwe8-md-0-5b96bc58d5-hfhpz
+    uid: f18cc590-96ae-47ad-b7a9-4f2cda7a9ebe
+  resourceVersion: "2894"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-70qgf8/dockermachines/cluster-yrvwe8-md-0-87pvw
+  uid: 47479f15-f45f-4546-9f69-d8a4ceceb49d
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-yrvwe8-cluster-yrvwe8-md-0-5b96bc58d5-hfhpz
+status:
+  ready: true

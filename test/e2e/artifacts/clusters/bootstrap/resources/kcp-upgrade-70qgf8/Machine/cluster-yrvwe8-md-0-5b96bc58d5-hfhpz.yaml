@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T04:44:02Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-yrvwe8-md-0-5b96bc58d5-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-yrvwe8
+    cluster.x-k8s.io/deployment-name: cluster-yrvwe8-md-0
+    machine-template-hash: "1652671481"
+  name: cluster-yrvwe8-md-0-5b96bc58d5-hfhpz
+  namespace: kcp-upgrade-70qgf8
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-yrvwe8-md-0-5b96bc58d5
+    uid: 7db1c5ab-f226-4f58-a118-41ac14f6e810
+  resourceVersion: "2897"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-70qgf8/machines/cluster-yrvwe8-md-0-5b96bc58d5-hfhpz
+  uid: f18cc590-96ae-47ad-b7a9-4f2cda7a9ebe
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-yrvwe8-md-0-hnqsb
+      namespace: kcp-upgrade-70qgf8
+      uid: f3ca8d7e-950f-4cd7-9420-47b97f90cc12
+    dataSecretName: cluster-yrvwe8-md-0-hnqsb
+  clusterName: cluster-yrvwe8
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-yrvwe8-md-0-87pvw
+    namespace: kcp-upgrade-70qgf8
+    uid: 47479f15-f45f-4546-9f69-d8a4ceceb49d
+  providerID: docker:////cluster-yrvwe8-cluster-yrvwe8-md-0-5b96bc58d5-hfhpz
+  version: v1.17.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T04:45:00Z"
+  nodeRef:
+    name: cluster-yrvwe8-cluster-yrvwe8-md-0-5b96bc58d5-hfhpz
+    uid: caf0157b-53ed-4544-9089-af96441fbbe7
+  phase: Running

@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-05T06:32:17Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-uasn38
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "1190053771"
+  name: cluster-uasn38-control-plane-8x5t9
+  namespace: mhc-remediation-bogzyf
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-uasn38-control-plane
+    uid: 7ae998b0-b1c1-4aeb-b924-b9288f83db97
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-uasn38-control-plane-8j5w2
+    uid: 0f63dbee-c4cf-4fa7-b334-f41a7a104410
+  resourceVersion: "1426"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-bogzyf/dockermachines/cluster-uasn38-control-plane-8x5t9
+  uid: 5aa5dea4-4854-4cb2-adab-35aa4a97d1b8
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-uasn38-cluster-uasn38-control-plane-8j5w2
+status:
+  loadBalancerConfigured: true
+  ready: true

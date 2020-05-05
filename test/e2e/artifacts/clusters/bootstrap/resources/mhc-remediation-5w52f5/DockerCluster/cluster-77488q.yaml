@@ -1,0 +1,13 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-77488q","namespace":"mhc-remediation-5w52f5"}}
+  creationTimestamp: "2020-05-05T05:37:11Z"
+  generation: 1
+  name: cluster-77488q
+  namespace: mhc-remediation-5w52f5
+  resourceVersion: "1493"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-5w52f5/dockerclusters/cluster-77488q
+  uid: 55f0399f-7d09-4226-a991-0edff0cc20d5

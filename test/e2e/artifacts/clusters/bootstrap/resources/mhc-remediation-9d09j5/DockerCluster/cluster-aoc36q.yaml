@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-aoc36q","namespace":"mhc-remediation-9d09j5"}}
+  creationTimestamp: "2020-05-05T07:07:58Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-aoc36q
+  name: cluster-aoc36q
+  namespace: mhc-remediation-9d09j5
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-aoc36q
+    uid: ab068b79-d42b-4184-bd35-8649d8a066b8
+  resourceVersion: "1234"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-9d09j5/dockerclusters/cluster-aoc36q
+  uid: dc0c49ba-9309-4464-bbe8-6f3e25af8baf
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

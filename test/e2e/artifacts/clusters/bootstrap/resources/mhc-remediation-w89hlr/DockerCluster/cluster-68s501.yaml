@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-68s501","namespace":"mhc-remediation-w89hlr"}}
+  creationTimestamp: "2020-05-04T05:52:48Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-68s501
+  name: cluster-68s501
+  namespace: mhc-remediation-w89hlr
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-68s501
+    uid: e6d8a3cc-31f6-4cb0-848d-bd7bd7e1cb1b
+  resourceVersion: "1253"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-w89hlr/dockerclusters/cluster-68s501
+  uid: 6f0ebcad-704a-44db-a7ed-4841116336b3
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.7
+    port: 6443
+status:
+  ready: true

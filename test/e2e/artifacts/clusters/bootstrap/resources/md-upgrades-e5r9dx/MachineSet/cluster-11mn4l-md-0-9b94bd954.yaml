@@ -1,0 +1,55 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "2"
+  creationTimestamp: "2020-05-04T08:02:13Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-11mn4l
+    cluster.x-k8s.io/deployment-name: cluster-11mn4l-md-0
+    machine-template-hash: "565068510"
+  name: cluster-11mn4l-md-0-9b94bd954
+  namespace: md-upgrades-e5r9dx
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-11mn4l-md-0
+    uid: 012de23f-fee3-4de2-9581-2645444e52af
+  resourceVersion: "2844"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-e5r9dx/machinesets/cluster-11mn4l-md-0-9b94bd954
+  uid: 0fe30c6e-c59a-4ce2-b536-5628e4fde726
+spec:
+  clusterName: cluster-11mn4l
+  deletePolicy: Random
+  replicas: 0
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-11mn4l
+      cluster.x-k8s.io/deployment-name: cluster-11mn4l-md-0
+      machine-template-hash: "565068510"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-11mn4l
+        cluster.x-k8s.io/deployment-name: cluster-11mn4l-md-0
+        machine-template-hash: "565068510"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-11mn4l-md-0
+      clusterName: cluster-11mn4l
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-11mn4l-md-0
+      version: v1.18.2
+status:
+  observedGeneration: 2
+  selector: cluster.x-k8s.io/cluster-name=cluster-11mn4l,cluster.x-k8s.io/deployment-name=cluster-11mn4l-md-0,machine-template-hash=565068510

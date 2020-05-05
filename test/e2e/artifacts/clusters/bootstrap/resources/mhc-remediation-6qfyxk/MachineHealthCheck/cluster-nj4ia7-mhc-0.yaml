@@ -1,0 +1,34 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-nj4ia7-mhc-0","namespace":"mhc-remediation-6qfyxk"},"spec":{"clusterName":"cluster-nj4ia7","maxUnhealthy":"40%","selector":{"matchLabels":{"mhc":"unhealthy"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-05T06:37:21Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-nj4ia7
+  name: cluster-nj4ia7-mhc-0
+  namespace: mhc-remediation-6qfyxk
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-nj4ia7
+    uid: c3986f5d-4982-4e8c-9a69-080a28405bee
+  resourceVersion: "1726"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-6qfyxk/machinehealthchecks/cluster-nj4ia7-mhc-0
+  uid: f752f4e5-272b-48e8-8e14-1f8d7482b68c
+spec:
+  clusterName: cluster-nj4ia7
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      mhc: unhealthy
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy
+status:
+  currentHealthy: 1
+  expectedMachines: 1

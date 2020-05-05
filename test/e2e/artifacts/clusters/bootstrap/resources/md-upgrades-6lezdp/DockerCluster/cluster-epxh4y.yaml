@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-epxh4y","namespace":"md-upgrades-6lezdp"}}
+  creationTimestamp: "2020-05-04T07:50:12Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-epxh4y
+  name: cluster-epxh4y
+  namespace: md-upgrades-6lezdp
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-epxh4y
+    uid: 0db92b47-dace-40dc-8c08-52e63334da76
+  resourceVersion: "1269"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-6lezdp/dockerclusters/cluster-epxh4y
+  uid: b6b3b108-5d66-421f-ac2f-94f65a0d530b
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

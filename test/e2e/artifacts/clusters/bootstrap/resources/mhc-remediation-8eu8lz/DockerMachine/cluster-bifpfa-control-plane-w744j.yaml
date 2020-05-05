@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-05T05:58:36Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-bifpfa
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2112422270"
+  name: cluster-bifpfa-control-plane-w744j
+  namespace: mhc-remediation-8eu8lz
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-bifpfa-control-plane
+    uid: 0d6a4498-61c8-4024-b873-69fa910d12fe
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-bifpfa-control-plane-6mkc9
+    uid: e374323f-3c29-41cd-b3c5-4ea3b3d9a6a8
+  resourceVersion: "1449"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-8eu8lz/dockermachines/cluster-bifpfa-control-plane-w744j
+  uid: fc24be96-a563-4f7f-bda1-b301b51cbf55
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-bifpfa-cluster-bifpfa-control-plane-6mkc9
+status:
+  loadBalancerConfigured: true
+  ready: true

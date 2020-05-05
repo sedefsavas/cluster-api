@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-05T05:58:33Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-bifpfa
+    cluster.x-k8s.io/deployment-name: cluster-bifpfa-md-0
+    machine-template-hash: "3484386027"
+  name: cluster-bifpfa-md-0-gp4z7
+  namespace: mhc-remediation-8eu8lz
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-bifpfa-md-0-78d87db46c-phfmd
+    uid: 4da7cd20-6d4c-44df-b7b9-c42f36ee3628
+  resourceVersion: "1459"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-8eu8lz/kubeadmconfigs/cluster-bifpfa-md-0-gp4z7
+  uid: 13b0b5d7-f2d3-44ba-b1c4-a62764109c5e
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:302f4aaf6d9be8680dcb0dcb035e24c8215a0d5214b88f9bbfc1022b4d6e5465
+        token: ulig4k.z5evinf7kdlqvqf9
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-bifpfa-md-0-gp4z7
+  ready: true

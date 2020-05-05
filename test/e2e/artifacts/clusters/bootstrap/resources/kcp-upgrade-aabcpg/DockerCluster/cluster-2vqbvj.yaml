@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-2vqbvj","namespace":"kcp-upgrade-aabcpg"}}
+  creationTimestamp: "2020-05-04T08:04:44Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-2vqbvj
+  name: cluster-2vqbvj
+  namespace: kcp-upgrade-aabcpg
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-2vqbvj
+    uid: 8e5209b7-7eba-4318-99ed-d31d93848931
+  resourceVersion: "2995"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-aabcpg/dockerclusters/cluster-2vqbvj
+  uid: a6963932-6975-40a7-8bc1-c8ba8301cb49
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

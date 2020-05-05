@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T08:04:44Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-2vqbvj-md-0-6dfcc9b88c-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-2vqbvj
+    cluster.x-k8s.io/deployment-name: cluster-2vqbvj-md-0
+    machine-template-hash: "2897756447"
+  name: cluster-2vqbvj-md-0-6dfcc9b88c-lsfpn
+  namespace: kcp-upgrade-aabcpg
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-2vqbvj-md-0-6dfcc9b88c
+    uid: f2757b2f-7c36-4925-b47a-38224392ae2d
+  resourceVersion: "3275"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-aabcpg/machines/cluster-2vqbvj-md-0-6dfcc9b88c-lsfpn
+  uid: c88dce51-e9e4-4766-bb16-a13902669a80
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-2vqbvj-md-0-w2bqk
+      namespace: kcp-upgrade-aabcpg
+      uid: a7338e75-5b2c-4be2-8799-302476cbbacb
+    dataSecretName: cluster-2vqbvj-md-0-w2bqk
+  clusterName: cluster-2vqbvj
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-2vqbvj-md-0-7rbxk
+    namespace: kcp-upgrade-aabcpg
+    uid: b6c77d10-0f3c-4d0f-8d16-4328b2355a15
+  providerID: docker:////cluster-2vqbvj-cluster-2vqbvj-md-0-6dfcc9b88c-lsfpn
+  version: v1.17.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T08:05:43Z"
+  nodeRef:
+    name: cluster-2vqbvj-cluster-2vqbvj-md-0-6dfcc9b88c-lsfpn
+    uid: 7c9200c2-fd1d-4a7d-bd09-ce0e51670e87
+  phase: Running

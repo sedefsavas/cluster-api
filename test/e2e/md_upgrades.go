@@ -33,8 +33,8 @@ import (
 	"sigs.k8s.io/cluster-api/util"
 )
 
-// MDUpgradesSpecInput is the input for MDUpgradesSpec.
-type MDUpgradesSpecInput struct {
+// MachineDeploymentUpgradesSpecInput is the input for MachineDeploymentUpgradesSpec.
+type MachineDeploymentUpgradesSpecInput struct {
 	E2EConfig             *clusterctl.E2EConfig
 	ClusterctlConfigPath  string
 	BootstrapClusterProxy framework.ClusterProxy
@@ -42,11 +42,11 @@ type MDUpgradesSpecInput struct {
 	SkipCleanup           bool
 }
 
-// MDUpgradesSpec implements a test that verifies that MachineDeployment upgrades are successful.
-func MDUpgradesSpec(ctx context.Context, inputGetter func() MDUpgradesSpecInput) {
+// MachineDeploymentUpgradesSpec implements a test that verifies that MachineDeployment upgrades are successful.
+func MachineDeploymentUpgradesSpec(ctx context.Context, inputGetter func() MachineDeploymentUpgradesSpecInput) {
 	var (
 		specName      = "md-upgrades"
-		input         MDUpgradesSpecInput
+		input         MachineDeploymentUpgradesSpecInput
 		namespace     *corev1.Namespace
 		cancelWatches context.CancelFunc
 		cluster       *clusterv1.Cluster
@@ -59,10 +59,10 @@ func MDUpgradesSpec(ctx context.Context, inputGetter func() MDUpgradesSpecInput)
 		Expect(input.ClusterctlConfigPath).To(BeAnExistingFile(), "Invalid argument. input.ClusterctlConfigPath must be an existing file when calling %s spec", specName)
 		Expect(input.BootstrapClusterProxy).ToNot(BeNil(), "Invalid argument. input.BootstrapClusterProxy can't be nil when calling %s spec", specName)
 		Expect(os.MkdirAll(input.ArtifactFolder, 0755)).To(Succeed(), "Invalid argument. input.ArtifactFolder can't be created for %s spec", specName)
-		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionCurrent))
-		Expect(input.E2EConfig.Variables).To(HaveValidVersion(input.E2EConfig.GetVariable(KubernetesVersionCurrent)))
-		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionPrevious))
-		Expect(input.E2EConfig.Variables).To(HaveValidVersion(input.E2EConfig.GetVariable(KubernetesVersionPrevious)))
+		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersion))
+		Expect(input.E2EConfig.Variables).To(HaveValidVersion(input.E2EConfig.GetVariable(KubernetesVersion)))
+		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionUpgradeFrom))
+		Expect(input.E2EConfig.Variables).To(HaveValidVersion(input.E2EConfig.GetVariable(KubernetesVersionUpgradeFrom)))
 		Expect(input.E2EConfig.Variables).To(HaveKey(CNIPath))
 
 		// Setup a Namespace where to host objects for this spec and create a watcher for the namespace events.
@@ -84,7 +84,7 @@ func MDUpgradesSpec(ctx context.Context, inputGetter func() MDUpgradesSpecInput)
 				Flavor:                   clusterctl.DefaultFlavor,
 				Namespace:                namespace.Name,
 				ClusterName:              fmt.Sprintf("cluster-%s", util.RandomString(6)),
-				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersionPrevious),
+				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersionUpgradeFrom),
 				ControlPlaneMachineCount: pointer.Int64Ptr(1),
 				WorkerMachineCount:       pointer.Int64Ptr(1),
 			},
@@ -98,7 +98,7 @@ func MDUpgradesSpec(ctx context.Context, inputGetter func() MDUpgradesSpecInput)
 		framework.UpgradeMachineDeploymentsAndWait(context.TODO(), framework.UpgradeMachineDeploymentsAndWaitInput{
 			ClusterProxy:                input.BootstrapClusterProxy,
 			Cluster:                     cluster,
-			UpgradeVersion:              input.E2EConfig.GetVariable(KubernetesVersionCurrent),
+			UpgradeVersion:              input.E2EConfig.GetVariable(KubernetesVersion),
 			WaitForMachinesToBeUpgraded: input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 			MachineDeployments:          mds,
 		})

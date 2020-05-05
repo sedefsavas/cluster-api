@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T08:22:01Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-gl5o7q-md-0-65b5755876-
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-gl5o7q
+    cluster.x-k8s.io/deployment-name: cluster-gl5o7q-md-0
+    machine-template-hash: "2161311432"
+  name: cluster-gl5o7q-md-0-65b5755876-hdpgq
+  namespace: self-hosted-t86o0t
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-gl5o7q-md-0-65b5755876
+    uid: 678f4065-0855-4665-ba5c-dd883ddf1dbd
+  resourceVersion: "1278"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-t86o0t/machines/cluster-gl5o7q-md-0-65b5755876-hdpgq
+  uid: d1418dba-6028-4458-b7ca-fa77821bac19
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-gl5o7q-md-0-wbl2q
+      namespace: self-hosted-t86o0t
+      uid: ba4a4398-874b-43cf-802e-b20970b4f52e
+    dataSecretName: cluster-gl5o7q-md-0-wbl2q
+  clusterName: cluster-gl5o7q
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-gl5o7q-md-0-bw89z
+    namespace: self-hosted-t86o0t
+    uid: c23efc6b-e157-440d-90f2-3bdd59e27a8b
+  providerID: docker:////cluster-gl5o7q-cluster-gl5o7q-md-0-65b5755876-hdpgq
+  version: v1.16.4
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T08:22:03Z"
+  nodeRef:
+    name: cluster-gl5o7q-cluster-gl5o7q-md-0-65b5755876-hdpgq
+    uid: 84560b22-a2a0-44dd-840b-c52d3cf90691
+  phase: Running

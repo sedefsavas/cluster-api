@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T08:22:15Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-gl5o7q
+    cluster.x-k8s.io/deployment-name: cluster-gl5o7q-md-0
+    machine-template-hash: "2161311432"
+  name: cluster-gl5o7q-md-0-wbl2q
+  namespace: self-hosted-t86o0t
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-gl5o7q-md-0-65b5755876-hdpgq
+    uid: 6133522d-0f31-4cc3-8c13-485e672dd358
+  resourceVersion: "7516"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-t86o0t/kubeadmconfigs/cluster-gl5o7q-md-0-wbl2q
+  uid: 5c70e117-1ee2-49c7-a650-296191cef1df
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:0fd465f2cdc41bfb0353a7be0dec2e7c9b035bea336d6417a75b8aa11f9c12d6
+        token: fru6fi.q1txpub6fwqiwnfs
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-gl5o7q-md-0-wbl2q
+  ready: true

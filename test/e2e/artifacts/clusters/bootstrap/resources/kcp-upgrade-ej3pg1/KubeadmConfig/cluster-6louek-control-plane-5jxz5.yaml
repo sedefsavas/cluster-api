@@ -1,0 +1,45 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T08:15:36Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6louek
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2320553295"
+  name: cluster-6louek-control-plane-5jxz5
+  namespace: kcp-upgrade-ej3pg1
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-6louek-control-plane
+    uid: 83e0fac3-7a9d-4ff9-b82c-ac7e50b0316d
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-6louek-control-plane-4x2dp
+    uid: 5e615989-6c9b-4ef0-be2e-fe9763f933be
+  resourceVersion: "5786"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ej3pg1/kubeadmconfigs/cluster-6louek-control-plane-5jxz5
+  uid: 36ef0196-80e6-4ad1-9287-22248b413cab
+spec:
+  joinConfiguration:
+    controlPlane:
+      localAPIEndpoint:
+        advertiseAddress: ""
+        bindPort: 0
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:2a0f86cc1248be5fd12c22174ffdde2468c7134141859810da7976f52cf57633
+        token: jow96w.zg8w7jnn6nj6q7lj
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-6louek-control-plane-5jxz5
+  ready: true

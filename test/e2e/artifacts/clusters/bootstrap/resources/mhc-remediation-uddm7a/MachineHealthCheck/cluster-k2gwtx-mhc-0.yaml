@@ -1,0 +1,32 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-k2gwtx-mhc-0","namespace":"mhc-remediation-uddm7a"},"spec":{"clusterName":"cluster-k2gwtx","maxUnhealthy":"40%","selector":{"matchLabels":{"mhc":"unhealthy"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-05T06:18:04Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-k2gwtx
+  name: cluster-k2gwtx-mhc-0
+  namespace: mhc-remediation-uddm7a
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-k2gwtx
+    uid: f580d29e-67d7-4927-a5f6-a7ca188ed9bc
+  resourceVersion: "1698"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-uddm7a/machinehealthchecks/cluster-k2gwtx-mhc-0
+  uid: 9bd49902-1f71-4c7f-a61e-b31b808583e1
+spec:
+  clusterName: cluster-k2gwtx
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      mhc: unhealthy
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy
+status: {}

@@ -1,0 +1,57 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-05T06:42:45Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-mz76sb
+    cluster.x-k8s.io/deployment-name: cluster-mz76sb-md-0
+    machine-template-hash: "2899407520"
+  name: cluster-mz76sb-md-0-6dff84c964
+  namespace: mhc-remediation-j9yh5o
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-mz76sb-md-0
+    uid: 209dda52-63e7-4387-ab05-feeffda93513
+  resourceVersion: "1707"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-j9yh5o/machinesets/cluster-mz76sb-md-0-6dff84c964
+  uid: cb19959b-bdab-45a2-9ff5-0d1dd7cf2660
+spec:
+  clusterName: cluster-mz76sb
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-mz76sb
+      cluster.x-k8s.io/deployment-name: cluster-mz76sb-md-0
+      machine-template-hash: "2899407520"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-mz76sb
+        cluster.x-k8s.io/deployment-name: cluster-mz76sb-md-0
+        machine-template-hash: "2899407520"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-mz76sb-md-0
+      clusterName: cluster-mz76sb
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-mz76sb-md-0
+      version: v1.18.2
+status:
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-mz76sb,cluster.x-k8s.io/deployment-name=cluster-mz76sb-md-0,machine-template-hash=2899407520

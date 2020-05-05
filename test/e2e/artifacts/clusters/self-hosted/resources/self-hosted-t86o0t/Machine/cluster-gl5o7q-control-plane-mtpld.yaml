@@ -1,0 +1,48 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T08:22:00Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-gl5o7q
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "3846785284"
+  name: cluster-gl5o7q-control-plane-mtpld
+  namespace: self-hosted-t86o0t
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-gl5o7q-control-plane
+    uid: 951a58b6-c699-4613-85f8-34890a58d611
+  resourceVersion: "1267"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-t86o0t/machines/cluster-gl5o7q-control-plane-mtpld
+  uid: 2a408d59-aadc-43e8-b094-339e26ab97ba
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-gl5o7q-control-plane-jnfnz
+      namespace: self-hosted-t86o0t
+      uid: 065514c8-0188-47ec-b213-d46e617381f7
+    dataSecretName: cluster-gl5o7q-control-plane-jnfnz
+  clusterName: cluster-gl5o7q
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-gl5o7q-control-plane-4m2mb
+    namespace: self-hosted-t86o0t
+    uid: 408a94e5-83ad-40e8-bf0a-35fdf27a6a57
+  providerID: docker:////cluster-gl5o7q-cluster-gl5o7q-control-plane-mtpld
+  version: v1.16.4
+status:
+  bootstrapReady: true
+  lastUpdated: "2020-05-04T08:22:02Z"
+  nodeRef:
+    name: cluster-gl5o7q-cluster-gl5o7q-control-plane-mtpld
+    uid: a20fe3c5-8742-4eb7-b78a-7b551b309cba
+  phase: Provisioned

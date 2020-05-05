@@ -24,10 +24,10 @@ import (
 	. "github.com/onsi/ginkgo"
 )
 
-var _ = Describe("When testing MachineHealthCheck remediation", func() {
+var _ = Describe("When testing unhealthy machines remediation", func() {
 
-	MHCRemediationSpec(context.TODO(), func() MHCRemediationSpecInput {
-		return MHCRemediationSpecInput{
+	MachineRemediationSpec(context.TODO(), func() MachineRemediationSpecInput {
+		return MachineRemediationSpecInput{
 			E2EConfig:             e2eConfig,
 			ClusterctlConfigPath:  clusterctlConfigPath,
 			BootstrapClusterProxy: bootstrapClusterProxy,

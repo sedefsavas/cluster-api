@@ -1,0 +1,26 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","metadata":{"annotations":{},"name":"cluster-6iwetq-md-0","namespace":"quick-start-hphm5o"},"spec":{"template":{"spec":{"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}}}}}
+  creationTimestamp: "2020-05-04T05:33:24Z"
+  generation: 1
+  name: cluster-6iwetq-md-0
+  namespace: quick-start-hphm5o
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-6iwetq
+    uid: 6bc353fe-08fd-4067-b259-b1fb62eadd94
+  resourceVersion: "1231"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-hphm5o/kubeadmconfigtemplates/cluster-6iwetq-md-0
+  uid: 1ea0a8a5-170a-4661-bd09-4f95c3f677e7
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: /var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%

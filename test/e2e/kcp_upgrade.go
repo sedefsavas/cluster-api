@@ -61,11 +61,11 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 		Expect(input.ClusterctlConfigPath).To(BeAnExistingFile(), "Invalid argument. input.ClusterctlConfigPath must be an existing file when calling %s spec", specName)
 		Expect(input.BootstrapClusterProxy).ToNot(BeNil(), "Invalid argument. input.BootstrapClusterProxy can't be nil when calling %s spec", specName)
 		Expect(os.MkdirAll(input.ArtifactFolder, 0755)).To(Succeed(), "Invalid argument. input.ArtifactFolder can't be created for %s spec", specName)
-		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionCurrent))
+		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionUpgradeTo))
 		Expect(input.E2EConfig.Variables).To(HaveKey(CNIPath))
-		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionPrevious))
-		Expect(input.E2EConfig.Variables).To(HaveKey(EtcdVersionCurrent))
-		Expect(input.E2EConfig.Variables).To(HaveKey(CoreDNSVersionCurrent))
+		Expect(input.E2EConfig.Variables).To(HaveKey(KubernetesVersionUpgradeFrom))
+		Expect(input.E2EConfig.Variables).To(HaveKey(EtcdVersionUpgradeTo))
+		Expect(input.E2EConfig.Variables).To(HaveKey(CoreDNSVersionUpgradeTo))
 
 		// Setup a Namespace where to host objects for this spec and create a watcher for the namespace events.
 		namespace, cancelWatches = setupSpecNamespace(ctx, specName, input.BootstrapClusterProxy, input.ArtifactFolder)
@@ -84,7 +84,7 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 				Flavor:                   clusterctl.DefaultFlavor,
 				Namespace:                namespace.Name,
 				ClusterName:              fmt.Sprintf("cluster-%s", util.RandomString(6)),
-				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersionPrevious),
+				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersionUpgradeFrom),
 				ControlPlaneMachineCount: pointer.Int64Ptr(1),
 				WorkerMachineCount:       pointer.Int64Ptr(1),
 			},
@@ -99,9 +99,9 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 			ClusterProxy:                input.BootstrapClusterProxy,
 			Cluster:                     cluster,
 			ControlPlane:                controlPlane,
-			EtcdImageTag:                input.E2EConfig.GetVariable(EtcdVersionCurrent),
-			DNSImageTag:                 input.E2EConfig.GetVariable(CoreDNSVersionCurrent),
-			KubernetesUpgradeVersion:    input.E2EConfig.GetVariable(KubernetesVersionCurrent),
+			EtcdImageTag:                input.E2EConfig.GetVariable(EtcdVersionUpgradeTo),
+			DNSImageTag:                 input.E2EConfig.GetVariable(CoreDNSVersionUpgradeTo),
+			KubernetesUpgradeVersion:    input.E2EConfig.GetVariable(KubernetesVersion),
 			WaitForMachinesToBeUpgraded: input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 			WaitForDNSUpgrade:           input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 			WaitForEtcdUpgrade:          input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
@@ -124,7 +124,7 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 				Flavor:                   clusterctl.DefaultFlavor,
 				Namespace:                namespace.Name,
 				ClusterName:              fmt.Sprintf("cluster-%s", util.RandomString(6)),
-				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersionPrevious),
+				KubernetesVersion:        input.E2EConfig.GetVariable(KubernetesVersionUpgradeFrom),
 				ControlPlaneMachineCount: pointer.Int64Ptr(3),
 				WorkerMachineCount:       pointer.Int64Ptr(1),
 			},
@@ -139,9 +139,9 @@ func KCPUpgradeSpec(ctx context.Context, inputGetter func() KCPUpgradeSpecInput)
 			ClusterProxy:                input.BootstrapClusterProxy,
 			Cluster:                     cluster,
 			ControlPlane:                controlPlane,
-			EtcdImageTag:                input.E2EConfig.GetVariable(EtcdVersionCurrent),
-			DNSImageTag:                 input.E2EConfig.GetVariable(CoreDNSVersionCurrent),
-			KubernetesUpgradeVersion:    input.E2EConfig.GetVariable(KubernetesVersionCurrent),
+			EtcdImageTag:                input.E2EConfig.GetVariable(EtcdVersionUpgradeTo),
+			DNSImageTag:                 input.E2EConfig.GetVariable(CoreDNSVersionUpgradeTo),
+			KubernetesUpgradeVersion:    input.E2EConfig.GetVariable(KubernetesVersionUpgradeTo),
 			WaitForMachinesToBeUpgraded: input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 			WaitForDNSUpgrade:           input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),
 			WaitForEtcdUpgrade:          input.E2EConfig.GetIntervals(specName, "wait-machine-upgrade"),

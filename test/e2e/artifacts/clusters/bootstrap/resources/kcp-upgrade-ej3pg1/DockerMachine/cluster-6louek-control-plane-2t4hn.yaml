@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T08:13:41Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6louek
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2320553295"
+  name: cluster-6louek-control-plane-2t4hn
+  namespace: kcp-upgrade-ej3pg1
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-6louek-control-plane
+    uid: 83e0fac3-7a9d-4ff9-b82c-ac7e50b0316d
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-6louek-control-plane-qb2s6
+    uid: 9d04d407-151a-44cb-9726-604a0aca28e1
+  resourceVersion: "5525"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ej3pg1/dockermachines/cluster-6louek-control-plane-2t4hn
+  uid: 2a80cbaa-26d1-4830-9bbd-99a238189c40
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-6louek-cluster-6louek-control-plane-qb2s6
+status:
+  loadBalancerConfigured: true
+  ready: true

@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-65y4u7","namespace":"kcp-upgrade-enbfed"}}
+  creationTimestamp: "2020-05-04T04:38:38Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-65y4u7
+  name: cluster-65y4u7
+  namespace: kcp-upgrade-enbfed
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-65y4u7
+    uid: 36d949b1-3ddb-41e4-9962-e0e369d06ea2
+  resourceVersion: "1250"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-enbfed/dockerclusters/cluster-65y4u7
+  uid: 1b7404c4-6be5-4043-b857-a8b419e63d5d
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.4
+    port: 6443
+status:
+  ready: true

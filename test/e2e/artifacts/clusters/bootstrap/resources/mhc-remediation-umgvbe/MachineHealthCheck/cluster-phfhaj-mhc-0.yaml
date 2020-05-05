@@ -1,0 +1,33 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-phfhaj-mhc-0","namespace":"mhc-remediation-umgvbe"},"spec":{"clusterName":"cluster-phfhaj","maxUnhealthy":"40%","selector":{"matchLabels":{"mhc":"unhealthy"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-05T06:49:03Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-phfhaj
+  name: cluster-phfhaj-mhc-0
+  namespace: mhc-remediation-umgvbe
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-phfhaj
+    uid: 927cb0c0-3028-4da8-a312-271b3b9d8cbe
+  resourceVersion: "2885"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-umgvbe/machinehealthchecks/cluster-phfhaj-mhc-0
+  uid: 422e4010-fc0d-4d26-ba37-9f6d376b3548
+spec:
+  clusterName: cluster-phfhaj
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      mhc: unhealthy
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy
+status:
+  expectedMachines: 1

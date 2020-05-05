@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-05T07:07:59Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-aoc36q-md-0-5d5c9f6956-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-aoc36q
+    mhc: unhealthy
+  name: cluster-aoc36q-md-0-5d5c9f6956-smfz6
+  namespace: mhc-remediation-9d09j5
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-aoc36q-md-0-5d5c9f6956
+    uid: 36b0f06c-7ced-467a-aecd-e655d9c02a6b
+  resourceVersion: "1597"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-9d09j5/machines/cluster-aoc36q-md-0-5d5c9f6956-smfz6
+  uid: 6f80f4c9-2149-4cef-8002-33713dc49a2b
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-aoc36q-md-0-2pflx
+      namespace: mhc-remediation-9d09j5
+      uid: a3e45ece-4b3d-465a-9f94-5eecf0710163
+    dataSecretName: cluster-aoc36q-md-0-2pflx
+  clusterName: cluster-aoc36q
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-aoc36q-md-0-xwfng
+    namespace: mhc-remediation-9d09j5
+    uid: 9231dc0b-efe2-48fe-9352-726ac3270d34
+  providerID: docker:////cluster-aoc36q-cluster-aoc36q-md-0-5d5c9f6956-smfz6
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-05T07:08:55Z"
+  nodeRef:
+    name: cluster-aoc36q-cluster-aoc36q-md-0-5d5c9f6956-smfz6
+    uid: 67089efb-b1ee-49be-9f6f-63626968b9b1
+  phase: Running

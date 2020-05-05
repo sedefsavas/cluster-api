@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-04T08:09:28Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6louek
+    cluster.x-k8s.io/deployment-name: cluster-6louek-md-0
+    machine-template-hash: "3315039240"
+  name: cluster-6louek-md-0-775947f684
+  namespace: kcp-upgrade-ej3pg1
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-6louek-md-0
+    uid: ad14d2d6-c7a7-4cfd-8f95-590b51a4aa58
+  resourceVersion: "4612"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ej3pg1/machinesets/cluster-6louek-md-0-775947f684
+  uid: 1e44e596-7b16-4c20-bc95-6993e8181ba4
+spec:
+  clusterName: cluster-6louek
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-6louek
+      cluster.x-k8s.io/deployment-name: cluster-6louek-md-0
+      machine-template-hash: "3315039240"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-6louek
+        cluster.x-k8s.io/deployment-name: cluster-6louek-md-0
+        machine-template-hash: "3315039240"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-6louek-md-0
+      clusterName: cluster-6louek
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-6louek-md-0
+      version: v1.17.2
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-6louek,cluster.x-k8s.io/deployment-name=cluster-6louek-md-0,machine-template-hash=3315039240

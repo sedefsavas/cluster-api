@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T05:55:02Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-68s501
+    cluster.x-k8s.io/deployment-name: cluster-68s501-md-0
+    machine-template-hash: "111997189"
+  name: cluster-68s501-md-0-drqzg
+  namespace: mhc-remediation-w89hlr
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-68s501-md-0-555ffc5df-kttjx
+    uid: 8c3052ab-0126-43ce-b58b-6165465daa05
+  resourceVersion: "1816"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-w89hlr/kubeadmconfigs/cluster-68s501-md-0-drqzg
+  uid: 482c82ba-23fd-403b-b1e8-4b3178c16c7f
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.7:6443
+        caCertHashes:
+        - sha256:3e6ef422a1d4a1c1560f6a86d95150fc22ee0b8cc6df9d789c484d22eca1378f
+        token: agf0k1.s2cbwdyywttyh1aj
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-68s501-md-0-drqzg
+  ready: true

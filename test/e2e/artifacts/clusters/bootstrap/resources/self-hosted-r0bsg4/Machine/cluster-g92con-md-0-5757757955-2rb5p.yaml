@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T05:40:00Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-g92con-md-0-5757757955-
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-g92con
+    cluster.x-k8s.io/deployment-name: cluster-g92con-md-0
+    machine-template-hash: "1313313511"
+  name: cluster-g92con-md-0-5757757955-2rb5p
+  namespace: self-hosted-r0bsg4
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-g92con-md-0-5757757955
+    uid: 162cbbe6-3c9c-4ac4-a778-4f08a9c28893
+  resourceVersion: "2877"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/machines/cluster-g92con-md-0-5757757955-2rb5p
+  uid: d29b99ca-332d-4510-b6ad-4fa8e8f87ddf
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-g92con-md-0-lghvw
+      namespace: self-hosted-r0bsg4
+      uid: ddd8fa7d-dcef-418f-a03c-2f49ecf09eaa
+    dataSecretName: cluster-g92con-md-0-lghvw
+  clusterName: cluster-g92con
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-g92con-md-0-pmkpf
+    namespace: self-hosted-r0bsg4
+    uid: a892e859-203a-4f11-afe2-6527ac8a7502
+  providerID: docker:////cluster-g92con-cluster-g92con-md-0-5757757955-2rb5p
+  version: v1.16.4
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T05:40:03Z"
+  nodeRef:
+    name: cluster-g92con-cluster-g92con-md-0-5757757955-2rb5p
+    uid: 64caf283-ac0b-4b22-9608-17016dd3a49b
+  phase: Running

@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-k2gwtx","namespace":"mhc-remediation-uddm7a"}}
+  creationTimestamp: "2020-05-05T06:18:04Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-k2gwtx
+  name: cluster-k2gwtx
+  namespace: mhc-remediation-uddm7a
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-k2gwtx
+    uid: f580d29e-67d7-4927-a5f6-a7ca188ed9bc
+  resourceVersion: "1302"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-uddm7a/dockerclusters/cluster-k2gwtx
+  uid: 12ac4ae4-4ef6-452c-a026-3878b2870d47
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.4
+    port: 6443
+status:
+  ready: true

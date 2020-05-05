@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T08:01:02Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-11mn4l
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "1364575646"
+  name: cluster-11mn4l-control-plane-sq7sb
+  namespace: md-upgrades-e5r9dx
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-11mn4l-control-plane
+    uid: f51ae669-e574-41da-b09c-c29c7da8c1a4
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-11mn4l-control-plane-2r4qz
+    uid: 564293d4-c34f-4474-b15d-41cbda9b0866
+  resourceVersion: "2078"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-e5r9dx/dockermachines/cluster-11mn4l-control-plane-sq7sb
+  uid: 6823cc99-2beb-4e0b-87e8-6e8e64d41019
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-11mn4l-cluster-11mn4l-control-plane-2r4qz
+status:
+  loadBalancerConfigured: true
+  ready: true

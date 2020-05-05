@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T04:39:52Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-65y4u7
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2477263075"
+  name: cluster-65y4u7-control-plane-568sw
+  namespace: kcp-upgrade-enbfed
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-65y4u7-control-plane
+    uid: 00bfe596-ca2a-4011-b458-819fc36e59c5
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-65y4u7-control-plane-wpzmp
+    uid: ada1d7a2-9e00-4c7d-8de7-84281e7abeb4
+  resourceVersion: "1770"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-enbfed/dockermachines/cluster-65y4u7-control-plane-568sw
+  uid: 5bfbf842-388d-417c-a42d-25f16c0b9bf3
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-65y4u7-cluster-65y4u7-control-plane-wpzmp
+status:
+  loadBalancerConfigured: true
+  ready: true

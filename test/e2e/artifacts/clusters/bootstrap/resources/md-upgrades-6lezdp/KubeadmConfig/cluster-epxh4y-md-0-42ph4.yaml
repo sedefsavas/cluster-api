@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T07:53:05Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-epxh4y
+    cluster.x-k8s.io/deployment-name: cluster-epxh4y-md-0
+    machine-template-hash: "2645168311"
+  name: cluster-epxh4y-md-0-42ph4
+  namespace: md-upgrades-6lezdp
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-epxh4y-md-0-6b895bd755-28hqb
+    uid: aeb4e6d9-d061-4fa6-8a29-3f054d138fec
+  resourceVersion: "2008"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-6lezdp/kubeadmconfigs/cluster-epxh4y-md-0-42ph4
+  uid: 99ae10de-bf08-40a5-a7cd-d8cd20b4e3af
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:40b3364c1f81db3865ac69ab0f4306521c6c4d003f2eaa517ed0b193686fd3d6
+        token: 4nmw5c.2fpbl4mv9i68mzqq
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-epxh4y-md-0-42ph4
+  ready: true

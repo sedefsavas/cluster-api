@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T08:22:39Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-8tj88k
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "552133407"
+  name: cluster-8tj88k-control-plane-rszxd
+  namespace: quick-start-ubklum
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-8tj88k-control-plane
+    uid: d6ec21c5-4b58-431b-934b-da9d8ff3d952
+  resourceVersion: "7834"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-ubklum/machines/cluster-8tj88k-control-plane-rszxd
+  uid: c007c41a-65bf-466c-99a3-82a0c7417a74
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-8tj88k-control-plane-s8zpq
+      namespace: quick-start-ubklum
+      uid: ad7efd07-329f-4c37-9c89-b2811e8fec72
+    dataSecretName: cluster-8tj88k-control-plane-s8zpq
+  clusterName: cluster-8tj88k
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-8tj88k-control-plane-6nhvw
+    namespace: quick-start-ubklum
+    uid: 2b2292d7-33d0-481f-b846-f82d9c959c13
+  providerID: docker:////cluster-8tj88k-cluster-8tj88k-control-plane-rszxd
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T08:23:09Z"
+  nodeRef:
+    name: cluster-8tj88k-cluster-8tj88k-control-plane-rszxd
+    uid: be8faf57-3cac-4240-ba49-6f45e65efd33
+  phase: Running

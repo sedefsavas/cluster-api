@@ -79,6 +79,8 @@ func init() {
 }
 
 func TestE2E(t *testing.T) {
+	configPath = "/Users/ssavas/dev/qa_capi/tilttest/cluster-api/test/e2e/config/docker-dev.yaml"
+	artifactFolder = "/Users/ssavas/dev/qa_capi/tilttest/cluster-api/test/e2e/artifacts/"
 	// If running in prow, make sure to use the artifacts folder that will be reported in test grid (ignoring the value provided by flag).
 	if prowArtifactFolder, exists := os.LookupEnv("ARTIFACTS"); exists {
 		artifactFolder = prowArtifactFolder

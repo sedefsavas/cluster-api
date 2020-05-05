@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-04T08:09:28Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6louek
+    cluster.x-k8s.io/deployment-name: cluster-6louek-md-0
+    machine-template-hash: "3315039240"
+  name: cluster-6louek-md-0-lvb77
+  namespace: kcp-upgrade-ej3pg1
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-6louek-md-0-775947f684-4h4tc
+    uid: 5d6a1614-fa59-4b5c-9e75-9c9599ebda34
+  resourceVersion: "4396"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ej3pg1/kubeadmconfigs/cluster-6louek-md-0-lvb77
+  uid: b31f760c-be8a-4e84-ac22-2ac89426625b
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:2a0f86cc1248be5fd12c22174ffdde2468c7134141859810da7976f52cf57633
+        token: n6gxv8.tr0nmn114b1bvjf3
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-6louek-md-0-lvb77
+  ready: true

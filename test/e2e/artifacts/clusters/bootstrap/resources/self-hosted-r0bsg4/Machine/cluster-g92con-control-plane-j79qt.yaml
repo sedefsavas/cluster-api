@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T05:40:00Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-g92con
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "506475344"
+  name: cluster-g92con-control-plane-j79qt
+  namespace: self-hosted-r0bsg4
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-g92con-control-plane
+    uid: b27540bf-468d-4c6d-8325-a80e36d0f8b7
+  resourceVersion: "2879"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-r0bsg4/machines/cluster-g92con-control-plane-j79qt
+  uid: 6c5d969d-8e78-4a4e-979d-8a69a5aa4435
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-g92con-control-plane-rt6bn
+      namespace: self-hosted-r0bsg4
+      uid: 20928d69-9c76-44cd-bdbf-678fe07259c0
+    dataSecretName: cluster-g92con-control-plane-rt6bn
+  clusterName: cluster-g92con
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-g92con-control-plane-j4fdh
+    namespace: self-hosted-r0bsg4
+    uid: 75038cb1-d335-4fbf-9222-ea5d344d4562
+  providerID: docker:////cluster-g92con-cluster-g92con-control-plane-j79qt
+  version: v1.16.4
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T05:40:03Z"
+  nodeRef:
+    name: cluster-g92con-cluster-g92con-control-plane-j79qt
+    uid: 76d5ef55-9542-42d2-b02a-9b83dfedd635
+  phase: Running

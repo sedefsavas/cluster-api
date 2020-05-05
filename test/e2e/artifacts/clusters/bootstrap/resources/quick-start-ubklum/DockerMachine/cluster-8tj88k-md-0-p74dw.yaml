@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T08:22:38Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-8tj88k
+    cluster.x-k8s.io/deployment-name: cluster-8tj88k-md-0
+    machine-template-hash: "3813198272"
+  name: cluster-8tj88k-md-0-p74dw
+  namespace: quick-start-ubklum
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-8tj88k-md-0-7d575fd6c6-l4vgf
+    uid: 94dc4d5e-a6bf-41e3-92f9-0bd34c7fa093
+  resourceVersion: "7910"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-ubklum/dockermachines/cluster-8tj88k-md-0-p74dw
+  uid: 28bf0262-1e40-4292-bbef-1f4bf1271e72
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-8tj88k-cluster-8tj88k-md-0-7d575fd6c6-l4vgf
+status:
+  ready: true

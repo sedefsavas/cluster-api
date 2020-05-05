@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-04T08:11:31Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6louek
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2320553295"
+  name: cluster-6louek-control-plane-2m9w6
+  namespace: kcp-upgrade-ej3pg1
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-6louek-control-plane
+    uid: 83e0fac3-7a9d-4ff9-b82c-ac7e50b0316d
+  resourceVersion: "4912"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ej3pg1/machines/cluster-6louek-control-plane-2m9w6
+  uid: ef6cfa73-8573-4ab2-b381-f452cf421e23
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-6louek-control-plane-t4fkv
+      namespace: kcp-upgrade-ej3pg1
+      uid: 6fa7827c-1bf2-4524-a0ff-962cee386869
+    dataSecretName: cluster-6louek-control-plane-t4fkv
+  clusterName: cluster-6louek
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-6louek-control-plane-f4kbc
+    namespace: kcp-upgrade-ej3pg1
+    uid: 48a664aa-4794-4fe3-a7dc-c985c91f9f98
+  providerID: docker:////cluster-6louek-cluster-6louek-control-plane-2m9w6
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-04T08:11:56Z"
+  nodeRef:
+    name: cluster-6louek-cluster-6louek-control-plane-2m9w6
+    uid: e3ec60b0-3147-4afa-a980-e379f8e56f0b
+  phase: Running

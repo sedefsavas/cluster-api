@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-04T07:53:05Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-epxh4y
+    cluster.x-k8s.io/deployment-name: cluster-epxh4y-md-0
+    machine-template-hash: "2645168311"
+  name: cluster-epxh4y-md-0-qufsx2-2n4nt
+  namespace: md-upgrades-6lezdp
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-epxh4y-md-0-6b895bd755-28hqb
+    uid: aeb4e6d9-d061-4fa6-8a29-3f054d138fec
+  resourceVersion: "2037"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-6lezdp/dockermachines/cluster-epxh4y-md-0-qufsx2-2n4nt
+  uid: 362c879e-e221-47c3-843a-ffa86e7db825
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-epxh4y-cluster-epxh4y-md-0-6b895bd755-28hqb
+status:
+  ready: true

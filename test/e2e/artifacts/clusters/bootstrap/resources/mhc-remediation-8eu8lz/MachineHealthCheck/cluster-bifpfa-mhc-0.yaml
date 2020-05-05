@@ -1,0 +1,32 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-bifpfa-mhc-0","namespace":"mhc-remediation-8eu8lz"},"spec":{"clusterName":"cluster-bifpfa","maxUnhealthy":"40%","selector":{"matchLabels":{"mhc":"unhealthy"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-05T05:58:33Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-bifpfa
+  name: cluster-bifpfa-mhc-0
+  namespace: mhc-remediation-8eu8lz
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-bifpfa
+    uid: 358b0892-1210-4662-91e2-10656f1cf343
+  resourceVersion: "2087"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-8eu8lz/machinehealthchecks/cluster-bifpfa-mhc-0
+  uid: ee9f4aa7-8ad7-4866-9c62-f31a4ff659fc
+spec:
+  clusterName: cluster-bifpfa
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      mhc: unhealthy
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy
+status: {}

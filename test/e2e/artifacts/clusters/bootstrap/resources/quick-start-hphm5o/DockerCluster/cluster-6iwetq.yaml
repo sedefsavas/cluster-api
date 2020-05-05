@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-6iwetq","namespace":"quick-start-hphm5o"}}
+  creationTimestamp: "2020-05-04T05:33:24Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-6iwetq
+  name: cluster-6iwetq
+  namespace: quick-start-hphm5o
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-6iwetq
+    uid: 6bc353fe-08fd-4067-b259-b1fb62eadd94
+  resourceVersion: "1250"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-hphm5o/dockerclusters/cluster-6iwetq
+  uid: d7a82deb-ded4-40ce-bd08-9a74e2bc8dc1
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.4
+    port: 6443
+status:
+  ready: true
