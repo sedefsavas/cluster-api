@@ -24,6 +24,8 @@ import (
 	"path"
 	"path/filepath"
 
+	"k8s.io/apimachinery/pkg/labels"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
@@ -171,4 +173,21 @@ func CreateRelatedResources(ctx context.Context, input CreateRelatedResourcesInp
 			return input.Creator.Create(ctx, obj)
 		}, intervals...).Should(Succeed())
 	}
+}
+
+// hasMatchingLabels verifies that the Label Selector matches the given Labels
+func hasMatchingLabels(matchSelector metav1.LabelSelector, matchLabels map[string]string) bool {
+	// This should never fail, validating webhook should catch this first
+	selector, err := metav1.LabelSelectorAsSelector(&matchSelector)
+	if err != nil {
+		return false
+	}
+	// If selector is nil or empty , it should match all.
+	if selector.Empty() {
+		return true
+	}
+	if !selector.Matches(labels.Set(matchLabels)) {
+		return false
+	}
+	return true
 }
