@@ -1,0 +1,96 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"Cluster","metadata":{"annotations":{},"name":"cluster-s24ywz","namespace":"self-hosted-n3hry0"},"spec":{"clusterNetwork":{"pods":{"cidrBlocks":["192.168.0.0/16"]},"serviceDomain":"cluster.local","services":{"cidrBlocks":["10.128.0.0/12"]}},"controlPlaneRef":{"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","name":"cluster-s24ywz-control-plane"},"infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","name":"cluster-s24ywz"}}}
+  creationTimestamp: "2020-05-07T20:05:17Z"
+  finalizers:
+  - cluster.cluster.x-k8s.io
+  generation: 2
+  managedFields:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:finalizers:
+          .: {}
+          v:"cluster.cluster.x-k8s.io": {}
+      f:spec:
+        .: {}
+        f:clusterNetwork:
+          .: {}
+          f:pods:
+            .: {}
+            f:cidrBlocks: {}
+          f:serviceDomain: {}
+          f:services:
+            .: {}
+            f:cidrBlocks: {}
+        f:controlPlaneEndpoint:
+          .: {}
+          f:host: {}
+          f:port: {}
+        f:controlPlaneRef:
+          .: {}
+          f:apiVersion: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+        f:infrastructureRef:
+          .: {}
+          f:apiVersion: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+        f:paused: {}
+    manager: clusterctl
+    operation: Update
+    time: "2020-05-07T20:05:20Z"
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        .: {}
+        f:controlPlaneInitialized: {}
+        f:controlPlaneReady: {}
+        f:infrastructureReady: {}
+        f:phase: {}
+    manager: manager
+    operation: Update
+    time: "2020-05-07T20:05:21Z"
+  name: cluster-s24ywz
+  namespace: self-hosted-n3hry0
+  resourceVersion: "1559"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/clusters/cluster-s24ywz
+  uid: 4dae78c5-cf3e-4a18-af56-1a464522b616
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.128.0.0/12
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-s24ywz-control-plane
+    namespace: self-hosted-n3hry0
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerCluster
+    name: cluster-s24ywz
+    namespace: self-hosted-n3hry0
+status:
+  controlPlaneInitialized: true
+  controlPlaneReady: true
+  infrastructureReady: true
+  phase: Provisioned

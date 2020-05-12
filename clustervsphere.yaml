@@ -1,0 +1,154 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  name: sedef
+  namespace: default
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: sedef
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: VSphereCluster
+    name: sedef
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: HAProxyLoadBalancer
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: sedef
+  name: sedef
+  namespace: default
+spec:
+  user:
+    authorizedKeys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAPyBcuZpshNB1OYV74QlDDYIlDITJgSBgX3Yq1I3iRAA4bHgkiFFUmg+pX/3che23l6NoH9aIAA1Ia/Mi732HZgWZ/uPpCln2izEX5i1Gjpg7FcS5yPpOSCpoiLE7QzU0PKn5Sy/dakllp5FjP56lqYZHH3s6MITYFcttprtHfrPga5jVyHtqayyV8McPRu3S38Mf3GZvxCr5fUGUv6p1lqNRoi6usPJRbgYsj7vEpN0juM2mdjgLCFNLuQbgt/q464zxSD4Ft7npaWeks0xlDTgPm6vb26JpaUnxl0JPwqAz7mTeXmKfYz9r/BMoc8Cex9mOrVTqT7AxAYbEGrG7
+      ssavas@ssavas-a01.vmware.com
+    name: capv
+  virtualMachineConfiguration:
+    cloneMode: linkedClone
+    datacenter: SDDC-Datacenter
+    datastore: WorkloadDatastore
+    diskGiB: 25
+    folder: ssavas
+    memoryMiB: 8192
+    network:
+      devices:
+      - dhcp4: true
+        networkName: sddc-cgw-network-7
+    numCPUs: 2
+    resourcePool: ssavas
+    server: vcenter.sddc-54-70-161-229.vmc.vmware.com
+    template: capv-haproxy-v0.6.3
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: VSphereCluster
+metadata:
+  name: sedef
+  namespace: default
+spec:
+  cloudProviderConfiguration:
+    global:
+      insecure: true
+      secretName: cloud-provider-vsphere-credentials
+      secretNamespace: kube-system
+    network:
+      name: sddc-cgw-network-7
+    providerConfig:
+      cloud:
+        controllerImage: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.0.0
+      storage:
+        attacherImage: quay.io/k8scsi/csi-attacher:v1.1.1
+        controllerImage: gcr.io/cloud-provider-vsphere/csi/release/syncer:v1.0.2
+        livenessProbeImage: quay.io/k8scsi/livenessprobe:v1.1.0
+        metadataSyncerImage: gcr.io/cloud-provider-vsphere/csi/release/syncer:v1.0.2
+        nodeDriverImage: gcr.io/cloud-provider-vsphere/csi/release/driver:v1.0.2
+        provisionerImage: quay.io/k8scsi/csi-provisioner:v1.2.1
+        registrarImage: quay.io/k8scsi/csi-node-driver-registrar:v1.1.0
+    virtualCenter:
+      vcenter.sddc-54-70-161-229.vmc.vmware.com:
+        datacenters: SDDC-Datacenter
+    workspace:
+      datacenter: SDDC-Datacenter
+      datastore: WorkloadDatastore
+      folder: ssavas
+      resourcePool: ssavas
+      server: vcenter.sddc-54-70-161-229.vmc.vmware.com
+  loadBalancerRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: HAProxyLoadBalancer
+    name: sedef
+  server: vcenter.sddc-54-70-161-229.vmc.vmware.com
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: VSphereMachineTemplate
+metadata:
+  name: sedef
+  namespace: default
+spec:
+  template:
+    spec:
+      cloneMode: linkedClone
+      datacenter: SDDC-Datacenter
+      datastore: WorkloadDatastore
+      diskGiB: 25
+      folder: ssavas
+      memoryMiB: 8192
+      network:
+        devices:
+        - dhcp4: true
+          networkName: sddc-cgw-network-7
+      numCPUs: 2
+      resourcePool: ssavas
+      server: vcenter.sddc-54-70-161-229.vmc.vmware.com
+      template: ubuntu-1804-kube-v1.16.2
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+kind: KubeadmControlPlane
+metadata:
+  name: sedef
+  namespace: default
+spec:
+  infrastructureTemplate:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: VSphereMachineTemplate
+    name: sedef
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        extraArgs:
+          cloud-provider: external
+      controllerManager:
+        extraArgs:
+          cloud-provider: external
+    initConfiguration:
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          cloud-provider: external
+        name: '{{ ds.meta_data.hostname }}'
+    joinConfiguration:
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          cloud-provider: external
+        name: '{{ ds.meta_data.hostname }}'
+    preKubeadmCommands:
+    - hostname "{{ ds.meta_data.hostname }}"
+    - echo "::1         ipv6-localhost ipv6-loopback" >/etc/hosts
+    - echo "127.0.0.1   localhost" >>/etc/hosts
+    - echo "127.0.0.1   {{ ds.meta_data.hostname }}" >>/etc/hosts
+    - echo "{{ ds.meta_data.hostname }}" >/etc/hostname
+    users:
+    - name: capv
+      sshAuthorizedKeys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAPyBcuZpshNB1OYV74QlDDYIlDITJgSBgX3Yq1I3iRAA4bHgkiFFUmg+pX/3che23l6NoH9aIAA1Ia/Mi732HZgWZ/uPpCln2izEX5i1Gjpg7FcS5yPpOSCpoiLE7QzU0PKn5Sy/dakllp5FjP56lqYZHH3s6MITYFcttprtHfrPga5jVyHtqayyV8McPRu3S38Mf3GZvxCr5fUGUv6p1lqNRoi6usPJRbgYsj7vEpN0juM2mdjgLCFNLuQbgt/q464zxSD4Ft7npaWeks0xlDTgPm6vb26JpaUnxl0JPwqAz7mTeXmKfYz9r/BMoc8Cex9mOrVTqT7AxAYbEGrG7
+        ssavas@ssavas-a01.vmware.com
+      sudo: ALL=(ALL) NOPASSWD:ALL
+  replicas: 1
+  version: v1.16.2

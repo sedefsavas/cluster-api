@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-11T02:43:12Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-fnop3g
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2492267581"
+  name: cluster-fnop3g-control-plane-vjskb
+  namespace: mhc-remediation-kwwinn
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-fnop3g-control-plane
+    uid: 44fc05ef-375d-438e-af6e-33e292fb08ee
+  resourceVersion: "1517"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-kwwinn/machines/cluster-fnop3g-control-plane-vjskb
+  uid: c4b5ddb2-2f99-4747-be01-be5b6227b111
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-fnop3g-control-plane-bngqp
+      namespace: mhc-remediation-kwwinn
+      uid: eab0bdd8-4cde-4fdf-aa4e-3814e8e52f4b
+    dataSecretName: cluster-fnop3g-control-plane-bngqp
+  clusterName: cluster-fnop3g
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-fnop3g-control-plane-45dsh
+    namespace: mhc-remediation-kwwinn
+    uid: 805fe66f-4059-49a5-b978-7f4520c2e9c6
+  providerID: docker:////cluster-fnop3g-cluster-fnop3g-control-plane-vjskb
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-11T02:43:44Z"
+  nodeRef:
+    name: cluster-fnop3g-cluster-fnop3g-control-plane-vjskb
+    uid: 768d0aed-1220-4204-b0ef-cbd462dbf548
+  phase: Running

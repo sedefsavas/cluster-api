@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-07T19:42:55Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-p6gxi0
+    cluster.x-k8s.io/deployment-name: cluster-p6gxi0-md-0
+    machine-template-hash: "988735774"
+  name: cluster-p6gxi0-md-0-zv7kr
+  namespace: kcp-upgrade-bmx64k
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-p6gxi0-md-0-fddc79cc8-b78wl
+    uid: 29a3b9d1-ee5d-49ad-b1ef-1ec18dc94c05
+  resourceVersion: "1506"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-bmx64k/kubeadmconfigs/cluster-p6gxi0-md-0-zv7kr
+  uid: 7c446ad9-d979-4860-99b6-44f2636bb093
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:d7868148dd94786780678b020dc0389703f8a829ea6d3945d05bc56db8ff5b9b
+        token: z2m0fb.fb78x81slh4excyc
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-p6gxi0-md-0-zv7kr
+  ready: true

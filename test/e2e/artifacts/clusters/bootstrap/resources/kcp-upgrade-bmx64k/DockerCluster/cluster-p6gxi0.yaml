@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-p6gxi0","namespace":"kcp-upgrade-bmx64k"}}
+  creationTimestamp: "2020-05-07T19:42:55Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-p6gxi0
+  name: cluster-p6gxi0
+  namespace: kcp-upgrade-bmx64k
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-p6gxi0
+    uid: 09b99901-be0b-408b-9926-0c319113ebe2
+  resourceVersion: "1245"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-bmx64k/dockerclusters/cluster-p6gxi0
+  uid: 5a9e2688-c175-462d-b8de-06c8e5a36989
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-z83d7i","namespace":"mhc-remediation-077dgp"}}
+  creationTimestamp: "2020-05-11T07:42:34Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-z83d7i
+  name: cluster-z83d7i
+  namespace: mhc-remediation-077dgp
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-z83d7i
+    uid: 42adf2c9-00d7-4dfe-83fb-2d1e0231c4f8
+  resourceVersion: "1354"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-077dgp/dockerclusters/cluster-z83d7i
+  uid: fbc5b821-1d1a-404c-ba28-9a70b06fbd84
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.7
+    port: 6443
+status:
+  ready: true

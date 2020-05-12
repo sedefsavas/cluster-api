@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-43v28j-md-0","namespace":"mhc-remediation-6lsf29"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-08T18:49:41Z"
+  generation: 1
+  name: cluster-43v28j-md-0
+  namespace: mhc-remediation-6lsf29
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-43v28j
+    uid: 7f59121d-5e1e-4207-a746-76aa7d1eb1c3
+  resourceVersion: "1260"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-6lsf29/dockermachinetemplates/cluster-43v28j-md-0
+  uid: 0e48631b-e411-419f-ad1a-d60a538bde9a
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

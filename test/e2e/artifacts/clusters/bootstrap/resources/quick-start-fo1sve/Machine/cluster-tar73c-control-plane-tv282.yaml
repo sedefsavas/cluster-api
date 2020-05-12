@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T08:08:39Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-tar73c
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "3623717132"
+  name: cluster-tar73c-control-plane-tv282
+  namespace: quick-start-fo1sve
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-tar73c-control-plane
+    uid: 874e02b7-3aff-4248-9fa8-79cbccd60560
+  resourceVersion: "1412"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-fo1sve/machines/cluster-tar73c-control-plane-tv282
+  uid: 724bb115-5b8f-4ce7-a9df-4d370799be2d
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-tar73c-control-plane-8mm5b
+      namespace: quick-start-fo1sve
+      uid: 8f3f4e20-5ea6-4e61-83ab-d506eb868e4e
+    dataSecretName: cluster-tar73c-control-plane-8mm5b
+  clusterName: cluster-tar73c
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-tar73c-control-plane-4sg7z
+    namespace: quick-start-fo1sve
+    uid: a96f1bad-c901-42b9-819d-c8119e0e208b
+  providerID: docker:////cluster-tar73c-cluster-tar73c-control-plane-tv282
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T08:09:11Z"
+  nodeRef:
+    name: cluster-tar73c-cluster-tar73c-control-plane-tv282
+    uid: 96cc7979-98eb-418d-8c0a-fd37c759a342
+  phase: Running

@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T08:10:35Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-tar73c-md-0-5fd7869c79-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-tar73c
+    cluster.x-k8s.io/deployment-name: cluster-tar73c-md-0
+    machine-template-hash: "1983425735"
+  name: cluster-tar73c-md-0-5fd7869c79-xzmfn
+  namespace: quick-start-fo1sve
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-tar73c-md-0-5fd7869c79
+    uid: 2b503c59-b9cb-4110-9ada-dbd13157fdda
+  resourceVersion: "1810"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-fo1sve/machines/cluster-tar73c-md-0-5fd7869c79-xzmfn
+  uid: 183868c6-3464-44ed-bb2d-be5c23fb06e8
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-tar73c-md-0-5gbs6
+      namespace: quick-start-fo1sve
+      uid: 519daf95-fc3b-416f-82f5-e99ded8f226e
+    dataSecretName: cluster-tar73c-md-0-5gbs6
+  clusterName: cluster-tar73c
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-tar73c-md-0-r2xnc
+    namespace: quick-start-fo1sve
+    uid: d96c5b71-fe48-4346-88b7-31ebffeab6fc
+  providerID: docker:////cluster-tar73c-cluster-tar73c-md-0-5fd7869c79-xzmfn
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T08:10:49Z"
+  nodeRef:
+    name: cluster-tar73c-cluster-tar73c-md-0-5fd7869c79-xzmfn
+    uid: 8b9f8b82-ea40-40a3-9839-461ca42e915d
+  phase: Running

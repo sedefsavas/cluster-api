@@ -1,0 +1,83 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T20:05:18Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "505823641"
+  managedFields:
+  - apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:finalizers:
+          .: {}
+          v:"dockermachine.infrastructure.cluster.x-k8s.io": {}
+        f:labels:
+          .: {}
+          f:cluster.x-k8s.io/cluster-name: {}
+          f:cluster.x-k8s.io/control-plane: {}
+          f:kubeadm.controlplane.cluster.x-k8s.io/hash: {}
+        f:ownerReferences:
+          .: {}
+          k:{"uid":"56bc51b9-a5b3-4b6f-8b88-6e3f8171f6d7"}:
+            .: {}
+            f:apiVersion: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+          k:{"uid":"c747d252-f51f-4296-b2ac-09625be8016f"}:
+            .: {}
+            f:apiVersion: {}
+            f:blockOwnerDeletion: {}
+            f:controller: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+      f:spec:
+        .: {}
+        f:bootstrapped: {}
+        f:extraMounts: {}
+        f:providerID: {}
+      f:status:
+        f:loadBalancerConfigured: {}
+    manager: clusterctl
+    operation: Update
+    time: "2020-05-07T20:05:18Z"
+  - apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        .: {}
+        f:ready: {}
+    manager: manager
+    operation: Update
+    time: "2020-05-07T20:05:20Z"
+  name: cluster-s24ywz-control-plane-mmk9h
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-s24ywz-control-plane
+    uid: 56bc51b9-a5b3-4b6f-8b88-6e3f8171f6d7
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-s24ywz-control-plane-vm6zx
+    uid: c747d252-f51f-4296-b2ac-09625be8016f
+  resourceVersion: "1548"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/dockermachines/cluster-s24ywz-control-plane-mmk9h
+  uid: 335b5eb2-c3c8-4211-8e9d-4a87e152012d
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-s24ywz-cluster-s24ywz-control-plane-vm6zx
+status:
+  ready: true

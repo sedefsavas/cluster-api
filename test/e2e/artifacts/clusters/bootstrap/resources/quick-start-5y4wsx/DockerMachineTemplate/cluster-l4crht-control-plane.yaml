@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-l4crht-control-plane","namespace":"quick-start-5y4wsx"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-07T07:55:40Z"
+  generation: 1
+  name: cluster-l4crht-control-plane
+  namespace: quick-start-5y4wsx
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-l4crht
+    uid: 3665a161-2920-42f0-af94-6bc610815da3
+  resourceVersion: "1323"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-5y4wsx/dockermachinetemplates/cluster-l4crht-control-plane
+  uid: 7d2d1078-e087-4a3d-9627-04815d6c6c1a
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

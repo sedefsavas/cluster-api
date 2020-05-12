@@ -1,0 +1,22 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-yka7ok","namespace":"mhc-remediation-fa4219"}}
+  creationTimestamp: "2020-05-08T18:35:45Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-yka7ok
+  name: cluster-yka7ok
+  namespace: mhc-remediation-fa4219
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-yka7ok
+    uid: d225d454-0a87-405f-97ca-6819eb1b31bd
+  resourceVersion: "1259"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-fa4219/dockerclusters/cluster-yka7ok
+  uid: 6fddd5e9-5fbf-4239-a5a7-619e5ac82ffe

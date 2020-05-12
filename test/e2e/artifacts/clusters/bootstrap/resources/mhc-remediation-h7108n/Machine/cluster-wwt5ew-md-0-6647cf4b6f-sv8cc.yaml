@@ -1,0 +1,51 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-08T18:44:52Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-wwt5ew-md-0-6647cf4b6f-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-wwt5ew
+    cluster.x-k8s.io/deployment-name: cluster-wwt5ew-md-0
+    machine-template-hash: "2203790629"
+    nodepool: pool1
+  name: cluster-wwt5ew-md-0-6647cf4b6f-sv8cc
+  namespace: mhc-remediation-h7108n
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-wwt5ew-md-0-6647cf4b6f
+    uid: 12dd8079-1627-4b0b-bab6-c4bd6ab28a8e
+  resourceVersion: "1572"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-h7108n/machines/cluster-wwt5ew-md-0-6647cf4b6f-sv8cc
+  uid: 1b5f2066-090a-4e75-9081-a4cd9221da68
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-wwt5ew-md-0-r4kkd
+      namespace: mhc-remediation-h7108n
+      uid: dc16e0db-be9a-4f97-8947-b5526f544a49
+    dataSecretName: cluster-wwt5ew-md-0-r4kkd
+  clusterName: cluster-wwt5ew
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-wwt5ew-md-0-spf9k
+    namespace: mhc-remediation-h7108n
+    uid: 1cc72789-a1e5-48da-94dd-a87b76aaf3ed
+  providerID: docker:////cluster-wwt5ew-cluster-wwt5ew-md-0-6647cf4b6f-sv8cc
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-08T18:46:06Z"
+  nodeRef:
+    name: cluster-wwt5ew-cluster-wwt5ew-md-0-6647cf4b6f-sv8cc
+    uid: 21f9c5f1-b029-45b9-8e1f-c0adc254ddcf
+  phase: Running

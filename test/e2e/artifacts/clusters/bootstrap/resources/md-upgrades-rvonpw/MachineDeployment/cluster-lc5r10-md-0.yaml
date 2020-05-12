@@ -1,0 +1,61 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineDeployment","metadata":{"annotations":{},"name":"cluster-lc5r10-md-0","namespace":"md-upgrades-rvonpw"},"spec":{"clusterName":"cluster-lc5r10","replicas":1,"selector":{"matchLabels":null},"template":{"spec":{"bootstrap":{"configRef":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","name":"cluster-lc5r10-md-0"}},"clusterName":"cluster-lc5r10","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-lc5r10-md-0"},"version":"v1.17.2"}}}}
+    machinedeployment.clusters.x-k8s.io/revision: "3"
+  creationTimestamp: "2020-05-07T19:55:53Z"
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-lc5r10
+  name: cluster-lc5r10-md-0
+  namespace: md-upgrades-rvonpw
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-lc5r10
+    uid: 7f07b800-11fe-4aae-8440-944f5c6f6bf7
+  resourceVersion: "5524"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-rvonpw/machinedeployments/cluster-lc5r10-md-0
+  uid: 2c01396e-40bf-4457-8cf4-9e3ef86902e6
+spec:
+  clusterName: cluster-lc5r10
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-lc5r10
+      cluster.x-k8s.io/deployment-name: cluster-lc5r10-md-0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-lc5r10
+        cluster.x-k8s.io/deployment-name: cluster-lc5r10-md-0
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-lc5r10-md-0
+      clusterName: cluster-lc5r10
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-lc5r10-md-0-kbqydv
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  observedGeneration: 3
+  phase: Running
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-lc5r10,cluster.x-k8s.io/deployment-name=cluster-lc5r10-md-0
+  updatedReplicas: 1

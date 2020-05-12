@@ -1,0 +1,352 @@
+I0511 02:51:24.804796       1 listener.go:44] controller-runtime/metrics "msg"="metrics server is starting to listen"  "addr"="127.0.0.1:8080"
+I0511 02:51:24.814375       1 main.go:175] setup "msg"="starting manager"  "version"=""
+I0511 02:51:24.830840       1 internal.go:356] controller-runtime/manager "msg"="starting metrics server"  "path"="/metrics"
+I0511 02:51:25.440437       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="cluster" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"infrastructureReady":false,"controlPlaneInitialized":false}}}
+I0511 02:51:25.443459       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machine" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}},"status":{"bootstrapReady":false,"infrastructureReady":false}}}
+I0511 02:51:25.444586       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machine" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"infrastructureReady":false,"controlPlaneInitialized":false}}}
+I0511 02:51:25.448792       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machineset" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","selector":{},"template":{"metadata":{},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}}}},"status":{}}}
+I0511 02:51:25.458291       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machinedeployment" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","selector":{},"template":{"metadata":{},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}}}},"status":{}}}
+I0511 02:51:25.462649       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machinehealthcheck" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","selector":{},"unhealthyConditions":null},"status":{}}}
+I0511 02:51:25.462843       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machinehealthcheck" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}},"status":{"bootstrapReady":false,"infrastructureReady":false}}}
+I0511 02:51:25.462980       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machinehealthcheck" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"infrastructureReady":false,"controlPlaneInitialized":false}}}
+I0511 02:51:25.967497       1 controller.go:171] controller-runtime/controller "msg"="Starting Controller"  "controller"="machinehealthcheck"
+I0511 02:51:26.043214       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="cluster" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}},"status":{"bootstrapReady":false,"infrastructureReady":false}}}
+I0511 02:51:26.044813       1 controller.go:171] controller-runtime/controller "msg"="Starting Controller"  "controller"="cluster"
+I0511 02:51:26.045280       1 controller.go:171] controller-runtime/controller "msg"="Starting Controller"  "controller"="machine"
+I0511 02:51:26.353121       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machineset" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}},"status":{"bootstrapReady":false,"infrastructureReady":false}}}
+I0511 02:51:26.353347       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machineset" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}},"status":{"bootstrapReady":false,"infrastructureReady":false}}}
+I0511 02:51:26.353514       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machineset" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"infrastructureReady":false,"controlPlaneInitialized":false}}}
+I0511 02:51:26.360381       1 controller.go:171] controller-runtime/controller "msg"="Starting Controller"  "controller"="machineset"
+I0511 02:51:26.559577       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machinedeployment" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","selector":{},"template":{"metadata":{},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}}}},"status":{}}}
+I0511 02:51:26.559734       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machinedeployment" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"clusterName":"","selector":{},"template":{"metadata":{},"spec":{"clusterName":"","bootstrap":{},"infrastructureRef":{}}}},"status":{}}}
+I0511 02:51:26.560273       1 controller.go:164] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machinedeployment" "source"={"Type":{"metadata":{"creationTimestamp":null},"spec":{"controlPlaneEndpoint":{"host":"","port":0}},"status":{"infrastructureReady":false,"controlPlaneInitialized":false}}}
+I0511 02:51:26.560585       1 controller.go:171] controller-runtime/controller "msg"="Starting Controller"  "controller"="machinedeployment"
+I0511 02:51:26.560735       1 controller.go:190] controller-runtime/controller "msg"="Starting workers"  "controller"="machinedeployment" "worker count"=10
+I0511 02:51:26.565773       1 controller.go:190] controller-runtime/controller "msg"="Starting workers"  "controller"="machineset" "worker count"=10
+I0511 02:51:26.568543       1 controller.go:190] controller-runtime/controller "msg"="Starting workers"  "controller"="machinehealthcheck" "worker count"=10
+I0511 02:51:26.646441       1 controller.go:190] controller-runtime/controller "msg"="Starting workers"  "controller"="cluster" "worker count"=10
+I0511 02:51:26.648601       1 controller.go:190] controller-runtime/controller "msg"="Starting workers"  "controller"="machine" "worker count"=10
+I0511 02:51:45.391552       1 tracker.go:55] controllers/Cluster "msg"="Adding watcher on external object" "cluster"="cluster-prnpxf" "namespace"="mhc-remediation-7rjyec" "GroupVersionKind"="infrastructure.cluster.x-k8s.io/v1alpha3, Kind=DockerCluster"
+I0511 02:51:45.391679       1 controller.go:138] controller-runtime/controller "msg"="Starting EventSource"  "controller"="cluster" "source"={"Type":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster"}}
+xx mhc CAME
+I0511 02:51:45.530139       1 tracker.go:55] controllers/Cluster "msg"="Adding watcher on external object" "cluster"="cluster-prnpxf" "namespace"="mhc-remediation-7rjyec" "GroupVersionKind"="controlplane.cluster.x-k8s.io/v1alpha3, Kind=KubeadmControlPlane"
+I0511 02:51:45.530261       1 controller.go:138] controller-runtime/controller "msg"="Starting EventSource"  "controller"="cluster" "source"={"Type":{"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane"}}
+E0511 02:51:45.540577       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.540756       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.578262       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+xx mhc CAME
+E0511 02:51:45.591366       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.591584       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+xx mhc CAME
+E0511 02:51:45.592664       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+E0511 02:51:45.593237       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.593292       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.599563       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+xx mhc CAME
+E0511 02:51:45.607039       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.607121       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.607390       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+E0511 02:51:45.656400       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.656508       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+xx mhc CAME
+E0511 02:51:45.657280       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+xx mhc CAME
+E0511 02:51:45.738662       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.739008       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.740576       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+I0511 02:51:45.789025       1 machineset_controller.go:296] controllers/MachineSet "msg"="Too few replicas" "machineset"="cluster-prnpxf-md-0-7df577f4dd" "namespace"="mhc-remediation-7rjyec" "creating"=1 "need"=1
+I0511 02:51:45.789123       1 machineset_controller.go:301] controllers/MachineSet "msg"="Creating machine 1 of 1, ( spec.replicas(1) \u003e currentMachineCount(0) )" "machineset"="cluster-prnpxf-md-0-7df577f4dd" "namespace"="mhc-remediation-7rjyec" 
+I0511 02:51:45.893164       1 machineset_controller.go:362] controllers/MachineSet "msg"="Created machine 1 of 1 with name \"cluster-prnpxf-md-0-7df577f4dd-5l47j\"" "machineset"="cluster-prnpxf-md-0-7df577f4dd" "namespace"="mhc-remediation-7rjyec" 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx mhc CAME
+E0511 02:51:45.896098       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.896199       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.896516       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+xx mhc CAME
+E0511 02:51:45.912261       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.912400       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:45.916487       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+I0511 02:51:46.057566       1 tracker.go:55] controllers/Machine "msg"="Adding watcher on external object" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "GroupVersionKind"="bootstrap.cluster.x-k8s.io/v1alpha3, Kind=KubeadmConfig"
+I0511 02:51:46.059720       1 controller.go:138] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machine" "source"={"Type":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfig"}}
+I0511 02:51:46.197942       1 tracker.go:55] controllers/Machine "msg"="Adding watcher on external object" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "GroupVersionKind"="infrastructure.cluster.x-k8s.io/v1alpha3, Kind=DockerMachine"
+I0511 02:51:46.198140       1 controller.go:138] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machine" "source"={"Type":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachine"}}
+I0511 02:51:46.198399       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.198540       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-md-0-7df577f4dd-5l47j\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx mhc CAME
+E0511 02:51:46.237157       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.237267       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.237865       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx mhc CAME
+E0511 02:51:46.267115       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.267210       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.273359       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+I0511 02:51:46.294084       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.294207       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-md-0-7df577f4dd-5l47j\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+I0511 02:51:46.298161       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.298225       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-md-0-7df577f4dd-5l47j\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+xx mhc CAME
+E0511 02:51:46.579388       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.579488       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.582812       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to retrieve kubeconfig secret for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Secret \"cluster-prnpxf-kubeconfig\" not found"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+I0511 02:51:46.910024       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:46.910119       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-md-0-7df577f4dd-5l47j\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+xx machine CAME
+xx amtching mhc number CAME 0 
+I0511 02:51:49.269610       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:49.269935       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-control-plane-f8j8x\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx machine CAME
+xx amtching mhc number CAME 0 
+I0511 02:51:49.348123       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:49.348505       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-control-plane-f8j8x\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+I0511 02:51:49.391296       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:49.391560       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-control-plane-f8j8x\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+I0511 02:51:49.578169       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:49.578372       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Infrastructure provider for Machine \"cluster-prnpxf-control-plane-f8j8x\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx machine CAME
+xx amtching mhc number CAME 0 
+I0511 02:51:49.652732       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:49.653324       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Infrastructure provider for Machine \"cluster-prnpxf-control-plane-f8j8x\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+xx mhc CAME
+E0511 02:51:51.715867       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to create client for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Get https://172.17.0.7:6443/api?timeout=32s: EOF" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:51.716128       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to create client for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Get https://172.17.0.7:6443/api?timeout=32s: EOF" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:51:51.718403       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to create client for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Get https://172.17.0.7:6443/api?timeout=32s: EOF"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+xx mhc CAME
+E0511 02:52:01.966006       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to create client for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Get https://172.17.0.7:6443/api?timeout=32s: EOF" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:01.966099       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to create client for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Get https://172.17.0.7:6443/api?timeout=32s: EOF" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:01.966409       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to create client for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Get https://172.17.0.7:6443/api?timeout=32s: EOF"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+I0511 02:52:16.237098       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:16.237145       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-md-0-7df577f4dd-5l47j\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+I0511 02:52:19.306043       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:19.306120       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Infrastructure provider for Machine \"cluster-prnpxf-control-plane-f8j8x\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+xx mhc CAME
+E0511 02:52:22.415270       1 machinehealthcheck_controller.go:203] controllers/MachineHealthCheck "msg"="Error building target cluster client" "error"="failed to create client for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Get https://172.17.0.7:6443/api?timeout=32s: EOF" "cluster"="cluster-prnpxf" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:22.415341       1 machinehealthcheck_controller.go:178] controllers/MachineHealthCheck "msg"="Failed to reconcile MachineHealthCheck" "error"="failed to create client for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Get https://172.17.0.7:6443/api?timeout=32s: EOF" "machinehealthcheck"="cluster-prnpxf-mhc-0" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:22.416471       1 controller.go:258] controller-runtime/controller "msg"="Reconciler error" "error"="failed to create client for Cluster mhc-remediation-7rjyec/cluster-prnpxf: Get https://172.17.0.7:6443/api?timeout=32s: EOF"  "controller"="machinehealthcheck" "request"={"Namespace":"mhc-remediation-7rjyec","Name":"cluster-prnpxf-mhc-0"}
+I0511 02:52:32.772416       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:32.773194       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Infrastructure provider for Machine \"cluster-prnpxf-control-plane-f8j8x\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" 
+I0511 02:52:32.876892       1 machine_controller_noderef.go:81] controllers/Machine "msg"="Set Machine's NodeRef" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-control-plane-f8j8x" "namespace"="mhc-remediation-7rjyec" "noderef"="cluster-prnpxf-cluster-prnpxf-control-plane-f8j8x"
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx machine CAME
+xx amtching mhc number CAME 0 
+I0511 02:52:46.205490       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:46.205618       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-md-0-7df577f4dd-5l47j\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+I0511 02:52:46.650645       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:46.650720       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Bootstrap provider for Machine \"cluster-prnpxf-md-0-7df577f4dd-5l47j\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+I0511 02:52:46.669816       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:46.670149       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Infrastructure provider for Machine \"cluster-prnpxf-md-0-7df577f4dd-5l47j\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx mhc CAME
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx machine CAME
+xx amtching mhc number CAME 1 
+I0511 02:52:46.750727       1 machine_controller_noderef.go:53] controllers/Machine "msg"="Machine doesn't have a valid ProviderID yet" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+E0511 02:52:46.750866       1 machine_controller.go:226] controllers/Machine "msg"="Reconciliation for Machine asked to requeue" "error"="Infrastructure provider for Machine \"cluster-prnpxf-md-0-7df577f4dd-5l47j\" in namespace \"mhc-remediation-7rjyec\" is not ready, requeuing: requeue in 30s" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" 
+I0511 02:52:46.777886       1 controller.go:138] controller-runtime/controller "msg"="Starting EventSource"  "controller"="machinehealthcheck" "source"={}
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 0 
+xx node change came
+E0511 02:52:53.211228       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx node change came
+xx node change came
+E0511 02:52:53.249517       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+E0511 02:52:53.249655       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+E0511 02:52:53.296487       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+E0511 02:52:53.296757       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx node change came
+xx node change came
+E0511 02:52:53.333089       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+E0511 02:52:53.333159       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx node change came
+xx node change came
+E0511 02:52:53.424753       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+E0511 02:52:53.424803       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx node change came
+xx node change came
+E0511 02:52:53.641662       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+E0511 02:52:53.641739       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx node change came
+xx node change came
+E0511 02:52:53.991063       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx node change came
+E0511 02:52:53.991126       1 machinehealthcheck_controller.go:366] controllers/MachineHealthCheck "msg"="Unable to retrieve machine from node" "error"="expecting one machine for node cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j, got: []"  "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx node change came
+I0511 02:52:54.086941       1 machine_controller_noderef.go:81] controllers/Machine "msg"="Set Machine's NodeRef" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "noderef"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx machine CAME
+xx mhc CAME
+xx amtching mhc number CAME 1 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+I0511 02:52:54.256851       1 machine_controller_noderef.go:81] controllers/Machine "msg"="Set Machine's NodeRef" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "noderef"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx mhc CAME
+xx trying to reconcile
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx trying to reconcile + need remedie [] 
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+I0511 02:53:45.529057       1 machineset_controller.go:374] controllers/MachineSet "msg"="Too many replicas" "machineset"="cluster-prnpxf-md-0-7df577f4dd" "namespace"="mhc-remediation-7rjyec" "deleting"=1 "need"=0
+I0511 02:53:45.529197       1 machineset_controller.go:380] controllers/MachineSet "msg"="Found delete policy" "machineset"="cluster-prnpxf-md-0-7df577f4dd" "namespace"="mhc-remediation-7rjyec" "delete-policy"="Random"
+xx machine CAME
+I0511 02:53:45.566712       1 machine_controller.go:272] controllers/Machine "msg"="Draining node" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx amtching mhc number CAME 1 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx mhc CAME
+I0511 02:53:45.566824       1 machineset_controller.go:396] controllers/MachineSet "msg"="Deleted machine" "machineset"="cluster-prnpxf-md-0-7df577f4dd" "namespace"="mhc-remediation-7rjyec" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx trying to reconcile
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx trying to reconcile + need remedie [] 
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+xx mhc CAME
+I0511 02:53:45.757258       1 machine_controller.go:405] controllers/Machine "msg"="Drain successful" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j" ""=null
+xx trying to reconcile
+I0511 02:53:45.814219       1 machine_controller.go:272] controllers/Machine "msg"="Draining node" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx trying to reconcile + need remedie [] 
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+I0511 02:53:45.906040       1 machine_controller.go:405] controllers/Machine "msg"="Drain successful" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j" ""=null
+I0511 02:53:45.933964       1 machine_controller.go:272] controllers/Machine "msg"="Draining node" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+I0511 02:53:45.960888       1 machine_controller.go:405] controllers/Machine "msg"="Drain successful" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j" ""=null
+I0511 02:53:47.034762       1 machine_controller.go:272] controllers/Machine "msg"="Draining node" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+I0511 02:53:47.056112       1 machine_controller.go:405] controllers/Machine "msg"="Drain successful" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j" ""=null
+I0511 02:53:47.056259       1 machine_controller.go:290] controllers/Machine "msg"="Deleting node" "cluster"="cluster-prnpxf" "machine"="cluster-prnpxf-md-0-7df577f4dd-5l47j" "namespace"="mhc-remediation-7rjyec" "node"="cluster-prnpxf-cluster-prnpxf-md-0-7df577f4dd-5l47j"
+xx node change came
+xx node change came and reconciling its machine
+xx machine CAME
+xx amtching mhc number CAME 1 
+xx mhc CAME
+xx machine CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+xx amtching mhc number CAME 1 
+xx mhc CAME
+xx trying to reconcile
+xx trying to reconcile + need remedie [] 
+I0511 02:54:31.961082       1 cluster_controller.go:225] controllers/Cluster "msg"="Cluster still has children - deleting them first" "cluster"="cluster-prnpxf" "namespace"="mhc-remediation-7rjyec" "coun

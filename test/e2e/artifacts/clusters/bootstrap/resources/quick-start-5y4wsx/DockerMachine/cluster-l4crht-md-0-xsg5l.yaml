@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T07:57:36Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-l4crht
+    cluster.x-k8s.io/deployment-name: cluster-l4crht-md-0
+    machine-template-hash: "1233702110"
+  name: cluster-l4crht-md-0-xsg5l
+  namespace: quick-start-5y4wsx
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-l4crht-md-0-5677c46554-4rdgx
+    uid: e5c58e43-88f2-4c74-867d-1b43c0db1298
+  resourceVersion: "1842"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-5y4wsx/dockermachines/cluster-l4crht-md-0-xsg5l
+  uid: 07140ab1-805a-4bbe-ae61-14ca18725c5d
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-l4crht-cluster-l4crht-md-0-5677c46554-4rdgx
+status:
+  ready: true

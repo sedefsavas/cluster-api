@@ -1,0 +1,61 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineDeployment","metadata":{"annotations":{},"name":"cluster-tar73c-md-0","namespace":"quick-start-fo1sve"},"spec":{"clusterName":"cluster-tar73c","replicas":1,"selector":{"matchLabels":null},"template":{"spec":{"bootstrap":{"configRef":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","name":"cluster-tar73c-md-0"}},"clusterName":"cluster-tar73c","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-tar73c-md-0"},"version":"v1.18.2"}}}}
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-07T08:08:37Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-tar73c
+  name: cluster-tar73c-md-0
+  namespace: quick-start-fo1sve
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-tar73c
+    uid: f035cc1f-f541-4d32-a80e-8ea4d6d59420
+  resourceVersion: "1872"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-fo1sve/machinedeployments/cluster-tar73c-md-0
+  uid: a0925233-ccf8-4682-a9db-5b64562728c2
+spec:
+  clusterName: cluster-tar73c
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-tar73c
+      cluster.x-k8s.io/deployment-name: cluster-tar73c-md-0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-tar73c
+        cluster.x-k8s.io/deployment-name: cluster-tar73c-md-0
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-tar73c-md-0
+      clusterName: cluster-tar73c
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-tar73c-md-0
+      version: v1.18.2
+status:
+  availableReplicas: 2
+  observedGeneration: 2
+  phase: Running
+  readyReplicas: 2
+  replicas: 2
+  selector: cluster.x-k8s.io/cluster-name=cluster-tar73c,cluster.x-k8s.io/deployment-name=cluster-tar73c-md-0
+  updatedReplicas: 2

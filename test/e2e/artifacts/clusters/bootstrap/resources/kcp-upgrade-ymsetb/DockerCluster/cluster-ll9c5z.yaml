@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-ll9c5z","namespace":"kcp-upgrade-ymsetb"}}
+  creationTimestamp: "2020-05-07T19:47:18Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-ll9c5z
+  name: cluster-ll9c5z
+  namespace: kcp-upgrade-ymsetb
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-ll9c5z
+    uid: 2a896b38-4d78-4ee3-83a8-04e52b6f124f
+  resourceVersion: "2392"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ymsetb/dockerclusters/cluster-ll9c5z
+  uid: 67061dd2-353b-4086-904a-7aa6fdb0149b
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

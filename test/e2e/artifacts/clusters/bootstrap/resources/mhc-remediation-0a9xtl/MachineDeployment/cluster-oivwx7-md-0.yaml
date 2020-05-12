@@ -1,0 +1,62 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineDeployment","metadata":{"annotations":{},"name":"cluster-oivwx7-md-0","namespace":"mhc-remediation-0a9xtl"},"spec":{"clusterName":"cluster-oivwx7","replicas":1,"selector":{"matchLabels":null},"template":{"metadata":{"labels":{"nodepool":"pool1"}},"spec":{"bootstrap":{"configRef":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","name":"cluster-oivwx7-md-0"}},"clusterName":"cluster-oivwx7","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-oivwx7-md-0"},"version":"v1.18.2"}}}}
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-08T19:48:50Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-oivwx7
+  name: cluster-oivwx7-md-0
+  namespace: mhc-remediation-0a9xtl
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-oivwx7
+    uid: 6b082e59-125f-41ec-93de-7af4060a9edf
+  resourceVersion: "1770"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-0a9xtl/machinedeployments/cluster-oivwx7-md-0
+  uid: bb480804-bbe4-4599-bfa0-87858638197a
+spec:
+  clusterName: cluster-oivwx7
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-oivwx7
+      cluster.x-k8s.io/deployment-name: cluster-oivwx7-md-0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-oivwx7
+        cluster.x-k8s.io/deployment-name: cluster-oivwx7-md-0
+        nodepool: pool1
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-oivwx7-md-0
+      clusterName: cluster-oivwx7
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-oivwx7-md-0
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  observedGeneration: 1
+  phase: Running
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-oivwx7,cluster.x-k8s.io/deployment-name=cluster-oivwx7-md-0
+  updatedReplicas: 1

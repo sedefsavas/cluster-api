@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-sy3kh8-control-plane","namespace":"mhc-remediation-y2dhts"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-11T02:08:50Z"
+  generation: 1
+  name: cluster-sy3kh8-control-plane
+  namespace: mhc-remediation-y2dhts
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-sy3kh8
+    uid: c71107b6-9e39-4248-8d8d-b166d2e2480e
+  resourceVersion: "1268"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-y2dhts/dockermachinetemplates/cluster-sy3kh8-control-plane
+  uid: 6dbc654c-1240-45d2-9eb1-4e02e15cde48
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

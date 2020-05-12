@@ -1,0 +1,51 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-08T20:02:46Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-fdyt1i-md-0-6d48d774f7-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-fdyt1i
+    cluster.x-k8s.io/deployment-name: cluster-fdyt1i-md-0
+    machine-template-hash: "2804833093"
+    nodepool: pool1
+  name: cluster-fdyt1i-md-0-6d48d774f7-l797s
+  namespace: mhc-remediation-64e917
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-fdyt1i-md-0-6d48d774f7
+    uid: d9074b7a-c625-43b6-9758-46a80a4bce48
+  resourceVersion: "1627"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-64e917/machines/cluster-fdyt1i-md-0-6d48d774f7-l797s
+  uid: bf6d0b84-cc74-4349-8859-82bca918937f
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-fdyt1i-md-0-nfsbn
+      namespace: mhc-remediation-64e917
+      uid: 371054f6-4e68-4089-ae8a-0a0d7e85b42d
+    dataSecretName: cluster-fdyt1i-md-0-nfsbn
+  clusterName: cluster-fdyt1i
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-fdyt1i-md-0-2x2zk
+    namespace: mhc-remediation-64e917
+    uid: 0c193204-19f6-45e2-94cd-b584e2364919
+  providerID: docker:////cluster-fdyt1i-cluster-fdyt1i-md-0-6d48d774f7-l797s
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-08T20:03:56Z"
+  nodeRef:
+    name: cluster-fdyt1i-cluster-fdyt1i-md-0-6d48d774f7-l797s
+    uid: 99954787-ea73-4c74-a71b-c82a6f17ec05
+  phase: Running

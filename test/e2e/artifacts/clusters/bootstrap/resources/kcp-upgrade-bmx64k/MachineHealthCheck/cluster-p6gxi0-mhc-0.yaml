@@ -1,0 +1,31 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-p6gxi0-mhc-0","namespace":"kcp-upgrade-bmx64k"},"spec":{"clusterName":"cluster-p6gxi0","maxUnhealthy":"40%","selector":{"matchLabels":{"mhc":"unhealthy"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-07T19:42:55Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-p6gxi0
+  name: cluster-p6gxi0-mhc-0
+  namespace: kcp-upgrade-bmx64k
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-p6gxi0
+    uid: 09b99901-be0b-408b-9926-0c319113ebe2
+  resourceVersion: "1217"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-bmx64k/machinehealthchecks/cluster-p6gxi0-mhc-0
+  uid: bc5d1fb9-3c5c-4ddd-860d-b43beaa48185
+spec:
+  clusterName: cluster-p6gxi0
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      mhc: unhealthy
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy

@@ -1,0 +1,57 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-07T20:00:48Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-2wkn6w
+    cluster.x-k8s.io/deployment-name: cluster-2wkn6w-md-0
+    machine-template-hash: "3414867610"
+  name: cluster-2wkn6w-md-0-7858dbcb54
+  namespace: quick-start-t5sxv8
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-2wkn6w-md-0
+    uid: 42712998-7b6f-465d-bfc8-c2c704147128
+  resourceVersion: "6154"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-t5sxv8/machinesets/cluster-2wkn6w-md-0-7858dbcb54
+  uid: 41d05dbb-b1da-44b6-9c62-b50a938fc42a
+spec:
+  clusterName: cluster-2wkn6w
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-2wkn6w
+      cluster.x-k8s.io/deployment-name: cluster-2wkn6w-md-0
+      machine-template-hash: "3414867610"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-2wkn6w
+        cluster.x-k8s.io/deployment-name: cluster-2wkn6w-md-0
+        machine-template-hash: "3414867610"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-2wkn6w-md-0
+      clusterName: cluster-2wkn6w
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-2wkn6w-md-0
+      version: v1.18.2
+status:
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-2wkn6w,cluster.x-k8s.io/deployment-name=cluster-2wkn6w-md-0,machine-template-hash=3414867610

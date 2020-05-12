@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-07T19:42:55Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-p6gxi0
+    cluster.x-k8s.io/deployment-name: cluster-p6gxi0-md-0
+    machine-template-hash: "988735774"
+  name: cluster-p6gxi0-md-0-fddc79cc8
+  namespace: kcp-upgrade-bmx64k
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-p6gxi0-md-0
+    uid: f9ef5e20-431d-4e96-a95d-f496acdb792e
+  resourceVersion: "1639"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-bmx64k/machinesets/cluster-p6gxi0-md-0-fddc79cc8
+  uid: 0afa1845-0dea-4340-9f54-daaf1e63a287
+spec:
+  clusterName: cluster-p6gxi0
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-p6gxi0
+      cluster.x-k8s.io/deployment-name: cluster-p6gxi0-md-0
+      machine-template-hash: "988735774"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-p6gxi0
+        cluster.x-k8s.io/deployment-name: cluster-p6gxi0-md-0
+        machine-template-hash: "988735774"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-p6gxi0-md-0
+      clusterName: cluster-p6gxi0
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-p6gxi0-md-0
+      version: v1.17.2
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-p6gxi0,cluster.x-k8s.io/deployment-name=cluster-p6gxi0-md-0,machine-template-hash=988735774

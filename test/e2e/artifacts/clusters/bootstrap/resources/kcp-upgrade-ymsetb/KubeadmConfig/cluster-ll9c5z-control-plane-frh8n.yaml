@@ -1,0 +1,45 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-07T19:49:31Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-ll9c5z
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2806132040"
+  name: cluster-ll9c5z-control-plane-frh8n
+  namespace: kcp-upgrade-ymsetb
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-ll9c5z-control-plane
+    uid: 109e3e6f-427d-4867-9dd1-0abfc3130d74
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-ll9c5z-control-plane-d7mjw
+    uid: b07b5766-6f1c-4f0f-b356-762729ea7c70
+  resourceVersion: "3013"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ymsetb/kubeadmconfigs/cluster-ll9c5z-control-plane-frh8n
+  uid: 90577e51-fa6f-4bec-bf3a-fa82b0ad77e1
+spec:
+  joinConfiguration:
+    controlPlane:
+      localAPIEndpoint:
+        advertiseAddress: ""
+        bindPort: 0
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:018dd928e15fd545ba96cace95698de91dad8c37e0f1da8d29c0f94c882501d8
+        token: ecw2eb.n1k2zrjxj5qlfi8s
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-ll9c5z-control-plane-frh8n
+  ready: true

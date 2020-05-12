@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T07:55:41Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-l4crht-md-0-5677c46554-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-l4crht
+    cluster.x-k8s.io/deployment-name: cluster-l4crht-md-0
+    machine-template-hash: "1233702110"
+  name: cluster-l4crht-md-0-5677c46554-6knx9
+  namespace: quick-start-5y4wsx
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-l4crht-md-0-5677c46554
+    uid: 75c9515c-1b1b-4c5f-bd72-1e6ec7ed5f54
+  resourceVersion: "1638"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-5y4wsx/machines/cluster-l4crht-md-0-5677c46554-6knx9
+  uid: bb727250-2f4b-4b0b-8c27-0aa5808ee320
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-l4crht-md-0-5cpwd
+      namespace: quick-start-5y4wsx
+      uid: bc97b513-91b8-42cc-827e-2846f7b258d8
+    dataSecretName: cluster-l4crht-md-0-5cpwd
+  clusterName: cluster-l4crht
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-l4crht-md-0-jjsc6
+    namespace: quick-start-5y4wsx
+    uid: 262e8142-c75a-4b36-8bec-0f1edbb067e7
+  providerID: docker:////cluster-l4crht-cluster-l4crht-md-0-5677c46554-6knx9
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T07:56:57Z"
+  nodeRef:
+    name: cluster-l4crht-cluster-l4crht-md-0-5677c46554-6knx9
+    uid: 565ed118-210d-4b49-ab37-3fc44ea36d23
+  phase: Running

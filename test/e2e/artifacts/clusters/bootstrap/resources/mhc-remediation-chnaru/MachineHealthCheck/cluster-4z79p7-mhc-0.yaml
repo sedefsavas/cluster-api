@@ -1,0 +1,34 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-4z79p7-mhc-0","namespace":"mhc-remediation-chnaru"},"spec":{"clusterName":"cluster-4z79p7","maxUnhealthy":"100%","selector":{"matchLabels":{"nodepool":"pool1"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-11T02:28:29Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-4z79p7
+  name: cluster-4z79p7-mhc-0
+  namespace: mhc-remediation-chnaru
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-4z79p7
+    uid: cb8d5a73-14ff-476a-aeb2-e5eb29ed2e9c
+  resourceVersion: "1799"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-chnaru/machinehealthchecks/cluster-4z79p7-mhc-0
+  uid: 76477c76-cdac-4bda-bb34-83cee45e1c4b
+spec:
+  clusterName: cluster-4z79p7
+  maxUnhealthy: 100%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      nodepool: pool1
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy
+status:
+  currentHealthy: 1
+  expectedMachines: 1

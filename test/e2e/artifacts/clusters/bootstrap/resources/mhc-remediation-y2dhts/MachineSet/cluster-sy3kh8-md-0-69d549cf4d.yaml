@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-11T02:08:51Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-sy3kh8
+    cluster.x-k8s.io/deployment-name: cluster-sy3kh8-md-0
+    machine-template-hash: "2581057908"
+    nodepool: pool1
+  name: cluster-sy3kh8-md-0-69d549cf4d
+  namespace: mhc-remediation-y2dhts
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-sy3kh8-md-0
+    uid: 8c3ea48b-1ef0-4b84-95bd-1d7fd33df67a
+  resourceVersion: "1811"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-y2dhts/machinesets/cluster-sy3kh8-md-0-69d549cf4d
+  uid: dd503d1f-0865-4a0e-a0be-37de3ebfd2f3
+spec:
+  clusterName: cluster-sy3kh8
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-sy3kh8
+      cluster.x-k8s.io/deployment-name: cluster-sy3kh8-md-0
+      machine-template-hash: "2581057908"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-sy3kh8
+        cluster.x-k8s.io/deployment-name: cluster-sy3kh8-md-0
+        machine-template-hash: "2581057908"
+        nodepool: pool1
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-sy3kh8-md-0
+      clusterName: cluster-sy3kh8
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-sy3kh8-md-0
+      version: v1.18.2
+status:
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-sy3kh8,cluster.x-k8s.io/deployment-name=cluster-sy3kh8-md-0,machine-template-hash=2581057908

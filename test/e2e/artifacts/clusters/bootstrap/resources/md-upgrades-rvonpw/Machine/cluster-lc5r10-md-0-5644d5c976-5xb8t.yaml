@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T19:58:15Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-lc5r10-md-0-5644d5c976-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-lc5r10
+    cluster.x-k8s.io/deployment-name: cluster-lc5r10-md-0
+    machine-template-hash: "1200817532"
+  name: cluster-lc5r10-md-0-5644d5c976-5xb8t
+  namespace: md-upgrades-rvonpw
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-lc5r10-md-0-5644d5c976
+    uid: 6d73698a-4e25-4a3f-be8b-6040ce0e3ccb
+  resourceVersion: "5309"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-rvonpw/machines/cluster-lc5r10-md-0-5644d5c976-5xb8t
+  uid: 2bb7d9d7-b7da-4ced-a340-573ca1dd3de2
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-lc5r10-md-0-fwvkf
+      namespace: md-upgrades-rvonpw
+      uid: 866afe17-a92c-496b-a2d1-24e4421c1062
+    dataSecretName: cluster-lc5r10-md-0-fwvkf
+  clusterName: cluster-lc5r10
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-lc5r10-md-0-kbqydv-vxxmn
+    namespace: md-upgrades-rvonpw
+    uid: b57de4b7-7523-4c28-a0f3-051861ed2eb9
+  providerID: docker:////cluster-lc5r10-cluster-lc5r10-md-0-5644d5c976-5xb8t
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T19:58:23Z"
+  nodeRef:
+    name: cluster-lc5r10-cluster-lc5r10-md-0-5644d5c976-5xb8t
+    uid: 4dff7b43-099a-4cac-8a47-1b1c1881b028
+  phase: Running

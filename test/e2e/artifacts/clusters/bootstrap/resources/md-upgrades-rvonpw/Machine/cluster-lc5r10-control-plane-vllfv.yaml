@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T19:55:55Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-lc5r10
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2217540061"
+  name: cluster-lc5r10-control-plane-vllfv
+  namespace: md-upgrades-rvonpw
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-lc5r10-control-plane
+    uid: 8493373e-47a3-4573-b804-73b54d6451c9
+  resourceVersion: "4783"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-rvonpw/machines/cluster-lc5r10-control-plane-vllfv
+  uid: a6258e9b-673b-43d3-afe7-fda4599abf04
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-lc5r10-control-plane-cbtff
+      namespace: md-upgrades-rvonpw
+      uid: 064f41fd-ad48-41fe-8a79-a321075991f7
+    dataSecretName: cluster-lc5r10-control-plane-cbtff
+  clusterName: cluster-lc5r10
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-lc5r10-control-plane-2rrz4
+    namespace: md-upgrades-rvonpw
+    uid: a2f7f6e2-90ec-4416-b220-7ce522b3d928
+  providerID: docker:////cluster-lc5r10-cluster-lc5r10-control-plane-vllfv
+  version: v1.17.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T19:56:26Z"
+  nodeRef:
+    name: cluster-lc5r10-cluster-lc5r10-control-plane-vllfv
+    uid: 52df439b-4bec-484d-97c8-87656211aae9
+  phase: Running

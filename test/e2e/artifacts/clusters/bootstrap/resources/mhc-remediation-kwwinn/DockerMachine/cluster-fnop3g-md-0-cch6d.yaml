@@ -1,0 +1,32 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-11T02:43:10Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-fnop3g
+    cluster.x-k8s.io/deployment-name: cluster-fnop3g-md-0
+    machine-template-hash: "2110510897"
+    nodepool: pool1
+  name: cluster-fnop3g-md-0-cch6d
+  namespace: mhc-remediation-kwwinn
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-fnop3g-md-0-6554954dfc-lvnzf
+    uid: eceede69-93c7-46f8-849f-e0b164633b8a
+  resourceVersion: "1664"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-kwwinn/dockermachines/cluster-fnop3g-md-0-cch6d
+  uid: 98b39b80-5d83-4afe-8a85-8f4dcbbe71e4
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-fnop3g-cluster-fnop3g-md-0-6554954dfc-lvnzf
+status:
+  ready: true

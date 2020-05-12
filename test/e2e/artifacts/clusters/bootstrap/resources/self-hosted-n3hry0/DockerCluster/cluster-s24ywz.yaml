@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-s24ywz","namespace":"self-hosted-n3hry0"}}
+  creationTimestamp: "2020-05-07T20:05:31Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+  name: cluster-s24ywz
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-s24ywz
+    uid: 293aa8e9-5bf0-4cd6-9a69-e00f23b2ab13
+  resourceVersion: "7456"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/dockerclusters/cluster-s24ywz
+  uid: f15be6ca-1e93-4098-9a9f-60b056ae91b1
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

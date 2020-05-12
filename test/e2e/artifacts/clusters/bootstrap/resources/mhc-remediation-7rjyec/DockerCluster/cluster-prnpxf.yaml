@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-prnpxf","namespace":"mhc-remediation-7rjyec"}}
+  creationTimestamp: "2020-05-11T02:51:45Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-prnpxf
+  name: cluster-prnpxf
+  namespace: mhc-remediation-7rjyec
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-prnpxf
+    uid: 83a4c2aa-0cac-4a88-b5cf-3401168c1f70
+  resourceVersion: "1345"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-7rjyec/dockerclusters/cluster-prnpxf
+  uid: 7ee403ef-1800-41d9-ae98-27459279e779
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.7
+    port: 6443
+status:
+  ready: true

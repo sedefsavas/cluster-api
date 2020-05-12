@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T08:04:22Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-djhmd6
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2235323474"
+  name: cluster-djhmd6-control-plane-lqqhp
+  namespace: quick-start-l9a8uz
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-djhmd6-control-plane
+    uid: c394810d-507b-44e9-a184-2d3119a65ccd
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-djhmd6-control-plane-8twlq
+    uid: c8366766-c0bc-4875-8af5-8152bc5aabd9
+  resourceVersion: "1402"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-l9a8uz/dockermachines/cluster-djhmd6-control-plane-lqqhp
+  uid: b4414665-bb93-4e1e-8703-6a636a5b46b0
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-djhmd6-cluster-djhmd6-control-plane-8twlq
+status:
+  loadBalancerConfigured: true
+  ready: true

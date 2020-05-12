@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-fnop3g","namespace":"mhc-remediation-kwwinn"}}
+  creationTimestamp: "2020-05-11T02:43:09Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-fnop3g
+  name: cluster-fnop3g
+  namespace: mhc-remediation-kwwinn
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-fnop3g
+    uid: b419a7a1-e10a-44d6-9fc2-5432ba1d466d
+  resourceVersion: "1362"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-kwwinn/dockerclusters/cluster-fnop3g
+  uid: d35408e5-31b7-4eed-9ddc-dc693c5cee30
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.7
+    port: 6443
+status:
+  ready: true

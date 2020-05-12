@@ -1,0 +1,32 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-08T19:48:51Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-oivwx7
+    cluster.x-k8s.io/deployment-name: cluster-oivwx7-md-0
+    machine-template-hash: "3385018100"
+    nodepool: pool1
+  name: cluster-oivwx7-md-0-gbqzn
+  namespace: mhc-remediation-0a9xtl
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-oivwx7-md-0-77d945d544-n6bd7
+    uid: dfd47754-b089-4d9d-a005-30e0664b3291
+  resourceVersion: "1696"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-0a9xtl/dockermachines/cluster-oivwx7-md-0-gbqzn
+  uid: 320b0ab0-f370-4d0d-a946-e9fae6356ff9
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-oivwx7-cluster-oivwx7-md-0-77d945d544-n6bd7
+status:
+  ready: true

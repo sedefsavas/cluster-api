@@ -1,0 +1,11 @@
+I0511 02:15:35.103481       1 listener.go:44] controller-runtime/metrics "msg"="metrics server is starting to listen"  "addr"="127.0.0.1:8080"
+I0511 02:15:35.103920       1 webhook.go:102] controller-runtime/builder "msg"="Registering a mutating webhook"  "GVK"={"Group":"controlplane.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmControlPlane"} "path"="/mutate-controlplane-cluster-x-k8s-io-v1alpha3-kubeadmcontrolplane"
+I0511 02:15:35.103991       1 server.go:121] controller-runtime/webhook "msg"="registering webhook"  "path"="/mutate-controlplane-cluster-x-k8s-io-v1alpha3-kubeadmcontrolplane"
+I0511 02:15:35.104025       1 webhook.go:123] controller-runtime/builder "msg"="Registering a validating webhook"  "GVK"={"Group":"controlplane.cluster.x-k8s.io","Version":"v1alpha3","Kind":"KubeadmControlPlane"} "path"="/validate-controlplane-cluster-x-k8s-io-v1alpha3-kubeadmcontrolplane"
+I0511 02:15:35.104050       1 server.go:121] controller-runtime/webhook "msg"="registering webhook"  "path"="/validate-controlplane-cluster-x-k8s-io-v1alpha3-kubeadmcontrolplane"
+I0511 02:15:35.104092       1 main.go:143] setup "msg"="starting manager"  "version"=""
+I0511 02:15:35.104553       1 internal.go:356] controller-runtime/manager "msg"="starting metrics server"  "path"="/metrics"
+I0511 02:15:35.104604       1 server.go:141] controller-runtime/webhook/webhooks "msg"="starting webhook server"  
+I0511 02:15:35.104998       1 certwatcher.go:127] controller-runtime/certwatcher "msg"="Updated current TLS certificate"  
+I0511 02:15:35.105182       1 server.go:199] controller-runtime/webhook "msg"="serving webhook server"  "host"="" "port"=9443
+I0511 02:15:35.105433       1 certwatcher.go:83] controller-runtime/certwatcher "msg"="Starting certificate watcher"  

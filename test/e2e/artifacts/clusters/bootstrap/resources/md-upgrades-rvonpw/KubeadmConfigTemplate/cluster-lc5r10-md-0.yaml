@@ -1,0 +1,26 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","metadata":{"annotations":{},"name":"cluster-lc5r10-md-0","namespace":"md-upgrades-rvonpw"},"spec":{"template":{"spec":{"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}}}}}
+  creationTimestamp: "2020-05-07T19:55:53Z"
+  generation: 1
+  name: cluster-lc5r10-md-0
+  namespace: md-upgrades-rvonpw
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-lc5r10
+    uid: 7f07b800-11fe-4aae-8440-944f5c6f6bf7
+  resourceVersion: "4573"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-rvonpw/kubeadmconfigtemplates/cluster-lc5r10-md-0
+  uid: 0825eda7-4c19-422c-b9a2-42927ae47645
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: /var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%

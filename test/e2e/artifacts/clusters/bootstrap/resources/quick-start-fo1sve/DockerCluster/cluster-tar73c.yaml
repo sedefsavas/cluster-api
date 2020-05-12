@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-tar73c","namespace":"quick-start-fo1sve"}}
+  creationTimestamp: "2020-05-07T08:08:37Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-tar73c
+  name: cluster-tar73c
+  namespace: quick-start-fo1sve
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-tar73c
+    uid: f035cc1f-f541-4d32-a80e-8ea4d6d59420
+  resourceVersion: "1265"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-fo1sve/dockerclusters/cluster-tar73c
+  uid: b9677571-2c8d-4c14-a259-966aa90945e6
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.4
+    port: 6443
+status:
+  ready: true

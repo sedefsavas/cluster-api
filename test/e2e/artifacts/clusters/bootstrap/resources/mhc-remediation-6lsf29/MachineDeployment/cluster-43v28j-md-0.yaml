@@ -1,0 +1,62 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineDeployment","metadata":{"annotations":{},"name":"cluster-43v28j-md-0","namespace":"mhc-remediation-6lsf29"},"spec":{"clusterName":"cluster-43v28j","replicas":1,"selector":{"matchLabels":null},"template":{"metadata":{"labels":{"nodepool":"pool1"}},"spec":{"bootstrap":{"configRef":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","name":"cluster-43v28j-md-0"}},"clusterName":"cluster-43v28j","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-43v28j-md-0"},"version":"v1.18.2"}}}}
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-08T18:49:41Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-43v28j
+  name: cluster-43v28j-md-0
+  namespace: mhc-remediation-6lsf29
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-43v28j
+    uid: 7f59121d-5e1e-4207-a746-76aa7d1eb1c3
+  resourceVersion: "1700"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-6lsf29/machinedeployments/cluster-43v28j-md-0
+  uid: 09f6011a-8cfd-4ba6-9a2c-e797d87d059c
+spec:
+  clusterName: cluster-43v28j
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-43v28j
+      cluster.x-k8s.io/deployment-name: cluster-43v28j-md-0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-43v28j
+        cluster.x-k8s.io/deployment-name: cluster-43v28j-md-0
+        nodepool: pool1
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-43v28j-md-0
+      clusterName: cluster-43v28j
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-43v28j-md-0
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  observedGeneration: 1
+  phase: Running
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-43v28j,cluster.x-k8s.io/deployment-name=cluster-43v28j-md-0
+  updatedReplicas: 1

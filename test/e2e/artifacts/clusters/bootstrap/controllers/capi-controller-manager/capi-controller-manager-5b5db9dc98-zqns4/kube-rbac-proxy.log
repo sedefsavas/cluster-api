@@ -1,0 +1,3 @@
+I0507 07:55:12.363027       1 main.go:213] Generating self signed cert as no cert is provided
+I0507 07:55:13.093295       1 main.go:243] Starting TCP socket on 0.0.0.0:8443
+I0507 07:55:13.093992       1 main.go:250] Listening securely on 0.0.0.0:8443

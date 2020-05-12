@@ -1,0 +1,32 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-prnpxf-mhc-0","namespace":"mhc-remediation-7rjyec"},"spec":{"clusterName":"cluster-prnpxf","maxUnhealthy":"100%","selector":{"matchLabels":{"nodepool":"pool1"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-11T02:51:45Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-prnpxf
+  name: cluster-prnpxf-mhc-0
+  namespace: mhc-remediation-7rjyec
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-prnpxf
+    uid: 83a4c2aa-0cac-4a88-b5cf-3401168c1f70
+  resourceVersion: "1873"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-7rjyec/machinehealthchecks/cluster-prnpxf-mhc-0
+  uid: cf2c5bee-bbf5-454b-b052-23c956e5ce3b
+spec:
+  clusterName: cluster-prnpxf
+  maxUnhealthy: 100%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      nodepool: pool1
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy
+status: {}

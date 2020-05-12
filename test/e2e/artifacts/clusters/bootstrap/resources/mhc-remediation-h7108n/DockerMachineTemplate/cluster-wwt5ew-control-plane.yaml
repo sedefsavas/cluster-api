@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-wwt5ew-control-plane","namespace":"mhc-remediation-h7108n"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-08T18:44:51Z"
+  generation: 1
+  name: cluster-wwt5ew-control-plane
+  namespace: mhc-remediation-h7108n
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-wwt5ew
+    uid: 748c1ebd-bc78-419b-acf1-87e4ada30ee2
+  resourceVersion: "1251"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-h7108n/dockermachinetemplates/cluster-wwt5ew-control-plane
+  uid: 4eac1685-5201-4977-9306-253713153aa8
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

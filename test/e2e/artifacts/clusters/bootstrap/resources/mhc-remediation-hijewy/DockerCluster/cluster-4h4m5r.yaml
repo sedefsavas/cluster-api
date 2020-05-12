@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-4h4m5r","namespace":"mhc-remediation-hijewy"}}
+  creationTimestamp: "2020-05-07T19:59:35Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-4h4m5r
+  name: cluster-4h4m5r
+  namespace: mhc-remediation-hijewy
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-4h4m5r
+    uid: 034e6310-41da-44ee-9294-b5702dd3e012
+  resourceVersion: "5687"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-hijewy/dockerclusters/cluster-4h4m5r
+  uid: eeba96aa-0eca-4af7-b6c8-3cd06b8e0a87
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-fnop3g-md-0","namespace":"mhc-remediation-kwwinn"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-11T02:43:09Z"
+  generation: 1
+  name: cluster-fnop3g-md-0
+  namespace: mhc-remediation-kwwinn
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-fnop3g
+    uid: b419a7a1-e10a-44d6-9fc2-5432ba1d466d
+  resourceVersion: "1323"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-kwwinn/dockermachinetemplates/cluster-fnop3g-md-0
+  uid: 7684de51-1812-4a95-b346-28739ef2d5f1
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

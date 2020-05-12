@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T19:44:07Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-p6gxi0
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2143160015"
+  name: cluster-p6gxi0-control-plane-w8blj
+  namespace: kcp-upgrade-bmx64k
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-p6gxi0-control-plane
+    uid: c706e07e-25d1-4cb7-9e16-5e36aa610e22
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-p6gxi0-control-plane-mkjwf
+    uid: 28885262-7e51-4779-8fa2-87a115ce1dcb
+  resourceVersion: "1730"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-bmx64k/dockermachines/cluster-p6gxi0-control-plane-w8blj
+  uid: 79379a02-045a-4e1c-9906-2252338159bc
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-p6gxi0-cluster-p6gxi0-control-plane-mkjwf
+status:
+  loadBalancerConfigured: true
+  ready: true

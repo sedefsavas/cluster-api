@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T08:08:37Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-tar73c
+    cluster.x-k8s.io/deployment-name: cluster-tar73c-md-0
+    machine-template-hash: "1983425735"
+  name: cluster-tar73c-md-0-bjtdc
+  namespace: quick-start-fo1sve
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-tar73c-md-0-5fd7869c79-lht2z
+    uid: 13120524-84e2-4575-893b-167215c91be3
+  resourceVersion: "1557"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-fo1sve/dockermachines/cluster-tar73c-md-0-bjtdc
+  uid: 45065da1-d194-418d-beea-d218da8a0be4
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-tar73c-cluster-tar73c-md-0-5fd7869c79-lht2z
+status:
+  ready: true

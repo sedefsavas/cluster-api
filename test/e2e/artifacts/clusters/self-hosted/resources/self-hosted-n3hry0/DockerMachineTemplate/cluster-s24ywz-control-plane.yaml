@@ -1,0 +1,50 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-s24ywz-control-plane","namespace":"self-hosted-n3hry0"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-07T20:05:18Z"
+  generation: 1
+  managedFields:
+  - apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:ownerReferences:
+          .: {}
+          k:{"uid":"4dae78c5-cf3e-4a18-af56-1a464522b616"}:
+            .: {}
+            f:apiVersion: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+      f:spec:
+        .: {}
+        f:template:
+          .: {}
+          f:spec:
+            .: {}
+            f:extraMounts: {}
+    manager: clusterctl
+    operation: Update
+    time: "2020-05-07T20:05:18Z"
+  name: cluster-s24ywz-control-plane
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-s24ywz
+    uid: 4dae78c5-cf3e-4a18-af56-1a464522b616
+  resourceVersion: "1508"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/dockermachinetemplates/cluster-s24ywz-control-plane
+  uid: 9c1b769f-86e8-4a1b-bb03-4ffd6b6df8b2
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

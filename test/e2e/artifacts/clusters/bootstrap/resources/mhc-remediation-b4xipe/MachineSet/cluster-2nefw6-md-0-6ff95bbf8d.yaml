@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-11T07:32:03Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-2nefw6
+    cluster.x-k8s.io/deployment-name: cluster-2nefw6-md-0
+    machine-template-hash: "2995166948"
+    nodepool: pool1
+  name: cluster-2nefw6-md-0-6ff95bbf8d
+  namespace: mhc-remediation-b4xipe
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-2nefw6-md-0
+    uid: 621f9156-f9f7-49c8-9b7d-c158f73f7b18
+  resourceVersion: "1741"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-b4xipe/machinesets/cluster-2nefw6-md-0-6ff95bbf8d
+  uid: f3cee487-238d-4753-93c7-11a73f64175d
+spec:
+  clusterName: cluster-2nefw6
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-2nefw6
+      cluster.x-k8s.io/deployment-name: cluster-2nefw6-md-0
+      machine-template-hash: "2995166948"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-2nefw6
+        cluster.x-k8s.io/deployment-name: cluster-2nefw6-md-0
+        machine-template-hash: "2995166948"
+        nodepool: pool1
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-2nefw6-md-0
+      clusterName: cluster-2nefw6
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-2nefw6-md-0
+      version: v1.18.2
+status:
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-2nefw6,cluster.x-k8s.io/deployment-name=cluster-2nefw6-md-0,machine-template-hash=2995166948

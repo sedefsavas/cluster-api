@@ -1,0 +1,51 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-11T02:43:10Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-fnop3g-md-0-6554954dfc-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-fnop3g
+    cluster.x-k8s.io/deployment-name: cluster-fnop3g-md-0
+    machine-template-hash: "2110510897"
+    nodepool: pool1
+  name: cluster-fnop3g-md-0-6554954dfc-lvnzf
+  namespace: mhc-remediation-kwwinn
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-fnop3g-md-0-6554954dfc
+    uid: 29ef8788-794c-4444-885e-d8bb50861d14
+  resourceVersion: "1671"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-kwwinn/machines/cluster-fnop3g-md-0-6554954dfc-lvnzf
+  uid: eceede69-93c7-46f8-849f-e0b164633b8a
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-fnop3g-md-0-zf2rw
+      namespace: mhc-remediation-kwwinn
+      uid: a170b285-25e5-4fd8-a397-4441f92894ee
+    dataSecretName: cluster-fnop3g-md-0-zf2rw
+  clusterName: cluster-fnop3g
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-fnop3g-md-0-cch6d
+    namespace: mhc-remediation-kwwinn
+    uid: 98b39b80-5d83-4afe-8a85-8f4dcbbe71e4
+  providerID: docker:////cluster-fnop3g-cluster-fnop3g-md-0-6554954dfc-lvnzf
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-11T02:44:19Z"
+  nodeRef:
+    name: cluster-fnop3g-cluster-fnop3g-md-0-6554954dfc-lvnzf
+    uid: 2ff793e8-1a76-4313-823b-5b6e91e76450
+  phase: Running

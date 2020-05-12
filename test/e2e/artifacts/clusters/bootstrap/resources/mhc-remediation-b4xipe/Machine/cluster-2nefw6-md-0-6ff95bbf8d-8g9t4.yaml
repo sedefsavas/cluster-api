@@ -1,0 +1,51 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-11T07:33:54Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-2nefw6-md-0-6ff95bbf8d-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-2nefw6
+    cluster.x-k8s.io/deployment-name: cluster-2nefw6-md-0
+    machine-template-hash: "2995166948"
+    nodepool: pool1
+  name: cluster-2nefw6-md-0-6ff95bbf8d-8g9t4
+  namespace: mhc-remediation-b4xipe
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-2nefw6-md-0-6ff95bbf8d
+    uid: f3cee487-238d-4753-93c7-11a73f64175d
+  resourceVersion: "1811"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-b4xipe/machines/cluster-2nefw6-md-0-6ff95bbf8d-8g9t4
+  uid: 96c08184-d85b-45e4-b7a7-3b0f5697c299
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-2nefw6-md-0-dw8zk
+      namespace: mhc-remediation-b4xipe
+      uid: f97f80e3-5197-48b0-ae9c-08d61719f0e7
+    dataSecretName: cluster-2nefw6-md-0-dw8zk
+  clusterName: cluster-2nefw6
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-2nefw6-md-0-kz7bh
+    namespace: mhc-remediation-b4xipe
+    uid: db095bfa-4bf6-4167-91de-28baa3f07837
+  providerID: docker:////cluster-2nefw6-cluster-2nefw6-md-0-6ff95bbf8d-8g9t4
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-11T07:34:03Z"
+  nodeRef:
+    name: cluster-2nefw6-cluster-2nefw6-md-0-6ff95bbf8d-8g9t4
+    uid: 16f572a3-75be-435d-b08f-d41c2c5ca323
+  phase: Running

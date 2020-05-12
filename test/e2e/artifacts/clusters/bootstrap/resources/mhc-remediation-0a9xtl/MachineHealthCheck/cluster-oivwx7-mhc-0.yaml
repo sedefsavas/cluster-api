@@ -1,0 +1,33 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-oivwx7-mhc-0","namespace":"mhc-remediation-0a9xtl"},"spec":{"clusterName":"cluster-oivwx7","maxUnhealthy":"40%","selector":{"matchLabels":{"nodepool":"pool1"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-08T19:48:50Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-oivwx7
+  name: cluster-oivwx7-mhc-0
+  namespace: mhc-remediation-0a9xtl
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-oivwx7
+    uid: 6b082e59-125f-41ec-93de-7af4060a9edf
+  resourceVersion: "1721"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-0a9xtl/machinehealthchecks/cluster-oivwx7-mhc-0
+  uid: 314ba230-bfcf-4c0d-bc39-d6d6f866d5fc
+spec:
+  clusterName: cluster-oivwx7
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      nodepool: pool1
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy
+status:
+  expectedMachines: 1

@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T20:05:32Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-s24ywz-md-0-797bfbfbfb-
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+    cluster.x-k8s.io/deployment-name: cluster-s24ywz-md-0
+    machine-template-hash: "3536969696"
+  name: cluster-s24ywz-md-0-797bfbfbfb-bsptg
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-s24ywz-md-0-797bfbfbfb
+    uid: 75c09b4a-3452-4c7d-b122-89854f119ee7
+  resourceVersion: "7497"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/machines/cluster-s24ywz-md-0-797bfbfbfb-bsptg
+  uid: f29d4a39-bfde-4dfa-be30-30dc439877b0
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-s24ywz-md-0-r9968
+      namespace: self-hosted-n3hry0
+      uid: bafe4042-c176-4d4d-9815-5878fd635f12
+    dataSecretName: cluster-s24ywz-md-0-r9968
+  clusterName: cluster-s24ywz
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-s24ywz-md-0-w9ljc
+    namespace: self-hosted-n3hry0
+    uid: 8db68810-e811-48ad-a1ca-31208ad24dc9
+  providerID: docker:////cluster-s24ywz-cluster-s24ywz-md-0-797bfbfbfb-bsptg
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T20:05:33Z"
+  nodeRef:
+    name: cluster-s24ywz-cluster-s24ywz-md-0-797bfbfbfb-bsptg
+    uid: 2bd15fc4-b342-4d2d-b8a7-f58710e3be73
+  phase: Running

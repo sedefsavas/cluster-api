@@ -1,0 +1,170 @@
+diff --git a/bootstrap/kubeadm/config/manager/manager_image_patch.yaml b/bootstrap/kubeadm/config/manager/manager_image_patch.yaml
+index b30b919bd..7e792790c 100644
+--- a/bootstrap/kubeadm/config/manager/manager_image_patch.yaml
++++ b/bootstrap/kubeadm/config/manager/manager_image_patch.yaml
+@@ -7,5 +7,5 @@ spec:
+   template:
+     spec:
+       containers:
+-        - image: gcr.io/k8s-staging-cluster-api/kubeadm-bootstrap-controller:master
++        - image: gcr.io/k8s-staging-cluster-api/kubeadm-bootstrap-controller-amd64:dev
+           name: manager
+diff --git a/config/manager/manager_image_patch.yaml b/config/manager/manager_image_patch.yaml
+index 472f75963..acaecdad5 100644
+--- a/config/manager/manager_image_patch.yaml
++++ b/config/manager/manager_image_patch.yaml
+@@ -7,5 +7,5 @@ spec:
+   template:
+     spec:
+       containers:
+-      - image: gcr.io/k8s-staging-cluster-api/cluster-api-controller:master
++      - image: gcr.io/k8s-staging-cluster-api/cluster-api-controller-amd64:dev
+         name: manager
+diff --git a/controlplane/kubeadm/config/manager/manager_image_patch.yaml b/controlplane/kubeadm/config/manager/manager_image_patch.yaml
+index 46ae15ec1..ee85cda73 100644
+--- a/controlplane/kubeadm/config/manager/manager_image_patch.yaml
++++ b/controlplane/kubeadm/config/manager/manager_image_patch.yaml
+@@ -7,5 +7,5 @@ spec:
+   template:
+     spec:
+       containers:
+-        - image: gcr.io/k8s-staging-cluster-api/kubeadm-control-plane-controller:master
++        - image: gcr.io/k8s-staging-cluster-api/kubeadm-control-plane-controller-amd64:dev
+           name: manager
+diff --git a/test/e2e/config/docker-ci.yaml b/test/e2e/config/docker-ci.yaml
+index 94744c073..681078cfa 100644
+--- a/test/e2e/config/docker-ci.yaml
++++ b/test/e2e/config/docker-ci.yaml
+@@ -69,9 +69,9 @@ variables:
+   CNI: "./data/cni/kindnet/kindnet.yaml"
+ 
+ intervals:
+-  default/wait-controllers: ["3m", "10s"]
++  default/wait-controllers: ["5m", "10s"]
+   default/wait-cluster: ["3m", "10s"]
+   default/wait-control-plane: ["5m", "10s"]
+   default/wait-worker-nodes: ["3m", "10s"]
+   default/wait-delete-cluster: ["3m", "10s"]
+-  default/wait-machine-upgrade: ["15m", "10s"]
++  default/wait-machine-upgrade: ["20m", "10s"]
+diff --git a/test/e2e/config/docker-dev.yaml b/test/e2e/config/docker-dev.yaml
+index e3a248ab4..1debe0ea3 100644
+--- a/test/e2e/config/docker-dev.yaml
++++ b/test/e2e/config/docker-dev.yaml
+@@ -102,7 +102,7 @@ variables:
+ intervals:
+   default/wait-controllers: ["3m", "10s"]
+   default/wait-cluster: ["3m", "10s"]
+-  default/wait-control-plane: ["3m", "10s"]
++  default/wait-control-plane: ["5m", "10s"]
+   default/wait-worker-nodes: ["3m", "10s"]
+   default/wait-delete-cluster: ["3m", "10s"]
+-  default/wait-machine-upgrade: ["15m", "10s"]
++  default/wait-machine-upgrade: ["20m", "10s"]
+diff --git a/test/e2e/e2e_suite_test.go b/test/e2e/e2e_suite_test.go
+index 19ac7c674..58914e700 100644
+--- a/test/e2e/e2e_suite_test.go
++++ b/test/e2e/e2e_suite_test.go
+@@ -78,6 +78,8 @@ func init() {
+ }
+ 
+ func TestE2E(t *testing.T) {
++	configPath = "/Users/ssavas/dev/qa_capi/tilttest/cluster-api/test/e2e/config/docker-ci.yaml"
++	artifactFolder = "/Users/ssavas/dev/qa_capi/tilttest/cluster-api/test/e2e/artifacts/"
+ 	// If running in prow, make sure to use the artifacts folder that will be reported in test grid (ignoring the value provided by flag).
+ 	if prowArtifactFolder, exists := os.LookupEnv("ARTIFACTS"); exists {
+ 		artifactFolder = prowArtifactFolder
+diff --git a/test/framework/controlpane_helpers.go b/test/framework/controlpane_helpers.go
+index 537c504cd..1c343bd7e 100644
+--- a/test/framework/controlpane_helpers.go
++++ b/test/framework/controlpane_helpers.go
+@@ -310,8 +310,6 @@ func UpgradeControlPlaneAndWaitForUpgrade(ctx context.Context, input UpgradeCont
+ 	Expect(input.Cluster).ToNot(BeNil(), "Invalid argument. input.Cluster can't be nil when calling UpgradeControlPlaneAndWaitForUpgrade")
+ 	Expect(input.ControlPlane).ToNot(BeNil(), "Invalid argument. input.ControlPlane can't be nil when calling UpgradeControlPlaneAndWaitForUpgrade")
+ 	Expect(input.KubernetesUpgradeVersion).ToNot(BeNil(), "Invalid argument. input.KubernetesUpgradeVersion can't be empty when calling UpgradeControlPlaneAndWaitForUpgrade")
+-	Expect(input.EtcdImageTag).ToNot(BeNil(), "Invalid argument. input.EtcdImageTag can't be empty when calling UpgradeControlPlaneAndWaitForUpgrade")
+-	Expect(input.DNSImageTag).ToNot(BeNil(), "Invalid argument. input.DNSImageTag can't be empty when calling UpgradeControlPlaneAndWaitForUpgrade")
+ 
+ 	mgmtClient := input.ClusterProxy.GetClient()
+ 
+@@ -319,18 +317,23 @@ func UpgradeControlPlaneAndWaitForUpgrade(ctx context.Context, input UpgradeCont
+ 	patchHelper, err := patch.NewHelper(input.ControlPlane, mgmtClient)
+ 	Expect(err).ToNot(HaveOccurred())
+ 
+-	input.ControlPlane.Spec.Version = input.KubernetesUpgradeVersion
+-	input.ControlPlane.Spec.KubeadmConfigSpec.ClusterConfiguration.Etcd = v1beta1.Etcd{
+-		Local: &v1beta1.LocalEtcd{
+-			ImageMeta: v1beta1.ImageMeta{
+-				ImageTag: input.EtcdImageTag,
++	if input.EtcdImageTag != "" {
++		input.ControlPlane.Spec.Version = input.KubernetesUpgradeVersion
++		input.ControlPlane.Spec.KubeadmConfigSpec.ClusterConfiguration.Etcd = v1beta1.Etcd{
++			Local: &v1beta1.LocalEtcd{
++				ImageMeta: v1beta1.ImageMeta{
++					ImageTag: input.EtcdImageTag,
++				},
+ 			},
+-		},
++		}
+ 	}
+-	input.ControlPlane.Spec.KubeadmConfigSpec.ClusterConfiguration.DNS = v1beta1.DNS{
+-		ImageMeta: v1beta1.ImageMeta{
+-			ImageTag: input.DNSImageTag,
+-		},
++
++	if input.DNSImageTag != "" {
++		input.ControlPlane.Spec.KubeadmConfigSpec.ClusterConfiguration.DNS = v1beta1.DNS{
++			ImageMeta: v1beta1.ImageMeta{
++				ImageTag: input.DNSImageTag,
++			},
++		}
+ 	}
+ 
+ 	Expect(patchHelper.Patch(ctx, input.ControlPlane)).To(Succeed())
+@@ -351,18 +354,22 @@ func UpgradeControlPlaneAndWaitForUpgrade(ctx context.Context, input UpgradeCont
+ 		KubernetesVersion: input.KubernetesUpgradeVersion,
+ 	}, input.WaitForDNSUpgrade...)
+ 
+-	fmt.Fprintf(GinkgoWriter, "Waiting for CoreDNS to have the upgraded image tag\n")
+-	WaitForDNSUpgrade(ctx, WaitForDNSUpgradeInput{
+-		Getter:     workloadClient,
+-		DNSVersion: input.DNSImageTag,
+-	})
++	if input.DNSImageTag != "" {
++		fmt.Fprintf(GinkgoWriter, "Waiting for CoreDNS to have the upgraded image tag\n")
++		WaitForDNSUpgrade(ctx, WaitForDNSUpgradeInput{
++			Getter:     workloadClient,
++			DNSVersion: input.DNSImageTag,
++		})
++	}
+ 
+-	fmt.Fprintf(GinkgoWriter, "Waiting for etcd to have the upgraded image tag\n")
+-	lblSelector, err := labels.Parse("component=etcd")
+-	Expect(err).ToNot(HaveOccurred())
+-	WaitForPodListCondition(ctx, WaitForPodListConditionInput{
+-		Lister:      workloadClient,
+-		ListOptions: &client.ListOptions{LabelSelector: lblSelector},
+-		Condition:   EtcdImageTagCondition(input.EtcdImageTag, int(*input.ControlPlane.Spec.Replicas)),
+-	}, input.WaitForEtcdUpgrade...)
++	if input.EtcdImageTag != "" {
++		fmt.Fprintf(GinkgoWriter, "Waiting for etcd to have the upgraded image tag\n")
++		lblSelector, err := labels.Parse("component=etcd")
++		Expect(err).ToNot(HaveOccurred())
++		WaitForPodListCondition(ctx, WaitForPodListConditionInput{
++			Lister:      workloadClient,
++			ListOptions: &client.ListOptions{LabelSelector: lblSelector},
++			Condition:   EtcdImageTagCondition(input.EtcdImageTag, int(*input.ControlPlane.Spec.Replicas)),
++		}, input.WaitForEtcdUpgrade...)
++	}
+ }
+diff --git a/test/infrastructure/docker/config/default/manager_image_patch.yaml b/test/infrastructure/docker/config/default/manager_image_patch.yaml
+index a2be79bb1..078b7b393 100644
+--- a/test/infrastructure/docker/config/default/manager_image_patch.yaml
++++ b/test/infrastructure/docker/config/default/manager_image_patch.yaml
+@@ -8,5 +8,5 @@ spec:
+     spec:
+       containers:
+       # Change the value of image field below to your controller image URL
+-      - image: gcr.io/k8s-staging-capi-docker/capd-manager:dev
++      - image: gcr.io/k8s-staging-cluster-api/capd-manager-amd64:dev
+         name: manager

@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-08T20:02:48Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-fdyt1i
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "3673483939"
+  name: cluster-fdyt1i-control-plane-lr455
+  namespace: mhc-remediation-64e917
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-fdyt1i-control-plane
+    uid: c1a7d2f4-4298-4384-92df-1b880f92f9f4
+  resourceVersion: "1494"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-64e917/machines/cluster-fdyt1i-control-plane-lr455
+  uid: 472ec235-3353-4a98-a3b0-c77806b3f4bc
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-fdyt1i-control-plane-8h2rs
+      namespace: mhc-remediation-64e917
+      uid: 8106dffb-cba7-48b1-817d-b6b8a31f81a9
+    dataSecretName: cluster-fdyt1i-control-plane-8h2rs
+  clusterName: cluster-fdyt1i
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-fdyt1i-control-plane-xxfhq
+    namespace: mhc-remediation-64e917
+    uid: aff64a1a-6237-42f2-a2a1-2b14cf9c27a9
+  providerID: docker:////cluster-fdyt1i-cluster-fdyt1i-control-plane-lr455
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-08T20:03:23Z"
+  nodeRef:
+    name: cluster-fdyt1i-cluster-fdyt1i-control-plane-lr455
+    uid: 85be7456-7221-466b-865f-e280a6d24ee0
+  phase: Running

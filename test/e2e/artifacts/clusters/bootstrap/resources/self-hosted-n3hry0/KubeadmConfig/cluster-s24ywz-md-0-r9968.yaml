@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-07T20:05:32Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+    cluster.x-k8s.io/deployment-name: cluster-s24ywz-md-0
+    machine-template-hash: "3536969696"
+  name: cluster-s24ywz-md-0-r9968
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-s24ywz-md-0-797bfbfbfb-bsptg
+    uid: f29d4a39-bfde-4dfa-be30-30dc439877b0
+  resourceVersion: "7484"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/kubeadmconfigs/cluster-s24ywz-md-0-r9968
+  uid: d68cabde-143f-4e7e-8bb5-37a6fd6893f9
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:1fdf3e76e44dc093f65add5101908afe03ad2f90ac3bbe78ab87e40cfa4fadc4
+        token: lwvvr6.pl3wcc4r06hhyr8b
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-s24ywz-md-0-r9968
+  ready: true

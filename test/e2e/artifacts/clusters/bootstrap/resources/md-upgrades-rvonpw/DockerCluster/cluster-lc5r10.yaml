@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-lc5r10","namespace":"md-upgrades-rvonpw"}}
+  creationTimestamp: "2020-05-07T19:55:53Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-lc5r10
+  name: cluster-lc5r10
+  namespace: md-upgrades-rvonpw
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-lc5r10
+    uid: 7f07b800-11fe-4aae-8440-944f5c6f6bf7
+  resourceVersion: "4599"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-rvonpw/dockerclusters/cluster-lc5r10
+  uid: d4d845bd-6e45-411e-aaf1-e7879ff6f183
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

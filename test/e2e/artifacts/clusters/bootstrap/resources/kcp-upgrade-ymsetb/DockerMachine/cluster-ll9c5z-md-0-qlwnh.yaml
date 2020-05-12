@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T19:47:18Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-ll9c5z
+    cluster.x-k8s.io/deployment-name: cluster-ll9c5z-md-0
+    machine-template-hash: "1364508227"
+  name: cluster-ll9c5z-md-0-qlwnh
+  namespace: kcp-upgrade-ymsetb
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-ll9c5z-md-0-57b894d66c-bmjx2
+    uid: 9d35fbca-2ac2-4462-8c10-27d189bc83d9
+  resourceVersion: "2932"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ymsetb/dockermachines/cluster-ll9c5z-md-0-qlwnh
+  uid: 0f3a4c65-329b-4327-bfc2-3629219fb817
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-ll9c5z-cluster-ll9c5z-md-0-57b894d66c-bmjx2
+status:
+  ready: true

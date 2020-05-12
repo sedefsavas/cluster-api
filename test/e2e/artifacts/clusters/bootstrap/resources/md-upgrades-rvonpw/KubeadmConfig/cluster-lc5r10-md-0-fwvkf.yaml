@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-07T19:58:15Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-lc5r10
+    cluster.x-k8s.io/deployment-name: cluster-lc5r10-md-0
+    machine-template-hash: "1200817532"
+  name: cluster-lc5r10-md-0-fwvkf
+  namespace: md-upgrades-rvonpw
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-lc5r10-md-0-5644d5c976-5xb8t
+    uid: 2bb7d9d7-b7da-4ced-a340-573ca1dd3de2
+  resourceVersion: "5269"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-rvonpw/kubeadmconfigs/cluster-lc5r10-md-0-fwvkf
+  uid: 866afe17-a92c-496b-a2d1-24e4421c1062
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:4034e34e92f0e604fb5f4aed921bb88ec3e6ae8bdaaf1807f467d644f312ed8c
+        token: ugatxz.kq12um2as1b333bh
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-lc5r10-md-0-fwvkf
+  ready: true

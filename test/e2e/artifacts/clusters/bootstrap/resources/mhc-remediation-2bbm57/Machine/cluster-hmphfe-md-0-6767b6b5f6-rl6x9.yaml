@@ -1,0 +1,51 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-11T01:40:21Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-hmphfe-md-0-6767b6b5f6-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-hmphfe
+    cluster.x-k8s.io/deployment-name: cluster-hmphfe-md-0
+    machine-template-hash: "2323626192"
+    nodepool: pool1
+  name: cluster-hmphfe-md-0-6767b6b5f6-rl6x9
+  namespace: mhc-remediation-2bbm57
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-hmphfe-md-0-6767b6b5f6
+    uid: 28ad575d-0b7b-43b5-8ac0-4b2f81b9859a
+  resourceVersion: "1649"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-2bbm57/machines/cluster-hmphfe-md-0-6767b6b5f6-rl6x9
+  uid: c81c15ea-4270-42c1-8cac-5bf5ee4e09e0
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-hmphfe-md-0-jzrls
+      namespace: mhc-remediation-2bbm57
+      uid: 6a35319d-25f9-4683-9638-b660b70e47b1
+    dataSecretName: cluster-hmphfe-md-0-jzrls
+  clusterName: cluster-hmphfe
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-hmphfe-md-0-5xmsg
+    namespace: mhc-remediation-2bbm57
+    uid: 62651068-66b2-429a-b0bc-8dafe5f97443
+  providerID: docker:////cluster-hmphfe-cluster-hmphfe-md-0-6767b6b5f6-rl6x9
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-11T01:41:32Z"
+  nodeRef:
+    name: cluster-hmphfe-cluster-hmphfe-md-0-6767b6b5f6-rl6x9
+    uid: 7b46e950-40ee-4237-bc36-924723400298
+  phase: Running

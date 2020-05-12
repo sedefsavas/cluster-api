@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T20:05:32Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+    cluster.x-k8s.io/deployment-name: cluster-s24ywz-md-0
+    machine-template-hash: "3536969696"
+  name: cluster-s24ywz-md-0-w9ljc
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-s24ywz-md-0-797bfbfbfb-bsptg
+    uid: f29d4a39-bfde-4dfa-be30-30dc439877b0
+  resourceVersion: "7496"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/dockermachines/cluster-s24ywz-md-0-w9ljc
+  uid: 6a270e53-e52c-42c7-86ec-f225a503efc8
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-s24ywz-cluster-s24ywz-md-0-797bfbfbfb-bsptg
+status:
+  ready: true

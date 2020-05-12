@@ -1,0 +1,71 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T20:05:19Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+    cluster.x-k8s.io/deployment-name: cluster-s24ywz-md-0
+    machine-template-hash: "3536969696"
+  managedFields:
+  - apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:finalizers:
+          .: {}
+          v:"dockermachine.infrastructure.cluster.x-k8s.io": {}
+        f:labels:
+          .: {}
+          f:cluster.x-k8s.io/cluster-name: {}
+          f:cluster.x-k8s.io/deployment-name: {}
+          f:machine-template-hash: {}
+        f:ownerReferences:
+          .: {}
+          k:{"uid":"d104175f-fa3e-49ad-a266-5626cad079f4"}:
+            .: {}
+            f:apiVersion: {}
+            f:blockOwnerDeletion: {}
+            f:controller: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+      f:spec:
+        .: {}
+        f:bootstrapped: {}
+        f:extraMounts: {}
+        f:providerID: {}
+    manager: clusterctl
+    operation: Update
+    time: "2020-05-07T20:05:19Z"
+  - apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        .: {}
+        f:ready: {}
+    manager: manager
+    operation: Update
+    time: "2020-05-07T20:05:20Z"
+  name: cluster-s24ywz-md-0-w9ljc
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-s24ywz-md-0-797bfbfbfb-bsptg
+    uid: d104175f-fa3e-49ad-a266-5626cad079f4
+  resourceVersion: "1549"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/dockermachines/cluster-s24ywz-md-0-w9ljc
+  uid: d9e96a99-9f5d-420d-b903-507bce961c6f
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-s24ywz-cluster-s24ywz-md-0-797bfbfbfb-bsptg
+status:
+  ready: true

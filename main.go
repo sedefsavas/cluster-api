@@ -229,10 +229,10 @@ func setupReconcilers(mgr ctrl.Manager) {
 	if feature.Gates.Enabled(feature.PostApply) {
 		if err := (&postapply.PostApplyConfigReconciler{
 			Client: mgr.GetClient(),
-			Log:    ctrl.Log.WithName("controllers").WithName("PostApplyConfig"),
+			Log:    ctrl.Log.WithName("controllers").WithName("ClusterResourceSet"),
 			Scheme: mgr.GetScheme(),
 		}).SetupWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "PostApplyConfig")
+			setupLog.Error(err, "unable to create controller", "controller", "ClusterResourceSet")
 			os.Exit(1)
 		}
 	}

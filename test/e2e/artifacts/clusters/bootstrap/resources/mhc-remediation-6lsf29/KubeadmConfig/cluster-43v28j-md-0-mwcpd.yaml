@@ -1,0 +1,38 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-08T18:49:41Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-43v28j
+    cluster.x-k8s.io/deployment-name: cluster-43v28j-md-0
+    machine-template-hash: "325708883"
+    nodepool: pool1
+  name: cluster-43v28j-md-0-mwcpd
+  namespace: mhc-remediation-6lsf29
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-43v28j-md-0-769c4ddd7-mwbk8
+    uid: 93f84b16-14cf-47bf-8a96-6bcc71069078
+  resourceVersion: "1557"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-6lsf29/kubeadmconfigs/cluster-43v28j-md-0-mwcpd
+  uid: 0f88a2ee-9811-4640-9148-2136973fbe26
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.3:6443
+        caCertHashes:
+        - sha256:a33e49d7351a7343d82ee9174e1e222346d7985b90b08fe55509dfd6a44ae5a6
+        token: gkq2au.ytv68jdlw4mfpcpa
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-43v28j-md-0-mwcpd
+  ready: true

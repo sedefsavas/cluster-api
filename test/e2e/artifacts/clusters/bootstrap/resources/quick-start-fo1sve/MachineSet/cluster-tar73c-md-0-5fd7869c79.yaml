@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "3"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-07T08:08:37Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-tar73c
+    cluster.x-k8s.io/deployment-name: cluster-tar73c-md-0
+    machine-template-hash: "1983425735"
+  name: cluster-tar73c-md-0-5fd7869c79
+  namespace: quick-start-fo1sve
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-tar73c-md-0
+    uid: a0925233-ccf8-4682-a9db-5b64562728c2
+  resourceVersion: "1871"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-fo1sve/machinesets/cluster-tar73c-md-0-5fd7869c79
+  uid: 2b503c59-b9cb-4110-9ada-dbd13157fdda
+spec:
+  clusterName: cluster-tar73c
+  deletePolicy: Random
+  replicas: 2
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-tar73c
+      cluster.x-k8s.io/deployment-name: cluster-tar73c-md-0
+      machine-template-hash: "1983425735"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-tar73c
+        cluster.x-k8s.io/deployment-name: cluster-tar73c-md-0
+        machine-template-hash: "1983425735"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-tar73c-md-0
+      clusterName: cluster-tar73c
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-tar73c-md-0
+      version: v1.18.2
+status:
+  availableReplicas: 2
+  fullyLabeledReplicas: 2
+  observedGeneration: 2
+  readyReplicas: 2
+  replicas: 2
+  selector: cluster.x-k8s.io/cluster-name=cluster-tar73c,cluster.x-k8s.io/deployment-name=cluster-tar73c-md-0,machine-template-hash=1983425735

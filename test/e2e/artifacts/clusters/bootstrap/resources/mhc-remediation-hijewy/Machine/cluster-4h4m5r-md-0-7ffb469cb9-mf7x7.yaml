@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T19:59:35Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-4h4m5r-md-0-7ffb469cb9-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-4h4m5r
+    mhc: unhealthy
+  name: cluster-4h4m5r-md-0-7ffb469cb9-mf7x7
+  namespace: mhc-remediation-hijewy
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-4h4m5r-md-0-7ffb469cb9
+    uid: 0fa24d85-d29d-4a41-b56a-6f70037a1a58
+  resourceVersion: "5991"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-hijewy/machines/cluster-4h4m5r-md-0-7ffb469cb9-mf7x7
+  uid: acbd8e08-7bb5-4f25-a656-d4775dec1776
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-4h4m5r-md-0-56s48
+      namespace: mhc-remediation-hijewy
+      uid: f603b695-444c-4263-be5b-268758eb92d1
+    dataSecretName: cluster-4h4m5r-md-0-56s48
+  clusterName: cluster-4h4m5r
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-4h4m5r-md-0-h2j2c
+    namespace: mhc-remediation-hijewy
+    uid: c25ce96e-0e4c-4a6b-a874-642058d72886
+  providerID: docker:////cluster-4h4m5r-cluster-4h4m5r-md-0-7ffb469cb9-mf7x7
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T20:00:18Z"
+  nodeRef:
+    name: cluster-4h4m5r-cluster-4h4m5r-md-0-7ffb469cb9-mf7x7
+    uid: 626e9298-f7f3-4e29-9936-c61a386a23a8
+  phase: Running

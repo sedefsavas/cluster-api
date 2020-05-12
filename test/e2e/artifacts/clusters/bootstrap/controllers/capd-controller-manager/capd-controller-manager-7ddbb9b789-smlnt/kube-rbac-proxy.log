@@ -1,0 +1,2 @@
+I0511 07:42:20.702323       1 main.go:209] Generating self signed cert as no cert is provided
+I0511 07:42:21.130300       1 main.go:242] Listening securely on 0.0.0.0:8443

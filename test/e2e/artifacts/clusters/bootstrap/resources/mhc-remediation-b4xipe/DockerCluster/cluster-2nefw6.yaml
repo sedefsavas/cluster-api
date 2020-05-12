@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-2nefw6","namespace":"mhc-remediation-b4xipe"}}
+  creationTimestamp: "2020-05-11T07:32:02Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-2nefw6
+  name: cluster-2nefw6
+  namespace: mhc-remediation-b4xipe
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-2nefw6
+    uid: 0788dca9-6384-486a-ab59-ed061ed9a70f
+  resourceVersion: "1263"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-b4xipe/dockerclusters/cluster-2nefw6
+  uid: 804d8818-f4c5-4cb5-96b7-04a8d94f7941
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T19:59:37Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-4h4m5r
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "591962210"
+  name: cluster-4h4m5r-control-plane-b9bj8
+  namespace: mhc-remediation-hijewy
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-4h4m5r-control-plane
+    uid: da842b74-27c3-44e3-9ae7-e1b8379a16af
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-4h4m5r-control-plane-zc4xj
+    uid: 0f8e113c-26eb-4ad5-8846-e25820713bef
+  resourceVersion: "5843"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-hijewy/dockermachines/cluster-4h4m5r-control-plane-b9bj8
+  uid: ae12f04d-3b50-4d72-9981-34bfe4c80313
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-4h4m5r-cluster-4h4m5r-control-plane-zc4xj
+status:
+  loadBalancerConfigured: true
+  ready: true

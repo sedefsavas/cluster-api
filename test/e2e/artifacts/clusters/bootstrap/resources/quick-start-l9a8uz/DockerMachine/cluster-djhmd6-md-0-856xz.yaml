@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T08:05:37Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-djhmd6
+    cluster.x-k8s.io/deployment-name: cluster-djhmd6-md-0
+    machine-template-hash: "1089025124"
+  name: cluster-djhmd6-md-0-856xz
+  namespace: quick-start-l9a8uz
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-djhmd6-md-0-54df469568-jpvgl
+    uid: ed6cd7b6-c0d9-47fd-99ba-63d11b7cd257
+  resourceVersion: "1629"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-l9a8uz/dockermachines/cluster-djhmd6-md-0-856xz
+  uid: 2d6aa2a6-9743-49c6-b7e2-30e04af7bde8
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-djhmd6-cluster-djhmd6-md-0-54df469568-jpvgl
+status:
+  ready: true

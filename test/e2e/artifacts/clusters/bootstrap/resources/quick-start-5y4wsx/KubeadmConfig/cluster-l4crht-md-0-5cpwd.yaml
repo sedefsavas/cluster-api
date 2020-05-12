@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-07T07:55:41Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-l4crht
+    cluster.x-k8s.io/deployment-name: cluster-l4crht-md-0
+    machine-template-hash: "1233702110"
+  name: cluster-l4crht-md-0-5cpwd
+  namespace: quick-start-5y4wsx
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-l4crht-md-0-5677c46554-6knx9
+    uid: bb727250-2f4b-4b0b-8c27-0aa5808ee320
+  resourceVersion: "1577"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-5y4wsx/kubeadmconfigs/cluster-l4crht-md-0-5cpwd
+  uid: bc97b513-91b8-42cc-827e-2846f7b258d8
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.4:6443
+        caCertHashes:
+        - sha256:01b54f2c98262effec8d945e530698d637135176b3f924826a857fed3b642e01
+        token: oo5eum.1223wax386ibuyrb
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-l4crht-md-0-5cpwd
+  ready: true

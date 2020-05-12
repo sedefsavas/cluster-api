@@ -1,0 +1,154 @@
+apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+kind: KubeadmControlPlane
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"controlplane.cluster.x-k8s.io/v1alpha3","kind":"KubeadmControlPlane","metadata":{"annotations":{},"name":"cluster-s24ywz-control-plane","namespace":"self-hosted-n3hry0"},"spec":{"infrastructureTemplate":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-s24ywz-control-plane"},"kubeadmConfigSpec":{"clusterConfiguration":{"apiServer":{"certSANs":["localhost","127.0.0.1"]},"controllerManager":{"extraArgs":{"enable-hostpath-provisioner":"true"}}},"initConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}},"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}},"replicas":1,"version":"v1.18.2"}}
+  creationTimestamp: "2020-05-07T20:05:18Z"
+  finalizers:
+  - kubeadm.controlplane.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+  managedFields:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:finalizers:
+          .: {}
+          v:"kubeadm.controlplane.cluster.x-k8s.io": {}
+        f:labels:
+          .: {}
+          f:cluster.x-k8s.io/cluster-name: {}
+        f:ownerReferences:
+          .: {}
+          k:{"uid":"4dae78c5-cf3e-4a18-af56-1a464522b616"}:
+            .: {}
+            f:apiVersion: {}
+            f:blockOwnerDeletion: {}
+            f:controller: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+      f:spec:
+        .: {}
+        f:infrastructureTemplate:
+          .: {}
+          f:apiVersion: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+        f:kubeadmConfigSpec:
+          .: {}
+          f:clusterConfiguration:
+            .: {}
+            f:apiServer:
+              .: {}
+              f:certSANs: {}
+            f:controllerManager:
+              .: {}
+              f:extraArgs:
+                .: {}
+                f:enable-hostpath-provisioner: {}
+            f:dns: {}
+            f:etcd: {}
+            f:networking: {}
+            f:scheduler: {}
+          f:initConfiguration:
+            .: {}
+            f:localAPIEndpoint:
+              .: {}
+              f:advertiseAddress: {}
+              f:bindPort: {}
+            f:nodeRegistration:
+              .: {}
+              f:criSocket: {}
+              f:kubeletExtraArgs:
+                .: {}
+                f:eviction-hard: {}
+          f:joinConfiguration:
+            .: {}
+            f:discovery: {}
+            f:nodeRegistration:
+              .: {}
+              f:criSocket: {}
+              f:kubeletExtraArgs:
+                .: {}
+                f:eviction-hard: {}
+        f:replicas: {}
+        f:version: {}
+    manager: clusterctl
+    operation: Update
+    time: "2020-05-07T20:05:18Z"
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        .: {}
+        f:initialized: {}
+        f:ready: {}
+        f:readyReplicas: {}
+        f:replicas: {}
+        f:selector: {}
+        f:updatedReplicas: {}
+    manager: manager
+    operation: Update
+    time: "2020-05-07T20:05:21Z"
+  name: cluster-s24ywz-control-plane
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-s24ywz
+    uid: 4dae78c5-cf3e-4a18-af56-1a464522b616
+  resourceVersion: "1558"
+  selfLink: /apis/controlplane.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/kubeadmcontrolplanes/cluster-s24ywz-control-plane
+  uid: 56bc51b9-a5b3-4b6f-8b88-6e3f8171f6d7
+spec:
+  infrastructureTemplate:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachineTemplate
+    name: cluster-s24ywz-control-plane
+    namespace: self-hosted-n3hry0
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        certSANs:
+        - localhost
+        - 127.0.0.1
+      controllerManager:
+        extraArgs:
+          enable-hostpath-provisioner: "true"
+      dns: {}
+      etcd: {}
+      networking: {}
+      scheduler: {}
+    initConfiguration:
+      localAPIEndpoint:
+        advertiseAddress: ""
+        bindPort: 0
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+    joinConfiguration:
+      discovery: {}
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+  replicas: 1
+  version: v1.18.2
+status:
+  initialized: true
+  ready: true
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-s24ywz,cluster.x-k8s.io/control-plane=
+  updatedReplicas: 1

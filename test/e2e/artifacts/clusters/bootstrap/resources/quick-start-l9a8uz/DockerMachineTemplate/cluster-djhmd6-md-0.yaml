@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-djhmd6-md-0","namespace":"quick-start-l9a8uz"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-07T08:04:20Z"
+  generation: 1
+  name: cluster-djhmd6-md-0
+  namespace: quick-start-l9a8uz
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-djhmd6
+    uid: 9638a049-ec4b-41ae-adce-933219f219b6
+  resourceVersion: "1235"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-l9a8uz/dockermachinetemplates/cluster-djhmd6-md-0
+  uid: 87ed3c0f-332f-4c9c-a5cf-3178b53d9c35
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

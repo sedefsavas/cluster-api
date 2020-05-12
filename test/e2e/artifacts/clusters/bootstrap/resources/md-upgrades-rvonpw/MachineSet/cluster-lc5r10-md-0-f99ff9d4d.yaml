@@ -1,0 +1,55 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "2"
+  creationTimestamp: "2020-05-07T19:57:04Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-lc5r10
+    cluster.x-k8s.io/deployment-name: cluster-lc5r10-md-0
+    machine-template-hash: "955995808"
+  name: cluster-lc5r10-md-0-f99ff9d4d
+  namespace: md-upgrades-rvonpw
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-lc5r10-md-0
+    uid: 2c01396e-40bf-4457-8cf4-9e3ef86902e6
+  resourceVersion: "5521"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-rvonpw/machinesets/cluster-lc5r10-md-0-f99ff9d4d
+  uid: f37a5bbd-513a-4f0a-98b8-373744b0665b
+spec:
+  clusterName: cluster-lc5r10
+  deletePolicy: Random
+  replicas: 0
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-lc5r10
+      cluster.x-k8s.io/deployment-name: cluster-lc5r10-md-0
+      machine-template-hash: "955995808"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-lc5r10
+        cluster.x-k8s.io/deployment-name: cluster-lc5r10-md-0
+        machine-template-hash: "955995808"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-lc5r10-md-0
+      clusterName: cluster-lc5r10
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-lc5r10-md-0
+      version: v1.18.2
+status:
+  observedGeneration: 2
+  selector: cluster.x-k8s.io/cluster-name=cluster-lc5r10,cluster.x-k8s.io/deployment-name=cluster-lc5r10-md-0,machine-template-hash=955995808

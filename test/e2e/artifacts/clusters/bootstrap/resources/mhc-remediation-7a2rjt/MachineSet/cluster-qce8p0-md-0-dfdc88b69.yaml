@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-11T02:16:00Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-qce8p0
+    cluster.x-k8s.io/deployment-name: cluster-qce8p0-md-0
+    machine-template-hash: "898744625"
+    nodepool: pool1
+  name: cluster-qce8p0-md-0-dfdc88b69
+  namespace: mhc-remediation-7a2rjt
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-qce8p0-md-0
+    uid: dc78da6d-df04-477e-8e19-1807682483fd
+  resourceVersion: "1813"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-7a2rjt/machinesets/cluster-qce8p0-md-0-dfdc88b69
+  uid: a762ae67-ce36-4666-9c76-9efa9c571f0c
+spec:
+  clusterName: cluster-qce8p0
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-qce8p0
+      cluster.x-k8s.io/deployment-name: cluster-qce8p0-md-0
+      machine-template-hash: "898744625"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-qce8p0
+        cluster.x-k8s.io/deployment-name: cluster-qce8p0-md-0
+        machine-template-hash: "898744625"
+        nodepool: pool1
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-qce8p0-md-0
+      clusterName: cluster-qce8p0
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-qce8p0-md-0
+      version: v1.18.2
+status:
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-qce8p0,cluster.x-k8s.io/deployment-name=cluster-qce8p0-md-0,machine-template-hash=898744625

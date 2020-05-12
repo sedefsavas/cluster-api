@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T20:00:50Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-2wkn6w
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "5472725"
+  name: cluster-2wkn6w-control-plane-5spdv
+  namespace: quick-start-t5sxv8
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-2wkn6w-control-plane
+    uid: e09e8bb6-2a43-4dce-bd4f-2c545f089000
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-2wkn6w-control-plane-ff2mb
+    uid: 257e3c00-e953-4cdc-95d6-e53f678130b9
+  resourceVersion: "6338"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-t5sxv8/dockermachines/cluster-2wkn6w-control-plane-5spdv
+  uid: 834a192b-80bf-4e71-b5d7-a96d7032138d
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-2wkn6w-cluster-2wkn6w-control-plane-ff2mb
+status:
+  loadBalancerConfigured: true
+  ready: true

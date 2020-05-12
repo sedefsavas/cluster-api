@@ -1,0 +1,31 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T19:58:15Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-lc5r10
+    cluster.x-k8s.io/deployment-name: cluster-lc5r10-md-0
+    machine-template-hash: "1200817532"
+  name: cluster-lc5r10-md-0-kbqydv-vxxmn
+  namespace: md-upgrades-rvonpw
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-lc5r10-md-0-5644d5c976-5xb8t
+    uid: 2bb7d9d7-b7da-4ced-a340-573ca1dd3de2
+  resourceVersion: "5306"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/md-upgrades-rvonpw/dockermachines/cluster-lc5r10-md-0-kbqydv-vxxmn
+  uid: b57de4b7-7523-4c28-a0f3-051861ed2eb9
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-lc5r10-cluster-lc5r10-md-0-5644d5c976-5xb8t
+status:
+  ready: true

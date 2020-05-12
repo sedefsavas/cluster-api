@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T08:08:39Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-tar73c
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "3623717132"
+  name: cluster-tar73c-control-plane-4sg7z
+  namespace: quick-start-fo1sve
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-tar73c-control-plane
+    uid: 874e02b7-3aff-4248-9fa8-79cbccd60560
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-tar73c-control-plane-tv282
+    uid: 724bb115-5b8f-4ce7-a9df-4d370799be2d
+  resourceVersion: "1408"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-fo1sve/dockermachines/cluster-tar73c-control-plane-4sg7z
+  uid: a96f1bad-c901-42b9-819d-c8119e0e208b
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-tar73c-cluster-tar73c-control-plane-tv282
+status:
+  loadBalancerConfigured: true
+  ready: true

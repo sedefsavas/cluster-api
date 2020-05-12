@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T08:04:22Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-djhmd6
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2235323474"
+  name: cluster-djhmd6-control-plane-8twlq
+  namespace: quick-start-l9a8uz
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-djhmd6-control-plane
+    uid: c394810d-507b-44e9-a184-2d3119a65ccd
+  resourceVersion: "1405"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-l9a8uz/machines/cluster-djhmd6-control-plane-8twlq
+  uid: c8366766-c0bc-4875-8af5-8152bc5aabd9
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-djhmd6-control-plane-bm7s2
+      namespace: quick-start-l9a8uz
+      uid: 454175c3-6ec8-46a3-a1ee-8cf7ec5da068
+    dataSecretName: cluster-djhmd6-control-plane-bm7s2
+  clusterName: cluster-djhmd6
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-djhmd6-control-plane-lqqhp
+    namespace: quick-start-l9a8uz
+    uid: b4414665-bb93-4e1e-8703-6a636a5b46b0
+  providerID: docker:////cluster-djhmd6-cluster-djhmd6-control-plane-8twlq
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T08:04:53Z"
+  nodeRef:
+    name: cluster-djhmd6-cluster-djhmd6-control-plane-8twlq
+    uid: 2831f373-72c4-4655-b2c7-8052a45ba531
+  phase: Running

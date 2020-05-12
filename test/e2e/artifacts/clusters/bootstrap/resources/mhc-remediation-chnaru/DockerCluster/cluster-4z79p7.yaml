@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-4z79p7","namespace":"mhc-remediation-chnaru"}}
+  creationTimestamp: "2020-05-11T02:28:28Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-4z79p7
+  name: cluster-4z79p7
+  namespace: mhc-remediation-chnaru
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-4z79p7
+    uid: cb8d5a73-14ff-476a-aeb2-e5eb29ed2e9c
+  resourceVersion: "1371"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-chnaru/dockerclusters/cluster-4z79p7
+  uid: 003fc0ed-8c7a-450f-b0be-b2003b303ece
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.7
+    port: 6443
+status:
+  ready: true

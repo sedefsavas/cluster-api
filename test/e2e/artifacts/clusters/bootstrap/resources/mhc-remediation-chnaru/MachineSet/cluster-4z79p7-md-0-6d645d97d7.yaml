@@ -1,0 +1,61 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-11T02:28:29Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-4z79p7
+    cluster.x-k8s.io/deployment-name: cluster-4z79p7-md-0
+    machine-template-hash: "2820185383"
+    nodepool: pool1
+  name: cluster-4z79p7-md-0-6d645d97d7
+  namespace: mhc-remediation-chnaru
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-4z79p7-md-0
+    uid: d3b0b477-8732-4822-ae58-4d3695531667
+  resourceVersion: "1868"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-chnaru/machinesets/cluster-4z79p7-md-0-6d645d97d7
+  uid: 795a9acb-1293-4d19-abb9-ad77d61e8aae
+spec:
+  clusterName: cluster-4z79p7
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-4z79p7
+      cluster.x-k8s.io/deployment-name: cluster-4z79p7-md-0
+      machine-template-hash: "2820185383"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-4z79p7
+        cluster.x-k8s.io/deployment-name: cluster-4z79p7-md-0
+        machine-template-hash: "2820185383"
+        nodepool: pool1
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-4z79p7-md-0
+      clusterName: cluster-4z79p7
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-4z79p7-md-0
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-4z79p7,cluster.x-k8s.io/deployment-name=cluster-4z79p7-md-0,machine-template-hash=2820185383

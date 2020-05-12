@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-11T02:08:55Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-sy3kh8
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "3609580808"
+  name: cluster-sy3kh8-control-plane-5jxsx
+  namespace: mhc-remediation-y2dhts
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-sy3kh8-control-plane
+    uid: 1cb2e553-1508-4b1b-aea7-189038d2ceab
+  resourceVersion: "1464"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-y2dhts/machines/cluster-sy3kh8-control-plane-5jxsx
+  uid: 93e8ef7b-0f8d-4bd2-9b32-16800c22f063
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-sy3kh8-control-plane-zf6vg
+      namespace: mhc-remediation-y2dhts
+      uid: ccda400c-0a61-4619-9cf7-16ab07b80ffb
+    dataSecretName: cluster-sy3kh8-control-plane-zf6vg
+  clusterName: cluster-sy3kh8
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-sy3kh8-control-plane-7ktzb
+    namespace: mhc-remediation-y2dhts
+    uid: ec921a5c-14d1-4260-a8f0-56400042128c
+  providerID: docker:////cluster-sy3kh8-cluster-sy3kh8-control-plane-5jxsx
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-11T02:09:37Z"
+  nodeRef:
+    name: cluster-sy3kh8-cluster-sy3kh8-control-plane-5jxsx
+    uid: a6ef565e-b1b8-45a1-b5e4-a15558404f6b
+  phase: Running

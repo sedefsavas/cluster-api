@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-prnpxf-md-0","namespace":"mhc-remediation-7rjyec"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-11T02:51:45Z"
+  generation: 1
+  name: cluster-prnpxf-md-0
+  namespace: mhc-remediation-7rjyec
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-prnpxf
+    uid: 83a4c2aa-0cac-4a88-b5cf-3401168c1f70
+  resourceVersion: "1313"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-7rjyec/dockermachinetemplates/cluster-prnpxf-md-0
+  uid: ac47c018-f824-4633-b456-0bdd9341788d
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

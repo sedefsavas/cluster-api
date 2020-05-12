@@ -1,0 +1,113 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T20:05:18Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "505823641"
+  managedFields:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:finalizers:
+          .: {}
+          v:"machine.cluster.x-k8s.io": {}
+        f:labels:
+          .: {}
+          f:cluster.x-k8s.io/cluster-name: {}
+          f:cluster.x-k8s.io/control-plane: {}
+          f:kubeadm.controlplane.cluster.x-k8s.io/hash: {}
+        f:ownerReferences:
+          .: {}
+          k:{"uid":"56bc51b9-a5b3-4b6f-8b88-6e3f8171f6d7"}:
+            .: {}
+            f:apiVersion: {}
+            f:blockOwnerDeletion: {}
+            f:controller: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+      f:spec:
+        .: {}
+        f:bootstrap:
+          .: {}
+          f:configRef:
+            .: {}
+            f:apiVersion: {}
+            f:kind: {}
+            f:name: {}
+            f:namespace: {}
+            f:uid: {}
+          f:dataSecretName: {}
+        f:clusterName: {}
+        f:infrastructureRef:
+          .: {}
+          f:apiVersion: {}
+          f:kind: {}
+          f:name: {}
+          f:namespace: {}
+          f:uid: {}
+        f:providerID: {}
+        f:version: {}
+    manager: clusterctl
+    operation: Update
+    time: "2020-05-07T20:05:18Z"
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        .: {}
+        f:bootstrapReady: {}
+        f:infrastructureReady: {}
+        f:lastUpdated: {}
+        f:nodeRef:
+          .: {}
+          f:name: {}
+          f:uid: {}
+        f:phase: {}
+    manager: manager
+    operation: Update
+    time: "2020-05-07T20:05:20Z"
+  name: cluster-s24ywz-control-plane-vm6zx
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-s24ywz-control-plane
+    uid: 56bc51b9-a5b3-4b6f-8b88-6e3f8171f6d7
+  resourceVersion: "1551"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/machines/cluster-s24ywz-control-plane-vm6zx
+  uid: c747d252-f51f-4296-b2ac-09625be8016f
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-s24ywz-control-plane-gfvlw
+      namespace: self-hosted-n3hry0
+      uid: 722d44ec-946d-4097-9f05-e556edb85f61
+    dataSecretName: cluster-s24ywz-control-plane-gfvlw
+  clusterName: cluster-s24ywz
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-s24ywz-control-plane-mmk9h
+    namespace: self-hosted-n3hry0
+    uid: d314a00d-b1ad-44d9-bfd7-9daf0798e6f3
+  providerID: docker:////cluster-s24ywz-cluster-s24ywz-control-plane-vm6zx
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T20:05:20Z"
+  nodeRef:
+    name: cluster-s24ywz-cluster-s24ywz-control-plane-vm6zx
+    uid: 0d10d0aa-0f3c-40c4-a956-1f468647fca3
+  phase: Running

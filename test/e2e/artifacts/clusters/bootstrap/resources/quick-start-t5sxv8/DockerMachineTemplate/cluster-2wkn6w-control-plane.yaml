@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachineTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","metadata":{"annotations":{},"name":"cluster-2wkn6w-control-plane","namespace":"quick-start-t5sxv8"},"spec":{"template":{"spec":{"extraMounts":[{"containerPath":"/var/run/docker.sock","hostPath":"/var/run/docker.sock"}]}}}}
+  creationTimestamp: "2020-05-07T20:00:48Z"
+  generation: 1
+  name: cluster-2wkn6w-control-plane
+  namespace: quick-start-t5sxv8
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-2wkn6w
+    uid: 679412f3-5b42-44ac-bff1-7c1652718983
+  resourceVersion: "6164"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-t5sxv8/dockermachinetemplates/cluster-2wkn6w-control-plane
+  uid: 8a990025-c1a0-4384-bb69-7451c29282aa
+spec:
+  template:
+    spec:
+      extraMounts:
+      - containerPath: /var/run/docker.sock
+        hostPath: /var/run/docker.sock

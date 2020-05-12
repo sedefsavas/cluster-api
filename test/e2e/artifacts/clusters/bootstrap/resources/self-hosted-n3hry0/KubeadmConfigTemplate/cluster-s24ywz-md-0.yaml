@@ -1,0 +1,65 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","metadata":{"annotations":{},"name":"cluster-s24ywz-md-0","namespace":"self-hosted-n3hry0"},"spec":{"template":{"spec":{"joinConfiguration":{"nodeRegistration":{"criSocket":"/var/run/containerd/containerd.sock","kubeletExtraArgs":{"eviction-hard":"nodefs.available\u003c0%,nodefs.inodesFree\u003c0%,imagefs.available\u003c0%"}}}}}}}
+  creationTimestamp: "2020-05-07T20:05:31Z"
+  generation: 1
+  managedFields:
+  - apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:ownerReferences:
+          .: {}
+          k:{"uid":"4dae78c5-cf3e-4a18-af56-1a464522b616"}:
+            .: {}
+            f:apiVersion: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+          k:{"uid":"293aa8e9-5bf0-4cd6-9a69-e00f23b2ab13"}:
+            .: {}
+            f:apiVersion: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+      f:spec:
+        .: {}
+        f:template:
+          .: {}
+          f:spec:
+            .: {}
+            f:joinConfiguration:
+              .: {}
+              f:nodeRegistration:
+                .: {}
+                f:criSocket: {}
+                f:kubeletExtraArgs:
+                  .: {}
+                  f:eviction-hard: {}
+    manager: clusterctl
+    operation: Update
+    time: "2020-05-07T20:05:31Z"
+  name: cluster-s24ywz-md-0
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-s24ywz
+    uid: 293aa8e9-5bf0-4cd6-9a69-e00f23b2ab13
+  resourceVersion: "7455"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/kubeadmconfigtemplates/cluster-s24ywz-md-0
+  uid: 5e1d8b31-6d41-4966-816a-d50123970c23
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: /var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%

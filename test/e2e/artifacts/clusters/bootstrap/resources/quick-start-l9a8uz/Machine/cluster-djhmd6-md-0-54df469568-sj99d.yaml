@@ -1,0 +1,50 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T08:04:21Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-djhmd6-md-0-54df469568-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-djhmd6
+    cluster.x-k8s.io/deployment-name: cluster-djhmd6-md-0
+    machine-template-hash: "1089025124"
+  name: cluster-djhmd6-md-0-54df469568-sj99d
+  namespace: quick-start-l9a8uz
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-djhmd6-md-0-54df469568
+    uid: c1fb539f-0035-4811-a9f8-e140984e5f43
+  resourceVersion: "1552"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-l9a8uz/machines/cluster-djhmd6-md-0-54df469568-sj99d
+  uid: a3da7919-cc6c-4c64-babf-dcd395dc7a08
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-djhmd6-md-0-npb6c
+      namespace: quick-start-l9a8uz
+      uid: 9f6034c9-8bca-4c0b-b1e4-2f291f01f05a
+    dataSecretName: cluster-djhmd6-md-0-npb6c
+  clusterName: cluster-djhmd6
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-djhmd6-md-0-ltjcq
+    namespace: quick-start-l9a8uz
+    uid: d4b6e1cb-866d-4f07-968b-304ed19521c7
+  providerID: docker:////cluster-djhmd6-cluster-djhmd6-md-0-54df469568-sj99d
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T08:05:30Z"
+  nodeRef:
+    name: cluster-djhmd6-cluster-djhmd6-md-0-54df469568-sj99d
+    uid: a320f354-48aa-4f0a-8785-c5e45df5537d
+  phase: Running

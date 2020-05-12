@@ -1,0 +1,37 @@
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  creationTimestamp: "2020-05-07T08:10:35Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-tar73c
+    cluster.x-k8s.io/deployment-name: cluster-tar73c-md-0
+    machine-template-hash: "1983425735"
+  name: cluster-tar73c-md-0-5gbs6
+  namespace: quick-start-fo1sve
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-tar73c-md-0-5fd7869c79-xzmfn
+    uid: 183868c6-3464-44ed-bb2d-be5c23fb06e8
+  resourceVersion: "1755"
+  selfLink: /apis/bootstrap.cluster.x-k8s.io/v1alpha3/namespaces/quick-start-fo1sve/kubeadmconfigs/cluster-tar73c-md-0-5gbs6
+  uid: 519daf95-fc3b-416f-82f5-e99ded8f226e
+spec:
+  joinConfiguration:
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: 172.17.0.4:6443
+        caCertHashes:
+        - sha256:fc1806c890cf6fdccc2a2f42524c072104063348ecb9cae0a7ef75cb8a6ad0e1
+        token: inbs64.vql7az99v7tsdauz
+        unsafeSkipCAVerification: false
+    nodeRegistration:
+      criSocket: /var/run/containerd/containerd.sock
+      kubeletExtraArgs:
+        eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
+status:
+  dataSecretName: cluster-tar73c-md-0-5gbs6
+  ready: true

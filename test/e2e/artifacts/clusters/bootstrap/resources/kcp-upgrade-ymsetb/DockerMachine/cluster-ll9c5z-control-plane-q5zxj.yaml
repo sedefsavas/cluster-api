@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-07T19:51:40Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-ll9c5z
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2806132040"
+  name: cluster-ll9c5z-control-plane-q5zxj
+  namespace: kcp-upgrade-ymsetb
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-ll9c5z-control-plane
+    uid: 109e3e6f-427d-4867-9dd1-0abfc3130d74
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-ll9c5z-control-plane-xsh8w
+    uid: 948be75b-fc83-4cf0-b746-74739a17e9d2
+  resourceVersion: "3666"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ymsetb/dockermachines/cluster-ll9c5z-control-plane-q5zxj
+  uid: 5f9918a6-f6c1-4ac7-944e-9e271356b305
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-ll9c5z-cluster-ll9c5z-control-plane-xsh8w
+status:
+  loadBalancerConfigured: true
+  ready: true

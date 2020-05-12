@@ -1,0 +1,51 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-11T02:11:01Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generateName: cluster-sy3kh8-md-0-69d549cf4d-
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-sy3kh8
+    cluster.x-k8s.io/deployment-name: cluster-sy3kh8-md-0
+    machine-template-hash: "2581057908"
+    nodepool: pool1
+  name: cluster-sy3kh8-md-0-69d549cf4d-flzmx
+  namespace: mhc-remediation-y2dhts
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineSet
+    name: cluster-sy3kh8-md-0-69d549cf4d
+    uid: dd503d1f-0865-4a0e-a0be-37de3ebfd2f3
+  resourceVersion: "1876"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-y2dhts/machines/cluster-sy3kh8-md-0-69d549cf4d-flzmx
+  uid: e4269cee-928a-4367-84f7-c60fd774b9ca
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-sy3kh8-md-0-jcfgp
+      namespace: mhc-remediation-y2dhts
+      uid: f9976f5d-ec77-472d-bc7a-08d0ae35c4d6
+    dataSecretName: cluster-sy3kh8-md-0-jcfgp
+  clusterName: cluster-sy3kh8
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-sy3kh8-md-0-j7gc7
+    namespace: mhc-remediation-y2dhts
+    uid: ed788484-0714-4628-bb3c-729b0baa6c04
+  providerID: docker:////cluster-sy3kh8-cluster-sy3kh8-md-0-69d549cf4d-flzmx
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-11T02:11:07Z"
+  nodeRef:
+    name: cluster-sy3kh8-cluster-sy3kh8-md-0-69d549cf4d-flzmx
+    uid: 777c0cd3-3ea1-4531-895d-2da86b4bd2a4
+  phase: Running

@@ -41,7 +41,7 @@ import (
 // PostApplyDataKey is the data key in post-apply-addon secrets
 var PostApplyDataKey = "addon.yaml"
 
-// PostApplyConfigReconciler reconciles a PostApplyConfig object
+// PostApplyConfigReconciler reconciles a ClusterResourceSet object
 type PostApplyConfigReconciler struct {
 	client.Client
 	Log      logr.Logger
@@ -55,7 +55,7 @@ type PostApplyConfigReconciler struct {
 func (r *PostApplyConfigReconciler) Reconcile(req ctrl.Request) (_ ctrl.Result, reterr error) {
 	ctx := context.Background()
 
-	// Fetch the PostApplyConfig instance.
+	// Fetch the ClusterResourceSet instance.
 	postApplyConf := &postapplyv1.PostApplyConfig{}
 	if err := r.Client.Get(ctx, req.NamespacedName, postApplyConf); err != nil {
 		if apierrors.IsNotFound(err) {
@@ -74,7 +74,7 @@ func (r *PostApplyConfigReconciler) Reconcile(req ctrl.Request) (_ ctrl.Result, 
 	}
 
 	defer func() {
-		// Always attempt to Patch the PostApplyConfig object and status after each reconciliation.
+		// Always attempt to Patch the ClusterResourceSet object and status after each reconciliation.
 		if err := patchHelper.Patch(ctx, postApplyConf); err != nil {
 			reterr = kerrors.NewAggregate([]error{reterr, err})
 		}
@@ -88,10 +88,10 @@ func (r *PostApplyConfigReconciler) Reconcile(req ctrl.Request) (_ ctrl.Result, 
 func (r *PostApplyConfigReconciler) reconcile(ctx context.Context, postApplyConf *postapplyv1.PostApplyConfig) (ctrl.Result, error) {
 	logger := r.Log.WithValues("postapplyconfig", postApplyConf.Name, "namespace", postApplyConf.Namespace)
 
-	logger.Info("debug: in PostApplyConfig Reconcile")
+	logger.Info("debug: in ClusterResourceSet Reconcile")
 	cls, err := r.getMatchingClustersForPostApply(ctx, postApplyConf.Spec.ClusterSelector.MatchLabels)
 	if err != nil {
-		logger.Error(err, "Failed fetching clusters that matches PostApplyConfig labels", "PostApplyConfig", postApplyConf.Name)
+		logger.Error(err, "Failed fetching clusters that matches ClusterResourceSet labels", "ClusterResourceSet", postApplyConf.Name)
 		return ctrl.Result{}, err
 	}
 
@@ -123,14 +123,14 @@ func (r *PostApplyConfigReconciler) getMatchingClustersForPostApply(ctx context.
 }
 
 func (r *PostApplyConfigReconciler) PostApplyToCluster(cluster *clusterv1.Cluster, postApplyConf *postapplyv1.PostApplyConfig) error {
-	logger := r.Log.WithValues("PostApplyConfig", postApplyConf.Name, "namespace", postApplyConf.Namespace)
+	logger := r.Log.WithValues("ClusterResourceSet", postApplyConf.Name, "namespace", postApplyConf.Namespace)
 
-	logger.Info("debug: Applying PostApplyConfig to cluster", "Cluster", cluster.Name, "PostApplyConfig", postApplyConf.Name)
+	logger.Info("debug: Applying ClusterResourceSet to cluster", "Cluster", cluster.Name, "ClusterResourceSet", postApplyConf.Name)
 
 	// Check if this postApplyConf is applied to the cluster, if not continue
 	if r.IsYamlAppliedToCluster(cluster, postApplyConf.Status.ClusterRefList) {
 		logger.Info("debug: "+
-			" applied before", "Cluster", cluster.Name, "PostApplyConfig", postApplyConf.Name)
+			" applied before", "Cluster", cluster.Name, "ClusterResourceSet", postApplyConf.Name)
 		return nil
 	}
 
@@ -147,7 +147,7 @@ func (r *PostApplyConfigReconciler) PostApplyToCluster(cluster *clusterv1.Cluste
 		return err
 	}
 
-	logger.Info("debug: Successfully applied post-apply addon", "PostApplyConfig", postApplyConf.Name+"/"+postApplyConf.Namespace)
+	logger.Info("debug: Successfully applied post-apply addon", "ClusterResourceSet", postApplyConf.Name+"/"+postApplyConf.Namespace)
 
 	if postApplyConf.Status.ClusterRefList == nil {
 		postApplyConf.Status.ClusterRefList = make([]*corev1.ObjectReference, 0)

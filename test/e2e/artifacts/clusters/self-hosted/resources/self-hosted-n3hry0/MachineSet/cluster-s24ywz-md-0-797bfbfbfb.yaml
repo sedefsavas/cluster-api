@@ -1,0 +1,138 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-07T20:05:18Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+    cluster.x-k8s.io/deployment-name: cluster-s24ywz-md-0
+    machine-template-hash: "3536969696"
+  managedFields:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:machinedeployment.clusters.x-k8s.io/desired-replicas: {}
+          f:machinedeployment.clusters.x-k8s.io/max-replicas: {}
+          f:machinedeployment.clusters.x-k8s.io/revision: {}
+        f:labels:
+          .: {}
+          f:cluster.x-k8s.io/cluster-name: {}
+          f:cluster.x-k8s.io/deployment-name: {}
+          f:machine-template-hash: {}
+        f:ownerReferences:
+          .: {}
+          k:{"uid":"d1a115fd-4d29-4d7c-9278-eb96af0c95ea"}:
+            .: {}
+            f:apiVersion: {}
+            f:blockOwnerDeletion: {}
+            f:controller: {}
+            f:kind: {}
+            f:name: {}
+            f:uid: {}
+      f:spec:
+        .: {}
+        f:clusterName: {}
+        f:deletePolicy: {}
+        f:replicas: {}
+        f:selector:
+          .: {}
+          f:matchLabels:
+            .: {}
+            f:cluster.x-k8s.io/cluster-name: {}
+            f:cluster.x-k8s.io/deployment-name: {}
+            f:machine-template-hash: {}
+        f:template:
+          .: {}
+          f:metadata:
+            .: {}
+            f:labels:
+              .: {}
+              f:cluster.x-k8s.io/cluster-name: {}
+              f:cluster.x-k8s.io/deployment-name: {}
+              f:machine-template-hash: {}
+          f:spec:
+            .: {}
+            f:bootstrap:
+              .: {}
+              f:configRef:
+                .: {}
+                f:apiVersion: {}
+                f:kind: {}
+                f:name: {}
+            f:clusterName: {}
+            f:infrastructureRef:
+              .: {}
+              f:apiVersion: {}
+              f:kind: {}
+              f:name: {}
+            f:version: {}
+    manager: clusterctl
+    operation: Update
+    time: "2020-05-07T20:05:18Z"
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        .: {}
+        f:availableReplicas: {}
+        f:fullyLabeledReplicas: {}
+        f:observedGeneration: {}
+        f:readyReplicas: {}
+        f:replicas: {}
+        f:selector: {}
+    manager: manager
+    operation: Update
+    time: "2020-05-07T20:05:20Z"
+  name: cluster-s24ywz-md-0-797bfbfbfb
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-s24ywz-md-0
+    uid: d1a115fd-4d29-4d7c-9278-eb96af0c95ea
+  resourceVersion: "1545"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/machinesets/cluster-s24ywz-md-0-797bfbfbfb
+  uid: fac86485-22bc-48af-8669-c7c242cc833f
+spec:
+  clusterName: cluster-s24ywz
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-s24ywz
+      cluster.x-k8s.io/deployment-name: cluster-s24ywz-md-0
+      machine-template-hash: "3536969696"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-s24ywz
+        cluster.x-k8s.io/deployment-name: cluster-s24ywz-md-0
+        machine-template-hash: "3536969696"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-s24ywz-md-0
+      clusterName: cluster-s24ywz
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-s24ywz-md-0
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-s24ywz,cluster.x-k8s.io/deployment-name=cluster-s24ywz-md-0,machine-template-hash=3536969696

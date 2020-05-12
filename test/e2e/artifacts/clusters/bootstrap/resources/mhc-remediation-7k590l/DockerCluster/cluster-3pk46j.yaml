@@ -1,0 +1,13 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-3pk46j","namespace":"mhc-remediation-7k590l"}}
+  creationTimestamp: "2020-05-08T18:21:51Z"
+  generation: 1
+  name: cluster-3pk46j
+  namespace: mhc-remediation-7k590l
+  resourceVersion: "1247"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-7k590l/dockerclusters/cluster-3pk46j
+  uid: 9568f4c4-852f-4ed2-af14-c161142edbd9

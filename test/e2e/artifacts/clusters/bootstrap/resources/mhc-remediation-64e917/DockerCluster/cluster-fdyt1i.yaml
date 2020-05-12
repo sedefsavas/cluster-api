@@ -1,0 +1,30 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerCluster
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerCluster","metadata":{"annotations":{},"name":"cluster-fdyt1i","namespace":"mhc-remediation-64e917"}}
+  creationTimestamp: "2020-05-08T20:02:45Z"
+  finalizers:
+  - dockercluster.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-fdyt1i
+  name: cluster-fdyt1i
+  namespace: mhc-remediation-64e917
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Cluster
+    name: cluster-fdyt1i
+    uid: dfa2f4cc-4d32-418e-be97-6b4b20790c0e
+  resourceVersion: "1314"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-64e917/dockerclusters/cluster-fdyt1i
+  uid: 159a8b2a-875a-4175-845a-d91181c1c1d2
+spec:
+  controlPlaneEndpoint:
+    host: 172.17.0.3
+    port: 6443
+status:
+  ready: true

@@ -1,0 +1,57 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-s24ywz-mhc-0","namespace":"self-hosted-n3hry0"},"spec":{"clusterName":"cluster-s24ywz","maxUnhealthy":"40%","selector":{"matchLabels":{"mhc":"unhealthy"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-07T20:05:18Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-s24ywz
+  managedFields:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:labels:
+          .: {}
+          f:cluster.x-k8s.io/cluster-name: {}
+        f:ownerReferences: {}
+      f:spec:
+        .: {}
+        f:clusterName: {}
+        f:maxUnhealthy: {}
+        f:nodeStartupTimeout: {}
+        f:selector:
+          .: {}
+          f:matchLabels:
+            .: {}
+            f:mhc: {}
+        f:unhealthyConditions: {}
+    manager: clusterctl
+    operation: Update
+    time: "2020-05-07T20:05:18Z"
+  name: cluster-s24ywz-mhc-0
+  namespace: self-hosted-n3hry0
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-s24ywz
+    uid: 4dae78c5-cf3e-4a18-af56-1a464522b616
+  resourceVersion: "1507"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/self-hosted-n3hry0/machinehealthchecks/cluster-s24ywz-mhc-0
+  uid: 744d82a7-ff8d-44d0-a4fa-32491559413b
+spec:
+  clusterName: cluster-s24ywz
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      mhc: unhealthy
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy

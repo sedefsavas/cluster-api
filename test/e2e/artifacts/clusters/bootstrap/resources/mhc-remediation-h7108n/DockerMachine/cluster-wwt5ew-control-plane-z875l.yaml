@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-08T18:44:53Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-wwt5ew
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "118136489"
+  name: cluster-wwt5ew-control-plane-z875l
+  namespace: mhc-remediation-h7108n
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-wwt5ew-control-plane
+    uid: 4508f739-2424-47b7-977f-8186b7072363
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-wwt5ew-control-plane-ndv4h
+    uid: 7bcfaafa-4eeb-4d4a-9f09-710971289691
+  resourceVersion: "1401"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-h7108n/dockermachines/cluster-wwt5ew-control-plane-z875l
+  uid: 361f1064-7323-46e5-9079-5889faaf6c15
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-wwt5ew-cluster-wwt5ew-control-plane-ndv4h
+status:
+  loadBalancerConfigured: true
+  ready: true

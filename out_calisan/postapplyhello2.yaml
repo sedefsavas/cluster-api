@@ -1,0 +1,12 @@
+apiVersion: postapply.cluster.x-k8s.io/v1alpha3
+kind: PostApplyConfig
+metadata:
+  name: sedef-postapply-conf2
+  namespace: default
+spec:
+  clusterSelector:
+    matchLabels:
+      postapplylabelcni: calico
+  postApplyAddons:
+    - name: calico-addon
+      namespace: default

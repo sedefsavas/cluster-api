@@ -1,0 +1,59 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "3"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-07T07:55:41Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-l4crht
+    cluster.x-k8s.io/deployment-name: cluster-l4crht-md-0
+    machine-template-hash: "1233702110"
+  name: cluster-l4crht-md-0-5677c46554
+  namespace: quick-start-5y4wsx
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-l4crht-md-0
+    uid: 377fcc00-501b-4f32-9e9d-819bfe8c0af9
+  resourceVersion: "1806"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-5y4wsx/machinesets/cluster-l4crht-md-0-5677c46554
+  uid: 75c9515c-1b1b-4c5f-bd72-1e6ec7ed5f54
+spec:
+  clusterName: cluster-l4crht
+  deletePolicy: Random
+  replicas: 2
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-l4crht
+      cluster.x-k8s.io/deployment-name: cluster-l4crht-md-0
+      machine-template-hash: "1233702110"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-l4crht
+        cluster.x-k8s.io/deployment-name: cluster-l4crht-md-0
+        machine-template-hash: "1233702110"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-l4crht-md-0
+      clusterName: cluster-l4crht
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-l4crht-md-0
+      version: v1.18.2
+status:
+  availableReplicas: 1
+  fullyLabeledReplicas: 2
+  observedGeneration: 2
+  readyReplicas: 1
+  replicas: 2
+  selector: cluster.x-k8s.io/cluster-name=cluster-l4crht,cluster.x-k8s.io/deployment-name=cluster-l4crht-md-0,machine-template-hash=1233702110

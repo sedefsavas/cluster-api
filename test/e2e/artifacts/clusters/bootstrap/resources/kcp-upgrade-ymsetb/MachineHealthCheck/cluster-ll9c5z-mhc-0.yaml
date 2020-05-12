@@ -1,0 +1,31 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineHealthCheck","metadata":{"annotations":{},"name":"cluster-ll9c5z-mhc-0","namespace":"kcp-upgrade-ymsetb"},"spec":{"clusterName":"cluster-ll9c5z","maxUnhealthy":"40%","selector":{"matchLabels":{"mhc":"unhealthy"}},"unhealthyConditions":[{"status":"True","timeout":"30s","type":"E2ENodeUnhealthy"}]}}
+  creationTimestamp: "2020-05-07T19:47:18Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-ll9c5z
+  name: cluster-ll9c5z-mhc-0
+  namespace: kcp-upgrade-ymsetb
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-ll9c5z
+    uid: 2a896b38-4d78-4ee3-83a8-04e52b6f124f
+  resourceVersion: "2366"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/kcp-upgrade-ymsetb/machinehealthchecks/cluster-ll9c5z-mhc-0
+  uid: 894d64cb-379c-4481-969f-2e0f79248833
+spec:
+  clusterName: cluster-ll9c5z
+  maxUnhealthy: 40%
+  nodeStartupTimeout: 10m0s
+  selector:
+    matchLabels:
+      mhc: unhealthy
+  unhealthyConditions:
+  - status: "True"
+    timeout: 30s
+    type: E2ENodeUnhealthy

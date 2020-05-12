@@ -1,0 +1,61 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineDeployment","metadata":{"annotations":{},"name":"cluster-sy3kh8-md-0","namespace":"mhc-remediation-y2dhts"},"spec":{"clusterName":"cluster-sy3kh8","replicas":1,"selector":{"matchLabels":null},"template":{"metadata":{"labels":{"nodepool":"pool1"}},"spec":{"bootstrap":{"configRef":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","name":"cluster-sy3kh8-md-0"}},"clusterName":"cluster-sy3kh8","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-sy3kh8-md-0"},"version":"v1.18.2"}}}}
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-11T02:08:50Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-sy3kh8
+  name: cluster-sy3kh8-md-0
+  namespace: mhc-remediation-y2dhts
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-sy3kh8
+    uid: c71107b6-9e39-4248-8d8d-b166d2e2480e
+  resourceVersion: "1819"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-y2dhts/machinedeployments/cluster-sy3kh8-md-0
+  uid: 8c3ea48b-1ef0-4b84-95bd-1d7fd33df67a
+spec:
+  clusterName: cluster-sy3kh8
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-sy3kh8
+      cluster.x-k8s.io/deployment-name: cluster-sy3kh8-md-0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-sy3kh8
+        cluster.x-k8s.io/deployment-name: cluster-sy3kh8-md-0
+        nodepool: pool1
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-sy3kh8-md-0
+      clusterName: cluster-sy3kh8
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-sy3kh8-md-0
+      version: v1.18.2
+status:
+  observedGeneration: 1
+  phase: ScalingUp
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-sy3kh8,cluster.x-k8s.io/deployment-name=cluster-sy3kh8-md-0
+  unavailableReplicas: 1
+  updatedReplicas: 1

@@ -1,0 +1,58 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"cluster.x-k8s.io/v1alpha3","kind":"MachineDeployment","metadata":{"annotations":{},"name":"cluster-prnpxf-md-0","namespace":"mhc-remediation-7rjyec"},"spec":{"clusterName":"cluster-prnpxf","replicas":1,"selector":{"matchLabels":null},"template":{"metadata":{"labels":{"nodepool":"pool1"}},"spec":{"bootstrap":{"configRef":{"apiVersion":"bootstrap.cluster.x-k8s.io/v1alpha3","kind":"KubeadmConfigTemplate","name":"cluster-prnpxf-md-0"}},"clusterName":"cluster-prnpxf","infrastructureRef":{"apiVersion":"infrastructure.cluster.x-k8s.io/v1alpha3","kind":"DockerMachineTemplate","name":"cluster-prnpxf-md-0"},"version":"v1.18.2"}}}}
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-11T02:51:45Z"
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-prnpxf
+  name: cluster-prnpxf-md-0
+  namespace: mhc-remediation-7rjyec
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    kind: Cluster
+    name: cluster-prnpxf
+    uid: 83a4c2aa-0cac-4a88-b5cf-3401168c1f70
+  resourceVersion: "1855"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-7rjyec/machinedeployments/cluster-prnpxf-md-0
+  uid: 536fbad1-89b1-4a00-a7de-50501504a0f1
+spec:
+  clusterName: cluster-prnpxf
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 0
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-prnpxf
+      cluster.x-k8s.io/deployment-name: cluster-prnpxf-md-0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-prnpxf
+        cluster.x-k8s.io/deployment-name: cluster-prnpxf-md-0
+        nodepool: pool1
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-prnpxf-md-0
+      clusterName: cluster-prnpxf
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-prnpxf-md-0
+      version: v1.18.2
+status:
+  observedGeneration: 2
+  phase: Running
+  selector: cluster.x-k8s.io/cluster-name=cluster-prnpxf,cluster.x-k8s.io/deployment-name=cluster-prnpxf-md-0

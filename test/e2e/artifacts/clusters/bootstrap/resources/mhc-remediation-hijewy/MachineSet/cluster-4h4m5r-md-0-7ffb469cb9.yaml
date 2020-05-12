@@ -1,0 +1,57 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineSet
+metadata:
+  annotations:
+    machinedeployment.clusters.x-k8s.io/desired-replicas: "1"
+    machinedeployment.clusters.x-k8s.io/max-replicas: "2"
+    machinedeployment.clusters.x-k8s.io/revision: "1"
+  creationTimestamp: "2020-05-07T19:59:35Z"
+  generation: 1
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-4h4m5r
+    cluster.x-k8s.io/deployment-name: cluster-4h4m5r-md-0
+    machine-template-hash: "3996025765"
+  name: cluster-4h4m5r-md-0-7ffb469cb9
+  namespace: mhc-remediation-hijewy
+  ownerReferences:
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: MachineDeployment
+    name: cluster-4h4m5r-md-0
+    uid: 928e3208-b6fe-43a2-b74d-fff5521f46fb
+  resourceVersion: "6000"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-hijewy/machinesets/cluster-4h4m5r-md-0-7ffb469cb9
+  uid: 0fa24d85-d29d-4a41-b56a-6f70037a1a58
+spec:
+  clusterName: cluster-4h4m5r
+  deletePolicy: Random
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: cluster-4h4m5r
+      cluster.x-k8s.io/deployment-name: cluster-4h4m5r-md-0
+      machine-template-hash: "3996025765"
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: cluster-4h4m5r
+        cluster.x-k8s.io/deployment-name: cluster-4h4m5r-md-0
+        machine-template-hash: "3996025765"
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: cluster-4h4m5r-md-0
+      clusterName: cluster-4h4m5r
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: DockerMachineTemplate
+        name: cluster-4h4m5r-md-0
+      version: v1.18.2
+status:
+  fullyLabeledReplicas: 1
+  observedGeneration: 1
+  replicas: 1
+  selector: cluster.x-k8s.io/cluster-name=cluster-4h4m5r,cluster.x-k8s.io/deployment-name=cluster-4h4m5r-md-0,machine-template-hash=3996025765

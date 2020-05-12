@@ -1,0 +1,36 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: DockerMachine
+metadata:
+  creationTimestamp: "2020-05-11T02:28:35Z"
+  finalizers:
+  - dockermachine.infrastructure.cluster.x-k8s.io
+  generation: 2
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-4z79p7
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "455485628"
+  name: cluster-4z79p7-control-plane-sqwmb
+  namespace: mhc-remediation-chnaru
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: cluster-4z79p7-control-plane
+    uid: 197b13f4-0f11-4978-ba07-f88a9f503f2b
+  - apiVersion: cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: Machine
+    name: cluster-4z79p7-control-plane-bdq2r
+    uid: 23a68d6f-a835-456b-8870-4a80956c2ca8
+  resourceVersion: "1624"
+  selfLink: /apis/infrastructure.cluster.x-k8s.io/v1alpha3/namespaces/mhc-remediation-chnaru/dockermachines/cluster-4z79p7-control-plane-sqwmb
+  uid: a49e1ff4-7f10-4158-9f1d-208eddb088de
+spec:
+  bootstrapped: true
+  extraMounts:
+  - containerPath: /var/run/docker.sock
+    hostPath: /var/run/docker.sock
+  providerID: docker:////cluster-4z79p7-cluster-4z79p7-control-plane-bdq2r
+status:
+  loadBalancerConfigured: true
+  ready: true

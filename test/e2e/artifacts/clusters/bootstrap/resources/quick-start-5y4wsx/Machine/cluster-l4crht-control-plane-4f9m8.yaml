@@ -1,0 +1,49 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  creationTimestamp: "2020-05-07T07:55:43Z"
+  finalizers:
+  - machine.cluster.x-k8s.io
+  generation: 3
+  labels:
+    cluster.x-k8s.io/cluster-name: cluster-l4crht
+    cluster.x-k8s.io/control-plane: ""
+    kubeadm.controlplane.cluster.x-k8s.io/hash: "2500397611"
+  name: cluster-l4crht-control-plane-4f9m8
+  namespace: quick-start-5y4wsx
+  ownerReferences:
+  - apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    blockOwnerDeletion: true
+    controller: true
+    kind: KubeadmControlPlane
+    name: cluster-l4crht-control-plane
+    uid: 7ea1033c-30b4-40bf-9ceb-9ab83eda53de
+  resourceVersion: "1524"
+  selfLink: /apis/cluster.x-k8s.io/v1alpha3/namespaces/quick-start-5y4wsx/machines/cluster-l4crht-control-plane-4f9m8
+  uid: c81db13c-312b-4cfc-8037-534b8a179219
+spec:
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: cluster-l4crht-control-plane-zq2rm
+      namespace: quick-start-5y4wsx
+      uid: 7a49896f-5d17-447b-add1-1127e7605b80
+    dataSecretName: cluster-l4crht-control-plane-zq2rm
+  clusterName: cluster-l4crht
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: DockerMachine
+    name: cluster-l4crht-control-plane-5sghc
+    namespace: quick-start-5y4wsx
+    uid: 3cbb64f7-f650-441a-ab4e-253e7a5bd0a0
+  providerID: docker:////cluster-l4crht-cluster-l4crht-control-plane-4f9m8
+  version: v1.18.2
+status:
+  bootstrapReady: true
+  infrastructureReady: true
+  lastUpdated: "2020-05-07T07:56:27Z"
+  nodeRef:
+    name: cluster-l4crht-cluster-l4crht-control-plane-4f9m8
+    uid: f19b621e-86cd-4d05-a8d5-9a587ff7fc62
+  phase: Running
