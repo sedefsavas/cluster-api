@@ -1,0 +1,7 @@
+domain: cluster.x-k8s.io
+repo: sigs.k8s.io/cluster-api
+resources:
+- group: clusterresourceset
+  kind: ClusterResourceSet
+  version: v1alpha3
+version: "2"

@@ -35,6 +35,8 @@ import (
 	"sigs.k8s.io/cluster-api/cmd/version"
 	"sigs.k8s.io/cluster-api/controllers"
 	expv1alpha3 "sigs.k8s.io/cluster-api/exp/api/v1alpha3"
+	clusterresourcesetv1alpha3 "sigs.k8s.io/cluster-api/exp/clusterresourceset/api/v1alpha3"
+	clusterresourcesetcontrollers "sigs.k8s.io/cluster-api/exp/clusterresourceset/controllers"
 	expcontrollers "sigs.k8s.io/cluster-api/exp/controllers"
 	"sigs.k8s.io/cluster-api/feature"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -62,6 +64,7 @@ var (
 	machineSetConcurrency         int
 	machineDeploymentConcurrency  int
 	machinePoolConcurrency        int
+	clusterResourceSetConcurrency int
 	machineHealthCheckConcurrency int
 	syncPeriod                    time.Duration
 	webhookPort                   int
@@ -75,6 +78,7 @@ func init() {
 	_ = clusterv1alpha2.AddToScheme(scheme)
 	_ = clusterv1alpha3.AddToScheme(scheme)
 	_ = expv1alpha3.AddToScheme(scheme)
+	_ = clusterresourcesetv1alpha3.AddToScheme(scheme)
 	_ = apiextensionsv1.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
@@ -116,6 +120,9 @@ func InitFlags(fs *pflag.FlagSet) {
 
 	fs.IntVar(&machinePoolConcurrency, "machinepool-concurrency", 10,
 		"Number of machine pools to process simultaneously")
+
+	fs.IntVar(&clusterResourceSetConcurrency, "clusterresourceset-concurrency", 10,
+		"Number of cluster resource sets to process simultaneously")
 
 	fs.IntVar(&machineHealthCheckConcurrency, "machinehealthcheck-concurrency", 10,
 		"Number of machine health checks to process simultaneously")
@@ -234,6 +241,17 @@ func setupReconcilers(mgr ctrl.Manager) {
 			os.Exit(1)
 		}
 	}
+
+	if feature.Gates.Enabled(feature.ClusterResourceSet) {
+		if err := (&clusterresourcesetcontrollers.ClusterResourceSetReconciler{
+			Client: mgr.GetClient(),
+			Log:    ctrl.Log.WithName("controllers").WithName("ClusterResourceSet"),
+		}).SetupWithManager(mgr, concurrency(machinePoolConcurrency)); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ClusterResourceSet")
+			os.Exit(1)
+		}
+	}
+
 	if err := (&controllers.MachineHealthCheckReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("MachineHealthCheck"),
@@ -307,6 +325,13 @@ func setupWebhooks(mgr ctrl.Manager) {
 	if feature.Gates.Enabled(feature.MachinePool) {
 		if err := (&expv1alpha3.MachinePool{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "MachinePool")
+			os.Exit(1)
+		}
+	}
+
+	if feature.Gates.Enabled(feature.ClusterResourceSet) {
+		if err := (&clusterresourcesetv1alpha3.ClusterResourceSet{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ClusterResourceSet")
 			os.Exit(1)
 		}
 	}

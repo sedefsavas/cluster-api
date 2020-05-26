@@ -31,6 +31,10 @@ const (
 	// owner: @
 	// alpha: v0.3
 	MachinePool featuregate.Feature = "MachinePool"
+
+	// owner: @
+	// alpha: v0.3.x
+	ClusterResourceSet featuregate.Feature = "ClusterResourceSet"
 )
 
 func init() {
@@ -41,5 +45,6 @@ func init() {
 // To add a new feature, define a key for it above and add it here.
 var defaultClusterAPIFeatureGates = map[featuregate.Feature]featuregate.FeatureSpec{
 	// Every feature should be initiated here:
-	MachinePool: {Default: false, PreRelease: featuregate.Alpha},
+	MachinePool:        {Default: false, PreRelease: featuregate.Alpha},
+	ClusterResourceSet: {Default: false, PreRelease: featuregate.Alpha},
 }
