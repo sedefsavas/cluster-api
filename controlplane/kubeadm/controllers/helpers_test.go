@@ -31,6 +31,7 @@ import (
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	bootstrapv1 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
 	kubeadmv1 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/types/v1beta1"
+	"sigs.k8s.io/cluster-api/controllers/external"
 	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/hash"
@@ -268,6 +269,10 @@ func TestCloneConfigsAndGenerateMachine(t *testing.T) {
 		g.Expect(m.Namespace).To(Equal(cluster.Namespace))
 		g.Expect(m.Name).NotTo(BeEmpty())
 		g.Expect(m.Name).To(HavePrefix(kcp.Name))
+
+		infraObj, err := external.Get(context.TODO(), r.Client, &m.Spec.InfrastructureRef, m.Spec.InfrastructureRef.Namespace)
+		g.Expect(err).NotTo(HaveOccurred())
+		g.Expect(infraObj.GetAnnotations()).To(HaveKey(clusterv1.TemplateClonedFromAnnotation))
 
 		g.Expect(m.Spec.InfrastructureRef.Namespace).To(Equal(cluster.Namespace))
 		g.Expect(m.Spec.InfrastructureRef.Name).To(HavePrefix(genericMachineTemplate.GetName()))

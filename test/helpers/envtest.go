@@ -33,6 +33,7 @@ import (
 	bootstrapv1 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/cmd/clusterctl/log"
 	"sigs.k8s.io/cluster-api/controllers/external"
+	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	expv1 "sigs.k8s.io/cluster-api/exp/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/util"
 	"sigs.k8s.io/cluster-api/util/kubeconfig"
@@ -57,6 +58,7 @@ func init() {
 	utilruntime.Must(clusterv1.AddToScheme(scheme.Scheme))
 	utilruntime.Must(bootstrapv1.AddToScheme(scheme.Scheme))
 	utilruntime.Must(expv1.AddToScheme(scheme.Scheme))
+	utilruntime.Must(controlplanev1.AddToScheme(scheme.Scheme))
 
 	// Get the root of the current file to use in CRD paths.
 	_, filename, _, _ := goruntime.Caller(0) //nolint
@@ -69,6 +71,7 @@ func init() {
 			filepath.Join(root, "config", "crd", "bases"),
 			filepath.Join(root, "controlplane", "kubeadm", "config", "crd", "bases"),
 			filepath.Join(root, "bootstrap", "kubeadm", "config", "crd", "bases"),
+			filepath.Join(root, "test", "infrastructure", "docker", "config", "crd", "bases"),
 		},
 		CRDs: []runtime.Object{
 			external.TestGenericBootstrapCRD.DeepCopy(),

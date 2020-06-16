@@ -31,6 +31,7 @@ import (
 	kerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/utils/pointer"
+	"sigs.k8s.io/cluster-api/controllers/external"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
@@ -254,6 +255,19 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 		return ctrl.Result{}, nil
 	}
 
+	// All infrastructure machines created by KCP have infra-template ref annotation, but the ones that are adopted (that are not created by a machine set) or created before this change do not.
+	// Infra machines that doesn't have infra-template ref annotations are being patched here.
+	// This needs to be called after adoptMachines and before MachinesNeedingUpgrade() to avoid unnecessary upgrade
+	// on the newly adopted machines and older version machines.
+	isAnyPatched, err := r.ReconcileInfrastructureMachineRefs(ctx, kcp.Spec.InfrastructureTemplate, ownedMachines)
+	if err != nil {
+		logger.Info("Failed to set infrastructure-reference annotation to the owned machines' infrastructure object")
+		return ctrl.Result{}, err
+	}
+	if isAnyPatched {
+		return ctrl.Result{Requeue: true}, nil
+	}
+
 	controlPlane := internal.NewControlPlane(cluster, kcp, ownedMachines)
 	requireUpgrade := controlPlane.MachinesNeedingUpgrade()
 	// Upgrade takes precedence over other operations
@@ -411,6 +425,43 @@ func (r *KubeadmControlPlaneReconciler) reconcileHealth(ctx context.Context, clu
 	}
 
 	return nil
+}
+
+// ReconcileInfrastructureMachineRefs adds infrastructure template ref as annotation to the infrastructure objects missing it.
+func (r *KubeadmControlPlaneReconciler) ReconcileInfrastructureMachineRefs(ctx context.Context, infraTemplateRef corev1.ObjectReference, machines internal.FilterableMachineCollection) (bool, error) {
+	isPatched := false
+	for _, machine := range machines {
+		if !machine.DeletionTimestamp.IsZero() || !machine.Status.InfrastructureReady {
+			continue
+		}
+
+		infraObj, err := external.Get(ctx, r.Client, &machine.Spec.InfrastructureRef, machine.Spec.InfrastructureRef.Namespace)
+		if err != nil {
+			if apierrors.IsNotFound(err) {
+				return isPatched, errors.Wrapf(err, "machine's infrastructure object is missing")
+			}
+			return isPatched, errors.Wrapf(err, "failed to get Machine's infrastructure object")
+		}
+
+		if _, exist := infraObj.GetAnnotations()[clusterv1.TemplateClonedFromAnnotation]; exist {
+			continue
+		}
+
+		patchHelper, err := patch.NewHelper(infraObj, r.Client)
+		if err != nil {
+			return isPatched, err
+		}
+
+		if err := external.SetCloneRefAnnotation(infraTemplateRef, infraObj); err != nil {
+			return isPatched, errors.Wrap(err, "Failed to set infrastructure-template-reference annotation")
+		}
+
+		if err := patchHelper.Patch(ctx, infraObj); err != nil {
+			return isPatched, errors.Wrap(err, "Failed to patch infrastructure object")
+		}
+		isPatched = true
+	}
+	return isPatched, nil
 }
 
 func (r *KubeadmControlPlaneReconciler) adoptMachines(ctx context.Context, kcp *controlplanev1.KubeadmControlPlane, machines internal.FilterableMachineCollection, cluster *clusterv1.Cluster) error {

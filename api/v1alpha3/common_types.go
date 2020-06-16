@@ -38,6 +38,10 @@ const (
 	// on the reconciled object.
 	PausedAnnotation = "cluster.x-k8s.io/paused"
 
+	// TemplateClonedFromAnnotation is the machine annotation that stores json marshalled version of the infrastructure template resource
+	// that was cloned for the machine.
+	TemplateClonedFromAnnotation = "cluster.x-k8s.io/cloned-from"
+
 	// ClusterSecretType defines the type of secret created by core components
 	ClusterSecretType corev1.SecretType = "cluster.x-k8s.io/secret" //nolint:gosec
 )

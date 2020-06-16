@@ -18,6 +18,7 @@ package external
 
 import (
 	"context"
+	"encoding/json"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -83,6 +84,7 @@ func CloneTemplate(ctx context.Context, in *CloneTemplateInput) (*corev1.ObjectR
 	}
 	generateTemplateInput := &GenerateTemplateInput{
 		Template:    from,
+		TemplateRef: in.TemplateRef,
 		Namespace:   in.Namespace,
 		ClusterName: in.ClusterName,
 		OwnerRef:    in.OwnerRef,
@@ -106,6 +108,10 @@ type GenerateTemplateInput struct {
 	// Template is the TemplateRef turned into an unstructured.
 	// +required
 	Template *unstructured.Unstructured
+
+	// TemplateRef is a reference to the template that needs to be cloned.
+	// +required
+	TemplateRef *corev1.ObjectReference
 
 	// Namespace is the Kuberentes namespace the cloned object should be created into.
 	// +required
@@ -141,6 +147,10 @@ func GenerateTemplate(in *GenerateTemplateInput) (*unstructured.Unstructured, er
 	to.SetName(names.SimpleNameGenerator.GenerateName(in.Template.GetName() + "-"))
 	to.SetNamespace(in.Namespace)
 
+	if err := SetCloneRefAnnotation(*in.TemplateRef, to); err != nil {
+		return nil, errors.Wrapf(err, "failed to set cloned template cloned from annotation for template: %v %q", in.Template.GroupVersionKind(), in.Template.GetName())
+	}
+
 	// Set labels.
 	labels := to.GetLabels()
 	if labels == nil {
@@ -167,6 +177,23 @@ func GenerateTemplate(in *GenerateTemplateInput) (*unstructured.Unstructured, er
 		to.SetKind(strings.TrimSuffix(in.Template.GetKind(), TemplateSuffix))
 	}
 	return to, nil
+}
+
+func SetCloneRefAnnotation(ref corev1.ObjectReference, obj *unstructured.Unstructured) error {
+	if obj.GetAnnotations() == nil {
+		obj.SetAnnotations(map[string]string{})
+	}
+
+	marshalledInfraRef, err := json.Marshal(ref)
+	if err != nil {
+		return errors.Wrap(err, "Failed to marshal obj reference")
+	}
+
+	annotations := obj.GetAnnotations()
+	annotations[clusterv1.TemplateClonedFromAnnotation] = string(marshalledInfraRef)
+
+	obj.SetAnnotations(annotations)
+	return nil
 }
 
 // GetObjectReference converts an unstructured into object reference.
