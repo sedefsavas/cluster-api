@@ -269,11 +269,11 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 	}
 
 	controlPlane := internal.NewControlPlane(cluster, kcp, ownedMachines)
-	requireUpgrade := controlPlane.MachinesNeedingUpgrade()
+	requireUpgrade := r.MachinesNeedingUpgrade(ctx, controlPlane)
 	// Upgrade takes precedence over other operations
 	if len(requireUpgrade) > 0 {
 		logger.Info("Upgrading Control Plane")
-		return r.upgradeControlPlane(ctx, cluster, kcp, controlPlane)
+		return r.upgradeControlPlane(ctx, cluster, kcp, controlPlane, requireUpgrade)
 	}
 
 	// If we've made it this far, we can assume that all ownedMachines are up to date
@@ -294,7 +294,7 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 	// We are scaling down
 	case numMachines > desiredReplicas:
 		logger.Info("Scaling down control plane", "Desired", desiredReplicas, "Existing", numMachines)
-		return r.scaleDownControlPlane(ctx, cluster, kcp, controlPlane)
+		return r.scaleDownControlPlane(ctx, cluster, kcp, controlPlane, requireUpgrade)
 	}
 
 	// Get the workload cluster client.

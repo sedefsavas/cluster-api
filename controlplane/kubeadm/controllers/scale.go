@@ -86,6 +86,7 @@ func (r *KubeadmControlPlaneReconciler) scaleDownControlPlane(
 	cluster *clusterv1.Cluster,
 	kcp *controlplanev1.KubeadmControlPlane,
 	controlPlane *internal.ControlPlane,
+	machinesRequireUpgrade internal.FilterableMachineCollection,
 ) (ctrl.Result, error) {
 	logger := controlPlane.Logger()
 
@@ -99,7 +100,7 @@ func (r *KubeadmControlPlaneReconciler) scaleDownControlPlane(
 		return ctrl.Result{}, errors.Wrapf(err, "failed to create client to workload cluster")
 	}
 
-	machineToDelete, err := selectMachineForScaleDown(controlPlane)
+	machineToDelete, err := selectMachineForScaleDown(controlPlane, machinesRequireUpgrade)
 	if err != nil {
 		return ctrl.Result{}, errors.Wrap(err, "failed to select machine for scale down")
 	}
@@ -144,10 +145,10 @@ func (r *KubeadmControlPlaneReconciler) scaleDownControlPlane(
 	return ctrl.Result{Requeue: true}, nil
 }
 
-func selectMachineForScaleDown(controlPlane *internal.ControlPlane) (*clusterv1.Machine, error) {
+func selectMachineForScaleDown(controlPlane *internal.ControlPlane, machinesNeedUpgrade internal.FilterableMachineCollection) (*clusterv1.Machine, error) {
 	machines := controlPlane.Machines
-	if needingUpgrade := controlPlane.MachinesNeedingUpgrade(); needingUpgrade.Len() > 0 {
-		machines = needingUpgrade
+	if machinesNeedUpgrade.Len() > 0 {
+		machines = machinesNeedUpgrade
 	}
 	return controlPlane.MachineInFailureDomainWithMostMachines(machines)
 }

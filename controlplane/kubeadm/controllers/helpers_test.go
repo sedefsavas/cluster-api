@@ -18,7 +18,10 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
+	"k8s.io/apimachinery/pkg/runtime"
 	"testing"
+	"time"
 
 	. "github.com/onsi/gomega"
 
@@ -396,6 +399,229 @@ func TestKubeadmControlPlaneReconciler_generateKubeadmConfig(t *testing.T) {
 	g.Expect(bootstrapConfig.OwnerReferences).To(HaveLen(1))
 	g.Expect(bootstrapConfig.OwnerReferences).To(ContainElement(expectedOwner))
 	g.Expect(bootstrapConfig.Spec).To(Equal(spec))
+}
+
+func TestMachinesNeedingUpgrade(t *testing.T) {
+	g := NewWithT(t)
+
+	namespace := "default"
+	cluster := &clusterv1.Cluster{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "foo",
+			Namespace: namespace,
+		},
+	}
+
+	genericMachineTemplate := &unstructured.Unstructured{
+		Object: map[string]interface{}{
+			"kind":       "GenericMachineTemplate",
+			"apiVersion": "generic.io/v1",
+			"metadata": map[string]interface{}{
+				"name":      "infra-foo",
+				"namespace": cluster.Namespace,
+			},
+			"spec": map[string]interface{}{
+				"template": map[string]interface{}{
+					"spec": map[string]interface{}{
+						"hello": "world",
+					},
+				},
+			},
+		},
+	}
+
+	initKubeadmConfigMapName := "init"
+	joinKubeadmConfigMapName := "join"
+
+	initConfig := &bootstrapv1.KubeadmConfig{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "KubeadmConfig",
+			APIVersion: bootstrapv1.GroupVersion.String(),
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      initKubeadmConfigMapName,
+		},
+		Spec: bootstrapv1.KubeadmConfigSpec{
+			ClusterConfiguration: &kubeadmv1.ClusterConfiguration{
+				KubernetesVersion: "v1.17.2",
+			},
+			InitConfiguration: &kubeadmv1.InitConfiguration{
+				TypeMeta: metav1.TypeMeta{Kind: "test-init"},
+			},
+		},
+	}
+
+	joinConfig := &bootstrapv1.KubeadmConfig{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "KubeadmConfig",
+			APIVersion: bootstrapv1.GroupVersion.String(),
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      joinKubeadmConfigMapName,
+		},
+		Spec: bootstrapv1.KubeadmConfigSpec{
+			JoinConfiguration: &kubeadmv1.JoinConfiguration{
+				TypeMeta: metav1.TypeMeta{Kind: "test-join"},
+			},
+		},
+	}
+
+	kcp := &controlplanev1.KubeadmControlPlane{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "kcp-foo",
+			Namespace: cluster.Namespace,
+		},
+		Spec: controlplanev1.KubeadmControlPlaneSpec{
+			Version: "v1.17.3",
+			InfrastructureTemplate: corev1.ObjectReference{
+				Kind:       genericMachineTemplate.GetKind(),
+				APIVersion: genericMachineTemplate.GetAPIVersion(),
+				Name:       genericMachineTemplate.GetName(),
+				Namespace:  cluster.Namespace,
+			},
+			KubeadmConfigSpec: bootstrapv1.KubeadmConfigSpec{
+				ClusterConfiguration: initConfig.Spec.ClusterConfiguration,
+				InitConfiguration:    initConfig.Spec.InitConfiguration,
+				JoinConfiguration:    joinConfig.Spec.JoinConfiguration,
+			},
+		},
+	}
+	marshalledInfraRef, _ := json.Marshal(kcp.Spec.InfrastructureTemplate)
+
+	machine := func(name string) *clusterv1.Machine {
+		m := &clusterv1.Machine{
+			TypeMeta: metav1.TypeMeta{},
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      name,
+				Namespace: namespace,
+				Labels: map[string]string{
+					clusterv1.ClusterLabelName: "foo",
+				},
+			},
+			Spec: clusterv1.MachineSpec{
+				Version: utilpointer.StringPtr("v1.17.3"),
+			},
+		}
+		m.SetAnnotations(map[string]string{clusterv1.TemplateClonedFromAnnotation: string(marshalledInfraRef)})
+		m.CreationTimestamp = metav1.Time{Time: time.Date(1900, 0, 0, 0, 0, 0, 0, time.UTC)}
+		return m
+	}
+
+	initMachine := machine("init-machine")
+	initMachine.Spec.Bootstrap = clusterv1.Bootstrap{ConfigRef: &corev1.ObjectReference{
+		Namespace: namespace,
+		Name:      initKubeadmConfigMapName,
+	}, DataSecretName: nil}
+
+	joinMachine := machine("join-machine")
+	joinMachine.Spec.Bootstrap = clusterv1.Bootstrap{ConfigRef: &corev1.ObjectReference{
+		Namespace: namespace,
+		Name:      joinKubeadmConfigMapName,
+	}, DataSecretName: nil}
+
+	versionMismatchMachine := machine("version-mismatch")
+	versionMismatchMachine.Spec.Version = utilpointer.StringPtr("v1.19.1")
+
+	noInfraAnnotationMachine := initMachine.DeepCopy()
+	noInfraAnnotationMachine.Name = "no-annotation"
+	noInfraAnnotationMachine.SetAnnotations(map[string]string{})
+
+	deletedMachine := initMachine.DeepCopy()
+	deletedMachine.Name = "deleted"
+	deletedMachine.DeletionTimestamp = &metav1.Time{Time: time.Date(1900, 0, 0, 0, 0, 0, 0, time.UTC)}
+
+	kcpInitEmpty := (*kcp).DeepCopy()
+	kcpInitEmpty.Spec.KubeadmConfigSpec.InitConfiguration = nil
+
+	kcpRetryJoinSet := (*kcp).DeepCopy()
+	kcpRetryJoinSet.Spec.KubeadmConfigSpec.UseExperimentalRetryJoin = true
+
+	kcpUpgradeAfterFuture := (*kcp).DeepCopy()
+	kcpUpgradeAfterFuture.Spec.UpgradeAfter = &metav1.Time{Time: time.Date(3000, 0, 0, 0, 0, 0, 0, time.UTC)}
+
+	kcpUpgradeAfterPast := (*kcp).DeepCopy()
+	kcpUpgradeAfterPast.Spec.UpgradeAfter = &metav1.Time{Time: time.Date(2000, 0, 0, 0, 0, 0, 0, time.UTC)}
+
+	objs := []runtime.Object{cluster.DeepCopy(), kcp.DeepCopy(), initConfig.DeepCopy(), joinConfig.DeepCopy(), genericMachineTemplate.DeepCopy()}
+
+	fakeClient := newFakeClient(g, objs...)
+
+	r := &KubeadmControlPlaneReconciler{
+		Client:   fakeClient,
+		Log:      log.Log,
+		recorder: record.NewFakeRecorder(32),
+		scheme:   scheme.Scheme,
+	}
+
+	tests := []struct {
+		name     string
+		kcp      *controlplanev1.KubeadmControlPlane
+		machines []*clusterv1.Machine
+		result   internal.FilterableMachineCollection
+	}{
+		{
+			name:     "should not return any machines if KCP upgradeAfter is after machines' creation time",
+			kcp:      kcpUpgradeAfterFuture,
+			machines: []*clusterv1.Machine{initMachine, joinMachine},
+			result:   internal.FilterableMachineCollection{},
+		},
+		{
+			name:     "should return machines if KCP upgradeAfter is before machines' creation time (but not deleted ones)",
+			kcp:      kcpUpgradeAfterPast,
+			machines: []*clusterv1.Machine{initMachine, joinMachine, deletedMachine},
+			result:   internal.FilterableMachineCollection{"init-machine": initMachine, "join-machine": joinMachine},
+		},
+		{
+			name:     "should not return any machines if owned machines are empty",
+			kcp:      kcp,
+			machines: []*clusterv1.Machine{},
+			result:   internal.FilterableMachineCollection{},
+		},
+		{
+			name:     "should return the machine if there is a version mismatch",
+			kcp:      kcp,
+			machines: []*clusterv1.Machine{versionMismatchMachine, initMachine, joinMachine},
+			result:   internal.FilterableMachineCollection{"version-mismatch": versionMismatchMachine},
+		},
+		{
+			name:     "should not return any machines if machine has only init config or join config; and it matches with kcp",
+			kcp:      kcp,
+			machines: []*clusterv1.Machine{initMachine, joinMachine},
+			result:   internal.FilterableMachineCollection{},
+		},
+		{
+			name:     "should return machines that are not matching with KCP KubeadmConfig",
+			kcp:      kcpInitEmpty,
+			machines: []*clusterv1.Machine{initMachine, joinMachine},
+			result:   internal.FilterableMachineCollection{"init-machine": initMachine},
+		},
+		{
+			name:     "should return machines that are not matching with KCP KubeadmConfig when additional fields are set",
+			kcp:      kcpRetryJoinSet,
+			machines: []*clusterv1.Machine{initMachine, joinMachine},
+			result:   internal.FilterableMachineCollection{"init-machine": initMachine, "join-machine": joinMachine},
+		},
+		{
+			name:     "should not return the machine if it is missing infra ref annotation",
+			kcp:      kcp,
+			machines: []*clusterv1.Machine{noInfraAnnotationMachine},
+			result:   internal.FilterableMachineCollection{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			g := NewWithT(t)
+			controlPlane := &internal.ControlPlane{
+				KCP:      tt.kcp,
+				Cluster:  cluster,
+				Machines: internal.NewFilterableMachineCollection(tt.machines...),
+			}
+			g.Expect(r.MachinesNeedingUpgrade(context.Background(), controlPlane)).To(BeEquivalentTo(tt.result))
+		})
+	}
 }
 
 // TODO

@@ -14,9 +14,7 @@ require (
 	github.com/golang/protobuf v1.3.5 // indirect
 	github.com/google/go-cmp v0.4.1
 	github.com/google/go-github v17.0.0+incompatible
-	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/google/gofuzz v1.1.0
-	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/imdario/mergo v0.3.9 // indirect
 	github.com/onsi/ginkgo v1.12.0
 	github.com/onsi/gomega v1.9.0
@@ -29,7 +27,6 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.6.2
 	go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738
-	golang.org/x/net v0.0.0-20200301022130-244492dfa37a // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/grpc v1.26.0
@@ -42,6 +39,7 @@ require (
 	k8s.io/component-base v0.17.2
 	k8s.io/klog v1.0.0
 	k8s.io/utils v0.0.0-20200229041039-0a110f9eb7ab
+	sigs.k8s.io/cluster-api/test/infrastructure/docker v0.0.0-20200616214005-247fcacd515c
 	sigs.k8s.io/controller-runtime v0.5.5
 	sigs.k8s.io/kind v0.7.1-0.20200303021537-981bd80d3802
 	sigs.k8s.io/yaml v1.2.0

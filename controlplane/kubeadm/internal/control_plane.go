@@ -93,21 +93,6 @@ func (c *ControlPlane) EtcdImageData() (string, string) {
 	return "", ""
 }
 
-// MachinesNeedingUpgrade return a list of machines that need to be upgraded.
-func (c *ControlPlane) MachinesNeedingUpgrade() FilterableMachineCollection {
-	now := metav1.Now()
-	if c.KCP.Spec.UpgradeAfter != nil && c.KCP.Spec.UpgradeAfter.Before(&now) {
-		return c.Machines.AnyFilter(
-			machinefilters.Not(machinefilters.MatchesConfigurationHash(c.SpecHash())),
-			machinefilters.OlderThan(c.KCP.Spec.UpgradeAfter),
-		)
-	}
-
-	return c.Machines.Filter(
-		machinefilters.Not(machinefilters.MatchesConfigurationHash(c.SpecHash())),
-	)
-}
-
 // MachineInFailureDomainWithMostMachines returns the first matching failure domain with machines that has the most control-plane machines on it.
 func (c *ControlPlane) MachineInFailureDomainWithMostMachines(machines FilterableMachineCollection) (*clusterv1.Machine, error) {
 	fd := c.FailureDomainWithMostMachines(machines)

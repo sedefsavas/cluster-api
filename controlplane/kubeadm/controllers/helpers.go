@@ -18,6 +18,10 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"reflect"
+	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/machinefilters"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -245,4 +249,109 @@ func (r *KubeadmControlPlaneReconciler) generateMachine(ctx context.Context, kcp
 		return errors.Wrap(err, "Failed to create machine")
 	}
 	return nil
+}
+
+// TODO: deletiontimestamp machine
+// add comments when continue
+// MachinesNeedingUpgrade return a list of machines that need to be upgraded.
+func (r *KubeadmControlPlaneReconciler) MachinesNeedingUpgrade(ctx context.Context, c *internal.ControlPlane) internal.FilterableMachineCollection {
+	machinesToUpgrade := internal.NewFilterableMachineCollection()
+
+	now := metav1.Now()
+	if c.KCP.Spec.UpgradeAfter != nil && c.KCP.Spec.UpgradeAfter.Before(&now) {
+		oldMachines := c.Machines.Filter(machinefilters.OlderThan(c.KCP.Spec.UpgradeAfter))
+		// Ignore deleted machines.
+		oldMachines = oldMachines.Filter(func(machine *clusterv1.Machine) bool {
+			return machine.DeletionTimestamp.IsZero()
+		})
+		for _, m := range oldMachines {
+			machinesToUpgrade.Insert(m)
+		}
+	}
+
+	for _, machine := range c.Machines {
+		if !machine.DeletionTimestamp.IsZero() {
+			continue
+		}
+
+		if *machine.Spec.Version != c.KCP.Spec.Version {
+			machinesToUpgrade.Insert(machine)
+			continue
+		}
+
+		ref := machine.Spec.Bootstrap.ConfigRef
+		if ref == nil {
+			continue
+		}
+
+		machineCfg := &bootstrapv1.KubeadmConfig{}
+		if err := r.Client.Get(ctx, client.ObjectKey{Name: ref.Name, Namespace: c.KCP.Namespace}, machineCfg); err != nil {
+			continue
+		}
+
+		kcpSpec := createKcpKubeadmConfig(machineCfg.Spec, c.KCP.Spec.KubeadmConfigSpec)
+
+		if !reflect.DeepEqual(machineCfg.Spec, kcpSpec) {
+			machinesToUpgrade.Insert(machine)
+			continue
+		}
+
+		infraObj, err := external.Get(ctx, r.Client, &machine.Spec.InfrastructureRef, machine.Spec.InfrastructureRef.Namespace)
+		if err != nil {
+			//
+			continue
+		}
+
+		template, exist := infraObj.GetAnnotations()[clusterv1.TemplateClonedFromAnnotation]
+		if !exist {
+			// All KCP owned machines should have this annotation as the ones that do not have it, will be annotated during
+			// ReconcileInfrastructureMachineRefs(), which is called before entering this method.
+			// Missing the annotation here may be due to a manual intervention, in which case in the next reconcile the machine will be annotated.
+			continue
+		}
+
+		infraRef := &corev1.ObjectReference{}
+		if err := json.Unmarshal([]byte(template), infraRef); err != nil {
+			// If infra template ref is corrupt, it needs upgrade.
+			machinesToUpgrade.Insert(machine)
+			continue
+		}
+		if !referSameObject(*infraRef, c.KCP.Spec.InfrastructureTemplate) {
+			machinesToUpgrade.Insert(machine)
+			continue
+		}
+	}
+
+	return machinesToUpgrade
+}
+
+// TODO: do we accept machines missing all 3 configs - init, join, and cluster?
+// TODO: if init config is there, should cluster config be non-nil?
+// createKcpKubeadmConfig returns a KubeadmConfigSpec that only has init/join/cluster configs that machine also has a non-nil value for.
+func createKcpKubeadmConfig(machineConfig bootstrapv1.KubeadmConfigSpec, kcpConfig bootstrapv1.KubeadmConfigSpec) bootstrapv1.KubeadmConfigSpec {
+	if machineConfig.InitConfiguration == nil {
+		kcpConfig.InitConfiguration = nil
+	}
+	if machineConfig.JoinConfiguration == nil {
+		kcpConfig.JoinConfiguration = nil
+	}
+	if machineConfig.ClusterConfiguration == nil {
+		kcpConfig.ClusterConfiguration = nil
+	}
+	return kcpConfig
+}
+
+// Returns true if a and b point to the same object.
+func referSameObject(a, b corev1.ObjectReference) bool {
+	aGV, err := schema.ParseGroupVersion(a.APIVersion)
+	if err != nil {
+		return false
+	}
+
+	bGV, err := schema.ParseGroupVersion(b.APIVersion)
+	if err != nil {
+		return false
+	}
+
+	return aGV.Group == bGV.Group && a.Kind == b.Kind && a.Name == b.Name && a.Namespace == b.Namespace
 }
