@@ -19,11 +19,10 @@ package e2e
 import (
 	"context"
 	"fmt"
-	"os"
-	"path/filepath"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"os"
+	"path/filepath"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/utils/pointer"
@@ -71,6 +70,10 @@ func QuickStartSpec(ctx context.Context, inputGetter func() QuickStartSpecInput)
 	It("Should create a workload cluster", func() {
 
 		By("Creating a workload cluster")
+
+		// Read CNI file and set CNI_RESOURCES environmental variable
+		Expect(input.E2EConfig.Variables).To(HaveKey(CNIPath2), "Missing %s variable in the config", CNIPath2)
+		clusterctl.SetCNIEnvVar(input.E2EConfig.GetVariable(CNIPath2), CNIResources2)
 
 		cluster, _, _ = clusterctl.ApplyClusterTemplateAndWait(ctx, clusterctl.ApplyClusterTemplateAndWaitInput{
 			ClusterProxy: input.BootstrapClusterProxy,
