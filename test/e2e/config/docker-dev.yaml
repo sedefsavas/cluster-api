@@ -111,6 +111,7 @@ variables:
   DOCKER_POD_CIDRS: "192.168.0.0/16"
   #CNI: "./data/cni/calico/calico.yaml"
   CNI: "./data/cni/kindnet/kindnet.yaml"
+  CNI2: "./data/cni/kindnet/kindnet2.yaml"
   EXP_CLUSTER_RESOURCE_SET: "true"
 
 intervals:

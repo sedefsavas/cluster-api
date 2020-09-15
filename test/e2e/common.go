@@ -36,6 +36,8 @@ const (
 	KubernetesVersion            = "KUBERNETES_VERSION"
 	CNIPath                      = "CNI"
 	CNIResources                 = "CNI_RESOURCES"
+	CNIPath2                      = "CNI2"
+	CNIResources2                 = "CNI_RESOURCES2"
 	KubernetesVersionUpgradeFrom = "KUBERNETES_VERSION_UPGRADE_FROM"
 	KubernetesVersionUpgradeTo   = "KUBERNETES_VERSION_UPGRADE_TO"
 	EtcdVersionUpgradeTo         = "ETCD_VERSION_UPGRADE_TO"
