@@ -18,6 +18,7 @@ package internal
 
 import (
 	"context"
+	"sigs.k8s.io/cluster-api/util"
 
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
@@ -38,7 +39,7 @@ type etcdClientFor interface {
 // This is a best effort check and nodes can become unhealthy after the check is complete. It is not a guarantee.
 // It's used a signal for if we should allow a target cluster to scale up, scale down or upgrade.
 // It returns a map of nodes checked along with an error for a given node.
-func (w *Workload) EtcdIsHealthy(ctx context.Context) (HealthCheckResult, error) {
+func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Machine) (HealthCheckResult, error) {
 	var knownClusterID uint64
 	var knownMemberIDSet etcdutil.UInt64Set
 
@@ -60,7 +61,7 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context) (HealthCheckResult, error)
 		// Check to see if the pod is ready
 		etcdPodKey := ctrlclient.ObjectKey{
 			Namespace: metav1.NamespaceSystem,
-			Name:      staticPodName("etcd", name),
+			Name:      util.StaticPodName("etcd", name),
 		}
 		pod := corev1.Pod{}
 		if err := w.Client.Get(ctx, etcdPodKey, &pod); err != nil {

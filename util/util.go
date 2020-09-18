@@ -711,3 +711,7 @@ func LowestNonZeroResult(i, j ctrl.Result) ctrl.Result {
 		return j
 	}
 }
+
+func StaticPodName(component, nodeName string) string {
+	return fmt.Sprintf("%s-%s", component, nodeName)
+}
