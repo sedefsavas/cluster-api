@@ -66,3 +66,24 @@ const (
 	// ScalingDownReason (Severity=Info) documents a KubeadmControlPlane that is decreasing the number of replicas.
 	ScalingDownReason = "ScalingDown"
 )
+
+const (
+	// EtcdClusterHealthy documents that overall etcd cluster's health.
+	EtcdClusterHealthy clusterv1.ConditionType = "EtcdClusterHealthy"
+
+	// EtcdUnknownMemberReason (Severity=Warning) documents that if there exist any node in etcd member list that cannot be associated with KCP machines.
+	EtcdUnknownMemberReason = "EtcdUnknownMember"
+
+	// EtcdAlarmExistReason (Severity=Warning) documents that if there exist any alarms in etcd.
+	EtcdAlarmExistReason = "EtcdAlarmExist"
+
+	// EtcdEndpointsStatusErroredReason documents that if any of the etcd endpoints status has errors.
+	EtcdEndpointsStatusErroredReason = "EtcdEndpointsStatusErrored"
+
+	// EtcdMemberListUnstableReason (Severity=Info) documents etcd members member list view differs from each other.
+	EtcdMemberListUnstableReason = "EtcdMemberListUnstable"
+
+	// EtcdMemberMismatchWithPodReason (Severity=Warning) documents if number of etcd pods does not match with etcd members.
+	EtcdMemberMismatchWithPodReason = "EtcdMemberMismatchWithPod"
+)
+

@@ -188,6 +188,7 @@ func (m *Management) healthCheck(ctx context.Context, check healthCheck, cluster
 	var errorList []error
 
 	// Make sure Cluster API is aware of all the nodes.
+	// TODO: This should only consider KCP owned machines. So, Management methods should either take owned machine or KCP as input.
 	machines, err := m.GetMachinesForCluster(ctx, clusterKey, machinefilters.ControlPlaneMachines(clusterKey.Name))
 	if err != nil {
 		return err

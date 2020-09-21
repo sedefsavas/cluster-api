@@ -18,14 +18,12 @@ package internal
 
 import (
 	"context"
-	"k8s.io/utils/pointer"
-	"sigs.k8s.io/cluster-api/util"
-
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	kerrors "k8s.io/apimachinery/pkg/util/errors"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd"
 	etcdutil "sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd/util"
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
@@ -51,41 +49,35 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 
 	expectedMembers := 0
 	response := make(map[string]error)
-	var owningMachine *clusterv1.Machine = nil
+	var owningMachine *clusterv1.Machine
+	owningMachine = nil
+	healthTracker := GetHealthTracker()
+	// Initial assumtion is that etcd cluster is healthy. If otherwise is observed below, it is set to false.
+	healthTracker.SetEtcdClusterConditionTrue()
+
 	for _, node := range controlPlaneNodes.Items {
 		name := node.Name
-		for _, m := range machines{
-			if m.Spec.ProviderID == pointer.StringPtr(node.Spec.ProviderID){
-				owningMachine = m
-				break
-			}
-		}
 		response[name] = nil
 		if node.Spec.ProviderID == "" {
 			response[name] = errors.New("empty provider ID")
 			continue
 		}
 
+		for _, m := range machines{
+			if *m.Spec.ProviderID == node.Spec.ProviderID{
+				owningMachine = m
+				break
+			}
+		}
 
 		// Check etcd pod's health
-		if err = checkPodStatus(w.Client, EtcdPodNamePrefix, node, owningMachine, clusterv1.MachineEtcdPodHealthyCondition); err != nil{
-			response[name] = errors.Wrap(err, "failed to get etcd pod")
-			continue
-		}
-
-		// Check to see if the pod is ready
-		etcdPodKey := ctrlclient.ObjectKey{
-			Namespace: metav1.NamespaceSystem,
-			Name:      util.StaticPodName("etcd", name),
-		}
-		pod := corev1.Pod{}
-		if err := w.Client.Get(ctx, etcdPodKey, &pod); err != nil {
-			response[name] = errors.Wrap(err, "failed to get etcd pod")
-			continue
-		}
-		if err := checkStaticPodReadyCondition(pod); err != nil {
+		isEtcdPodHealthy, _ := checkPodStatus(w.Client, EtcdPodNamePrefix, node, owningMachine, clusterv1.MachineEtcdPodHealthyCondition);
+		// This gives the same result with checkStaticPodReadyCondition , the only condition that EtcdPodHealth is that it is Ready.
+		// isEtcdPodHealthy is false, if Pod is not Ready or there is a client error.
+		if !isEtcdPodHealthy {
 			// Nothing wrong here, etcd on this node is just not running.
 			// If it's a true failure the healthcheck will fail since it won't have checked enough members.
+			response[name] = errors.Wrap(err, "etcd pod is not ready")
 			continue
 		}
 		// Only expect a member reports healthy if its pod is ready.
@@ -132,11 +124,22 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 		} else {
 			unknownMembers := memberIDSet.Difference(knownMemberIDSet)
 			if unknownMembers.Len() > 0 {
+				healthTracker.SetEtcdClusterConditionFalse(controlplanev1.EtcdMemberListUnstableReason)
 				response[name] = errors.Errorf("etcd member reports members IDs %v, but all previously seen etcd members reported member IDs %v", memberIDSet.UnsortedList(), knownMemberIDSet.UnsortedList())
 			}
 			continue
 		}
 	}
+
+	// Check etcd cluster alarms
+	etcdClient, err := w.etcdClientGenerator.forNodes(ctx, controlPlaneNodes.Items)
+	if err == nil {
+		alarmList, err := etcdClient.Alarms(ctx)
+		if len(alarmList) > 0 || err != nil{
+			healthTracker.SetEtcdClusterConditionFalse(controlplanev1.EtcdAlarmExistReason)
+		}
+	}
+	defer etcdClient.Close()
 
 	// TODO: ensure that each pod is owned by a node that we're managing. That would ensure there are no out-of-band etcd members
 
