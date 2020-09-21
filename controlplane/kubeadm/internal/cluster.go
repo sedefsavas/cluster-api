@@ -180,13 +180,20 @@ func (m *Management) getApiServerEtcdClientCert(ctx context.Context, clusterKey 
 	return tls.X509KeyPair(crtData, keyData)
 }
 
-type healthCheck func(context.Context) (HealthCheckResult, error)
+type healthCheck func(context.Context, []*clusterv1.Machine) (HealthCheckResult, error)
 
 // HealthCheck will run a generic health check function and report any errors discovered.
 // In addition to the health check, it also ensures there is a 1;1 match between nodes and machines.
 func (m *Management) healthCheck(ctx context.Context, check healthCheck, clusterKey client.ObjectKey) error {
 	var errorList []error
-	nodeChecks, err := check(ctx)
+
+	// Make sure Cluster API is aware of all the nodes.
+	machines, err := m.GetMachinesForCluster(ctx, clusterKey, machinefilters.ControlPlaneMachines(clusterKey.Name))
+	if err != nil {
+		return err
+	}
+
+	nodeChecks, err := check(ctx, machines.unsortedList())
 	if err != nil {
 		errorList = append(errorList, err)
 	}
@@ -197,12 +204,6 @@ func (m *Management) healthCheck(ctx context.Context, check healthCheck, cluster
 	}
 	if len(errorList) != 0 {
 		return kerrors.NewAggregate(errorList)
-	}
-
-	// Make sure Cluster API is aware of all the nodes.
-	machines, err := m.GetMachinesForCluster(ctx, clusterKey, machinefilters.ControlPlaneMachines(clusterKey.Name))
-	if err != nil {
-		return err
 	}
 
 	// This check ensures there is a 1 to 1 correspondence of nodes and machines.

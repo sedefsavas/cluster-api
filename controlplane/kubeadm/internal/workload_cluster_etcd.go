@@ -18,6 +18,8 @@ package internal
 
 import (
 	"context"
+	"k8s.io/utils/pointer"
+	"sigs.k8s.io/cluster-api/util"
 
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
@@ -38,7 +40,7 @@ type etcdClientFor interface {
 // This is a best effort check and nodes can become unhealthy after the check is complete. It is not a guarantee.
 // It's used a signal for if we should allow a target cluster to scale up, scale down or upgrade.
 // It returns a map of nodes checked along with an error for a given node.
-func (w *Workload) EtcdIsHealthy(ctx context.Context) (HealthCheckResult, error) {
+func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Machine) (HealthCheckResult, error) {
 	var knownClusterID uint64
 	var knownMemberIDSet etcdutil.UInt64Set
 
@@ -49,18 +51,32 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context) (HealthCheckResult, error)
 
 	expectedMembers := 0
 	response := make(map[string]error)
+	var owningMachine *clusterv1.Machine = nil
 	for _, node := range controlPlaneNodes.Items {
 		name := node.Name
+		for _, m := range machines{
+			if m.Spec.ProviderID == pointer.StringPtr(node.Spec.ProviderID){
+				owningMachine = m
+				break
+			}
+		}
 		response[name] = nil
 		if node.Spec.ProviderID == "" {
 			response[name] = errors.New("empty provider ID")
 			continue
 		}
 
+
+		// Check etcd pod's health
+		if err = checkPodStatus(w.Client, EtcdPodNamePrefix, node, owningMachine, clusterv1.MachineEtcdPodHealthyCondition); err != nil{
+			response[name] = errors.Wrap(err, "failed to get etcd pod")
+			continue
+		}
+
 		// Check to see if the pod is ready
 		etcdPodKey := ctrlclient.ObjectKey{
 			Namespace: metav1.NamespaceSystem,
-			Name:      staticPodName("etcd", name),
+			Name:      util.StaticPodName("etcd", name),
 		}
 		pod := corev1.Pod{}
 		if err := w.Client.Get(ctx, etcdPodKey, &pod); err != nil {
