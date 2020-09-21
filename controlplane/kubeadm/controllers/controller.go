@@ -213,6 +213,9 @@ func (r *KubeadmControlPlaneReconciler) Reconcile(req ctrl.Request) (res ctrl.Re
 }
 
 func patchKubeadmControlPlane(ctx context.Context, patchHelper *patch.Helper, kcp *controlplanev1.KubeadmControlPlane) error {
+
+	internal.SetKCPConditions(kcp)
+
 	// Always update the readyCondition by summarizing the state of other conditions.
 	conditions.SetSummary(kcp,
 		conditions.WithConditions(
@@ -221,6 +224,7 @@ func patchKubeadmControlPlane(ctx context.Context, patchHelper *patch.Helper, kc
 			controlplanev1.MachinesReadyCondition,
 			controlplanev1.AvailableCondition,
 			controlplanev1.CertificatesAvailableCondition,
+			controlplanev1.EtcdClusterHealthy,
 		),
 	)
 
@@ -457,10 +461,6 @@ func patchControlPlaneMachine(ctx context.Context, patchHelper *patch.Helper, ma
 	// Patch the object, ignoring conflicts on the conditions owned by this controller.
 	//return patchHelper.Patch(ctx, machine)
 
-	if machine.Name == "sedef-control-plane-swqkj"{
-		fmt.Printf("xx patch machibe %v\n", *machine)
-
-	}
 	return patchHelper.Patch(
 		ctx,
 		machine,

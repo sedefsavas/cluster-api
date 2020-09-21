@@ -142,19 +142,19 @@ func (w *Workload) ControlPlaneIsHealthy(ctx context.Context, machines []*cluste
 		}
 
 		// Check kube-api-server health
-		if _, err = checkPodStatus(w.Client, KubeAPIServerPodNamePrefix, node, owningMachine, clusterv1.MachineKubeAPIServerHealthyCondition); err != nil {
+		if _, err = checkPodStatusAndUpdateHealthTracker(w.Client, KubeAPIServerPodNamePrefix, node, owningMachine, clusterv1.MachineKubeAPIServerHealthyCondition); err != nil {
 			response[name] = err
 			continue
 		}
 
 		// Check kube-controller-manager health
-		if _, err = checkPodStatus(w.Client, KubeControllerManagerPodNamePrefix, node, owningMachine, clusterv1.MachineKubeControllerManagerHealthyCondition); err != nil {
+		if _, err = checkPodStatusAndUpdateHealthTracker(w.Client, KubeControllerManagerPodNamePrefix, node, owningMachine, clusterv1.MachineKubeControllerManagerHealthyCondition); err != nil {
 			response[name] = err
 			continue
 		}
 
 		// Check kube-scheduler health
-		if _, err = checkPodStatus(w.Client, KubeSchedulerHealthyPodNamePrefix, node, owningMachine, clusterv1.MachineKubeSchedulerHealthyCondition); err != nil {
+		if _, err = checkPodStatusAndUpdateHealthTracker(w.Client, KubeSchedulerHealthyPodNamePrefix, node, owningMachine, clusterv1.MachineKubeSchedulerHealthyCondition); err != nil {
 			response[name] = err
 			continue
 		}
@@ -163,13 +163,13 @@ func (w *Workload) ControlPlaneIsHealthy(ctx context.Context, machines []*cluste
 	return response, nil
 }
 
-// checkPodStatus returns true, only if the Pod is in Running/Ready condition.
+// checkPodStatusAndUpdateHealthTracker returns true, only if the Pod is in Running/Ready condition.
 // There is a slight difference between returning false and error:
-// checkPodStatus returns false, if Pod is not in Ready Condition or there is a client error.
-// checkPodStatus returns error only when it is obvious that the Pod is not in Running/Ready state, so it does not return error on transient client errors.
+// checkPodStatusAndUpdateHealthTracker returns false, if Pod is not in Ready Condition or there is a client error.
+// checkPodStatusAndUpdateHealthTracker returns error only when it is obvious that the Pod is not in Running/Ready state, so it does not return error on transient client errors.
 // For instance, returning (false, nil) means Pod is not ready but is not in error state as well,
 // returning (false, err) means Pod is not ready and it is in error state as well.
-func checkPodStatus(c ctrlclient.Reader, staticPodPrefix string, node corev1.Node, owningMachine *clusterv1.Machine, condition clusterv1.ConditionType) (bool, error) {
+func checkPodStatusAndUpdateHealthTracker(c ctrlclient.Reader, staticPodPrefix string, node corev1.Node, owningMachine *clusterv1.Machine, condition clusterv1.ConditionType) (bool, error) {
 	staticPodKey := ctrlclient.ObjectKey{
 		Namespace: metav1.NamespaceSystem,
 		Name:      staticPodName(staticPodPrefix, node.Name),
@@ -181,7 +181,7 @@ func checkPodStatus(c ctrlclient.Reader, staticPodPrefix string, node corev1.Nod
 		// If there is an error getting the Pod, do not set any conditions.
 		if apierrors.IsNotFound(err) {
 			if owningMachine != nil {
-				healthTracker.SetPodConditionFalse(owningMachine.Name, condition, clusterv1.PodMissingReason)
+				healthTracker.SetMachineConditionFalse(owningMachine.Name, condition, clusterv1.PodMissingReason)
 			}
 			return false, errors.Errorf("static pod %s is missing", staticPodPrefix)
 		}
@@ -193,7 +193,7 @@ func checkPodStatus(c ctrlclient.Reader, staticPodPrefix string, node corev1.Nod
 
 		if checkStaticPodFailedPhase(staticPod) {
 			if owningMachine != nil {
-				healthTracker.SetPodConditionFalse(owningMachine.Name, condition, clusterv1.PodFailedReason)
+				healthTracker.SetMachineConditionFalse(owningMachine.Name, condition, clusterv1.PodFailedReason)
 			}
 			return false, errors.Errorf("static pod %s is failed", staticPodPrefix)
 		}
@@ -201,7 +201,7 @@ func checkPodStatus(c ctrlclient.Reader, staticPodPrefix string, node corev1.Nod
 		// Check if the Pod is in Pending state
 		if checkStaticPodProvisioning(staticPod) {
 			if owningMachine != nil {
-				healthTracker.SetPodConditionFalse(owningMachine.Name, condition, clusterv1.PodProvisioningReason)
+				healthTracker.SetMachineConditionFalse(owningMachine.Name, condition, clusterv1.PodProvisioningReason)
 			}
 			// This is not an error case.
 			return false, nil
@@ -210,7 +210,7 @@ func checkPodStatus(c ctrlclient.Reader, staticPodPrefix string, node corev1.Nod
 
 		if podProvisioningState != "" {
 			if owningMachine != nil {
-				healthTracker.SetPodConditionFalse(owningMachine.Name, condition, clusterv1.PodProvisioningFailedReason, podProvisioningState)
+				healthTracker.SetMachineConditionFalse(owningMachine.Name, condition, clusterv1.PodProvisioningFailedReason, podProvisioningState)
 			}
 			return false, errors.Errorf("static pod %s is provisioned but still is not ready", staticPodPrefix)
 		}
@@ -218,7 +218,7 @@ func checkPodStatus(c ctrlclient.Reader, staticPodPrefix string, node corev1.Nod
 	}
 
 	if owningMachine != nil {
-		healthTracker.SetPodConditionTrue(owningMachine.Name, condition)
+		healthTracker.SetMachineConditionTrue(owningMachine.Name, condition)
 	}
 	return true, nil
 }

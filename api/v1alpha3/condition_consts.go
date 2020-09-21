@@ -188,6 +188,12 @@ const (
 	// If not true, can use Pod-related Condition Reasons.
 	MachineEtcdMemberHealthyCondition ConditionType = "EtcdMemberHealthy"
 
+	// EtcdMemberHasAlarmsReason (Severity=Warning) documents an etcd member of a Machine has alarms.
+	EtcdMemberHasAlarmsReason = "EtcdMemberHasAlarms"
+
+	// EtcdClientRelatedFailureReason (Severity=Warning) documents if either creating etcd client fails or using the created etcd client fails.
+	EtcdClientRelatedFailureReason = "EtcdClientRelatedFailure"
+
 	// NodeEtcdMissingFromMemberListReason  (Severity=Warning) documents the machine's corresponding node has a ready etcd pod but not part of etcd members yet.
 	NodeEtcdMissingFromMemberListReason = "NodeEtcdMissingFromMemberList"
 )
