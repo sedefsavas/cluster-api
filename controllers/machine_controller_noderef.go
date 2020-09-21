@@ -26,6 +26,7 @@ import (
 	"sigs.k8s.io/cluster-api/controllers/noderefutil"
 	capierrors "sigs.k8s.io/cluster-api/errors"
 	"sigs.k8s.io/cluster-api/util"
+	"sigs.k8s.io/cluster-api/util/conditions"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -33,15 +34,10 @@ var (
 	ErrNodeNotFound = errors.New("cannot find node with matching ProviderID")
 )
 
-func (r *MachineReconciler) reconcileNodeRef(ctx context.Context, cluster *clusterv1.Cluster, machine *clusterv1.Machine) error {
+func (r *MachineReconciler) reconcileNode(ctx context.Context, cluster *clusterv1.Cluster, machine *clusterv1.Machine) error {
 	logger := r.Log.WithValues("machine", machine.Name, "namespace", machine.Namespace)
 	// Check that the Machine hasn't been deleted or in the process.
 	if !machine.DeletionTimestamp.IsZero() {
-		return nil
-	}
-
-	// Check that the Machine doesn't already have a NodeRef.
-	if machine.Status.NodeRef != nil {
 		return nil
 	}
 
@@ -63,26 +59,65 @@ func (r *MachineReconciler) reconcileNodeRef(ctx context.Context, cluster *clust
 		return err
 	}
 
-	// Get the Node reference.
-	nodeRef, err := r.getNodeReference(remoteClient, providerID)
+	// Even if Status.NodeRef exists, continue to do the following checks to make sure Node is healthy
+	node, err := r.getNode(remoteClient, providerID)
 	if err != nil {
 		if err == ErrNodeNotFound {
+			// While a NodeRef is set in the status, getting ErrNodeNotFound error means the node is deleted.
+			// If Status.NodeRef is not set before, node still can be in the provisioning state.
+			if machine.Status.NodeRef != nil {
+				conditions.MarkFalse(machine, clusterv1.MachineNodeHealthyCondition, clusterv1.NodeNotFoundReason, clusterv1.ConditionSeverityError, "")
+				return errors.Wrapf(&capierrors.RequeueAfterError{RequeueAfter: 20 * time.Second},
+					"failed to find the Node owned by Machine %q in namespace %q", machine.Name, machine.Namespace)
+			}
+
+			logger.Error(err, "Failed to assign NodeRef")
+			r.recorder.Event(machine, apicorev1.EventTypeWarning, "FailedSetNodeRef", err.Error())
 			return errors.Wrapf(&capierrors.RequeueAfterError{RequeueAfter: 20 * time.Second},
 				"cannot assign NodeRef to Machine %q in namespace %q, no matching Node", machine.Name, machine.Namespace)
 		}
-		logger.Error(err, "Failed to assign NodeRef")
-		r.recorder.Event(machine, apicorev1.EventTypeWarning, "FailedSetNodeRef", err.Error())
+		// This may be a transient client error and may not mean there is no matching Node.
 		return err
 	}
 
 	// Set the Machine NodeRef.
-	machine.Status.NodeRef = nodeRef
-	logger.Info("Set Machine's NodeRef", "noderef", machine.Status.NodeRef.Name)
-	r.recorder.Event(machine, apicorev1.EventTypeNormal, "SuccessfulSetNodeRef", machine.Status.NodeRef.Name)
+	if machine.Status.NodeRef == nil {
+		machine.Status.NodeRef = &apicorev1.ObjectReference{
+			Kind:       node.Kind,
+			APIVersion: node.APIVersion,
+			Name:       node.Name,
+			UID:        node.UID,
+		}
+		logger.Info("Set Machine's NodeRef", "noderef", machine.Status.NodeRef.Name)
+		r.recorder.Event(machine, apicorev1.EventTypeNormal, "SuccessfulSetNodeRef", machine.Status.NodeRef.Name)
+		conditions.MarkFalse(machine, clusterv1.MachineNodeHealthyCondition, clusterv1.NodeProvisioningReason, clusterv1.ConditionSeverityWarning, "")
+		return nil
+	}
+
+	// Do the remaining node health checks, then set the node health to true if all checks pass.
+	if checkNodeConditions(node) == false {
+		conditions.MarkFalse(machine, clusterv1.MachineNodeHealthyCondition, clusterv1.NodeConditionsFailedReason, clusterv1.ConditionSeverityWarning, "")
+		return nil
+	}
+	conditions.MarkTrue(machine, clusterv1.MachineNodeHealthyCondition)
+
 	return nil
 }
 
-func (r *MachineReconciler) getNodeReference(c client.Reader, providerID *noderefutil.ProviderID) (*apicorev1.ObjectReference, error) {
+// Return true if all Node Conditions are false other than "Ready" condition.
+// "Ready" being false does not mean there is a problem with the Node, may be missing CNI.
+func checkNodeConditions(node *apicorev1.Node) bool {
+	for _, condition := range node.Status.Conditions {
+		if condition.Type != apicorev1.NodeReady {
+			if condition.Status == apicorev1.ConditionTrue {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func (r *MachineReconciler) getNode(c client.Reader, providerID *noderefutil.ProviderID) (*apicorev1.Node, error) {
 	logger := r.Log.WithValues("providerID", providerID)
 
 	nodeList := apicorev1.NodeList{}
@@ -99,12 +134,7 @@ func (r *MachineReconciler) getNodeReference(c client.Reader, providerID *nodere
 			}
 
 			if providerID.Equals(nodeProviderID) {
-				return &apicorev1.ObjectReference{
-					Kind:       node.Kind,
-					APIVersion: node.APIVersion,
-					Name:       node.Name,
-					UID:        node.UID,
-				}, nil
+				return &node, nil
 			}
 		}
 
@@ -112,6 +142,5 @@ func (r *MachineReconciler) getNodeReference(c client.Reader, providerID *nodere
 			break
 		}
 	}
-
 	return nil, ErrNodeNotFound
 }
