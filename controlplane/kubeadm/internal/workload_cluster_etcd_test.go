@@ -75,7 +75,7 @@ func TestWorkload_EtcdIsHealthy(t *testing.T) {
 		},
 	}
 	ctx := context.Background()
-	health, err := workload.EtcdIsHealthy(ctx)
+	health, err := workload.EtcdIsHealthy(ctx, nil)
 	g.Expect(err).NotTo(HaveOccurred())
 
 	for _, err := range health {

@@ -109,7 +109,8 @@ const (
 	// MachineHasFailureReason is the reason used when a machine has either a FailureReason or a FailureMessage set on its status.
 	MachineHasFailureReason = "MachineHasFailure"
 
-	// NodeNotFoundReason is the reason used when a machine's node has previously been observed but is now gone.
+	// NodeNotFoundReason (Severity=Error) documents a machine's node has previously been observed but is now gone.
+	// NB. provisioned --> NodeRef != ""
 	NodeNotFoundReason = "NodeNotFound"
 
 	// NodeStartupTimeoutReason is the reason used when a machine's node does not appear within the specified timeout.
@@ -120,10 +121,65 @@ const (
 )
 
 const (
-	// MachineOwnerRemediatedCondition is set on machines that have failed a healthcheck by the MachineHealthCheck controller.
+	// MachineOwnerRemediatedCondition is set on machines that have failed a healthcheck by the Machine's owner controller.
 	// MachineOwnerRemediatedCondition is set to False after a health check fails, but should be changed to True by the owning controller after remediation succeeds.
 	MachineOwnerRemediatedCondition ConditionType = "OwnerRemediated"
 
 	// WaitingForRemediationReason is the reason used when a machine fails a health check and remediation is needed.
 	WaitingForRemediationReason = "WaitingForRemediation"
+)
+
+// Common Pod-related Condition Reasons used by Pod-related Conditions such as MachineKubeAPIServerHealthyCondition etc.
+const (
+	// PodProvisioningReason (Severity=Info) documents a pod waiting  to be provisioned i.e., Pod is in "Pending" phase and
+	// PodScheduled and Initialized conditions are not yet set to True.
+	PodProvisioningReason = "PodProvisioning"
+
+	// PodProvisioningFailedReason (Severity=Warning) documents a pod failed during provisioning i.e., Pod is in "Pending" phase and
+	// PodScheduled and Initialized conditions are set to True,
+	// but ContainersReady or Ready condition is false (i.e., at least one of the containers are in waiting state(e.g CrashLoopbackOff, ImagePullBackOff)
+	PodProvisioningFailedReason = "PodProvisioningFailed"
+
+	// PodMissingReason (Severity=Warning) documents a pod does not exist.
+	PodMissingReason = "PodMissing"
+
+	// PodFailedReason (Severity=Error) documents a pod's at least one container has terminated in a failure
+	// and hence Pod is in "Failed" phase.
+	PodFailedReason = "PodFailed"
+)
+
+// Conditions that are only for control-plane machines. KubeadmControlPlane is the owner of these conditions.
+
+const (
+	// MachineKubeAPIServerHealthyCondition reports a machine's kube-apiserver's health status.
+	// Set to true if kube-apiserver pod is in "Running" phase, otherwise uses Pod-related Condition Reasons.
+	MachineKubeAPIServerHealthyCondition ConditionType = "KubeAPIServerHealthy"
+
+	// MachineKubeControllerManagerHealthyCondition reports a machine's kube-controller-manager's health status.
+	// Set to true if kube-controller-manager pod is in "Running" phase, otherwise uses Pod-related Condition Reasons.
+	MachineKubeControllerManagerHealthyCondition ConditionType = "KubeControllerManagerHealthy"
+
+	// MachineKubeSchedulerHealthyCondition reports a machine's kube-scheduler's health status.
+	// Set to true if kube-scheduler pod is in "Running" phase, otherwise uses Pod-related Condition Reasons.
+	MachineKubeSchedulerHealthyCondition ConditionType = "KubeSchedulerHealthy"
+
+	// MachineEtcdPodHealthyCondition reports a machine's etcd pod's health status.
+	// Set to true if etcd pod is in "Running" phase, otherwise uses Pod-related Condition Reasons.
+	MachineEtcdPodHealthyCondition ConditionType = "EtcdPodHealthy"
+)
+
+const (
+	// MachineEtcdMemberHealthyCondition documents if the machine has an healthy etcd member.
+	// If not true, Pod-related Condition Reasons can be used as reasons.
+	MachineEtcdMemberHealthyCondition ConditionType = "EtcdMemberHealthy"
+
+	// EtcdMemberHasAlarmsReason (Severity=Warning) documents a Machine's etcd member has alarms.
+	EtcdMemberHasAlarmsReason = "EtcdMemberHasAlarms"
+
+	// EtcdClientRelatedFailureReason (Severity=Warning) documents client-related failures,
+	// either creating etcd client fails or using the created etcd client to perform some operations fails.
+	EtcdClientRelatedFailureReason = "EtcdClientRelatedFailure"
+
+	// NodeEtcdMissingFromMemberListReason (Severity=Warning) documents the machine's corresponding node has a ready etcd pod but not part of etcd members yet.
+	NodeEtcdMissingFromMemberListReason = "NodeEtcdMissingFromMemberList"
 )

@@ -66,3 +66,23 @@ const (
 	// ScalingDownReason (Severity=Info) documents a KubeadmControlPlane that is decreasing the number of replicas.
 	ScalingDownReason = "ScalingDown"
 )
+
+const (
+	// EtcdClusterHealthy documents the overall etcd cluster's health for the KCP-managed etcd.
+	EtcdClusterHealthy clusterv1.ConditionType = "EtcdClusterHealthy"
+
+	// EtcdUnknownMemberReason (Severity=Warning) documents that if there exist any node in etcd member list that cannot be associated with KCP machines.
+	EtcdUnknownMemberReason = "EtcdUnknownMember"
+
+	// EtcdAlarmExistReason (Severity=Warning) documents that if etcd cluster has alarms armed.
+	EtcdAlarmExistReason = "EtcdAlarmExist"
+
+	// EtcdMemberListUnstableReason (Severity=Info) documents if all etcd members do not have the same member-list view.
+	EtcdMemberListUnstableReason = "EtcdMemberListUnstable"
+
+	// EtcdMemberNumMismatchWithPodNumReason (Severity=Warning) documents if number of etcd pods does not match with etcd members.
+	// This case may occur when there is a failing pod but it's been removed from the member list.
+	// TODO: During scale down, etcd quorum may be preserved (cluster remains healthy) but there may be a mismatch between number of pods and members,
+	// TODO: while pod is being deleted and removed from the etcd list. This case should be differentiated from this one.
+	EtcdMemberNumMismatchWithPodNumReason = "EtcdMemberMismatchWithPod"
+)

@@ -119,7 +119,7 @@ func TestControlPlaneIsHealthy(t *testing.T) {
 		},
 	}
 
-	health, err := workloadCluster.ControlPlaneIsHealthy(context.Background())
+	health, err := workloadCluster.ControlPlaneIsHealthy(context.Background(), nil)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(health).NotTo(HaveLen(0))
 	g.Expect(health).To(HaveLen(len(nodeListForTestControlPlaneIsHealthy().Items)))
@@ -476,7 +476,7 @@ func TestManagementCluster_healthCheck_NoError(t *testing.T) {
 					controlPlaneMachine("three"),
 				},
 			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
+			check: func(ctx context.Context, machines []*clusterv1.Machine) (HealthCheckResult, error) {
 				return HealthCheckResult{
 					"one":   nil,
 					"two":   nil,
@@ -494,7 +494,7 @@ func TestManagementCluster_healthCheck_NoError(t *testing.T) {
 			m := &Management{
 				Client: &fakeClient{list: tt.machineList},
 			}
-			g.Expect(m.healthCheck(ctx, tt.check, tt.clusterKey)).To(Succeed())
+			g.Expect(m.healthCheck(ctx, nil, tt.check, tt.clusterKey)).To(Succeed())
 		})
 	}
 }
@@ -519,7 +519,7 @@ func TestManagementCluster_healthCheck_Errors(t *testing.T) {
 					controlPlaneMachine("three"),
 				},
 			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
+			check: func(ctx context.Context, machines []*clusterv1.Machine) (HealthCheckResult, error) {
 				return HealthCheckResult{
 					"one": nil,
 				}, nil
@@ -534,7 +534,7 @@ func TestManagementCluster_healthCheck_Errors(t *testing.T) {
 					controlPlaneMachine("three"),
 				},
 			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
+			check: func(ctx context.Context, machines []*clusterv1.Machine) (HealthCheckResult, error) {
 				return HealthCheckResult{
 					"one":   nil,
 					"two":   errors.New("two"),
@@ -552,7 +552,7 @@ func TestManagementCluster_healthCheck_Errors(t *testing.T) {
 					controlPlaneMachine("three"),
 				},
 			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
+			check: func(ctx context.Context, machines []*clusterv1.Machine) (HealthCheckResult, error) {
 				return HealthCheckResult{
 					"one":   nil,
 					"two":   errors.New("two"),
@@ -568,7 +568,7 @@ func TestManagementCluster_healthCheck_Errors(t *testing.T) {
 					controlPlaneMachine("one"),
 				},
 			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
+			check: func(ctx context.Context, machines []*clusterv1.Machine) (HealthCheckResult, error) {
 				return HealthCheckResult{
 					"one":   nil,
 					"two":   nil,
@@ -585,7 +585,7 @@ func TestManagementCluster_healthCheck_Errors(t *testing.T) {
 					nilNodeRef(controlPlaneMachine("three")),
 				},
 			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
+			check: func(ctx context.Context, machines []*clusterv1.Machine) (HealthCheckResult, error) {
 				return HealthCheckResult{
 					"one":   nil,
 					"two":   nil,
@@ -604,7 +604,7 @@ func TestManagementCluster_healthCheck_Errors(t *testing.T) {
 			m := &Management{
 				Client: &fakeClient{list: tt.machineList},
 			}
-			err := m.healthCheck(ctx, tt.check, clusterKey)
+			err := m.healthCheck(ctx, nil, tt.check, clusterKey)
 			g.Expect(err).To(HaveOccurred())
 
 			for _, expectedError := range tt.expectedErrors {
