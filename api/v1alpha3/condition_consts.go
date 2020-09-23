@@ -126,7 +126,6 @@ const (
 )
 
 // Conditions and condition Reasons for the Machine's Node object
-
 const (
 	// MachineNodeHealthyCondition provides info about the operational state of the Kubernetes node hosted on the machine by summarizing  node conditions.
 	// If the conditions defined in a Kubernetes node (i.e., NodeReady, NodeMemoryPressure, NodeDiskPressure, NodePIDPressure, and NodeNetworkUnavailable) are in a healthy state, it will be set to True.
@@ -142,23 +141,4 @@ const (
 
 	// NodeConditionsFailedReason (Severity=Warning) documents a node is not in a healthy state due to the failed state of at least 1 Kubelet condition.
 	NodeConditionsFailedReason = "NodeConditionsFailed"
-)
-
-// Common Pod-related Condition Reasons used by Pod-related Conditions.
-const (
-	// PodProvisioningReason (Severity=Info) documents a pod waiting  to be provisioned i.e., Pod is in "Pending" phase and
-	// PodScheduled and Initialized conditions are not set to True yet.
-	PodProvisioningReason = "PodProvisioning"
-
-	// PodProvisioningReason (Severity=Warning) documents a pod failed during provisioning i.e., Pod is in "Pending" phase and
-	// PodScheduled and Initialized conditions are set to True,
-	// but ContainersReady or Ready condition is false (i.e., at least one of the containers are in waiting state(e.g CrashLoopbackOff, ImagePullBackOff)
-	PodProvisioningFailedReason = "PodProvisioningFailed"
-
-	// PodMissingReason (Severity=Warning) documents a pod does not exist.
-	PodMissingReason = "PodMissing"
-
-	// PodFailedReason (Severity=Error) documents a pod's at least one container has terminated in a failure
-	// and hence Pod is in "Failed" phase.
-	PodFailedReason = "PodFailed"
 )

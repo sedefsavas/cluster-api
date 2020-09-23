@@ -67,16 +67,12 @@ func (r *MachineReconciler) reconcileNode(ctx context.Context, cluster *clusterv
 			// If Status.NodeRef is not set before, node still can be in the provisioning state.
 			if machine.Status.NodeRef != nil {
 				conditions.MarkFalse(machine, clusterv1.MachineNodeHealthyCondition, clusterv1.NodeNotFoundReason, clusterv1.ConditionSeverityError, "")
-				return errors.Wrapf(&capierrors.RequeueAfterError{RequeueAfter: 20 * time.Second},
-					"failed to find the Node owned by Machine %q in namespace %q", machine.Name, machine.Namespace)
 			}
-
-			logger.Error(err, "Failed to assign NodeRef")
-			r.recorder.Event(machine, apicorev1.EventTypeWarning, "FailedSetNodeRef", err.Error())
 			return errors.Wrapf(&capierrors.RequeueAfterError{RequeueAfter: 20 * time.Second},
 				"cannot assign NodeRef to Machine %q in namespace %q, no matching Node", machine.Name, machine.Namespace)
 		}
-		// This may be a transient client error and may not mean there is no matching Node.
+		logger.Error(err, "Failed to assign NodeRef")
+		r.recorder.Event(machine, apicorev1.EventTypeWarning, "FailedSetNodeRef", err.Error())
 		return err
 	}
 
@@ -95,7 +91,7 @@ func (r *MachineReconciler) reconcileNode(ctx context.Context, cluster *clusterv
 	}
 
 	// Do the remaining node health checks, then set the node health to true if all checks pass.
-	if checkNodeConditions(node) == false {
+	if !checkNodeConditions(node) {
 		conditions.MarkFalse(machine, clusterv1.MachineNodeHealthyCondition, clusterv1.NodeConditionsFailedReason, clusterv1.ConditionSeverityWarning, "")
 		return nil
 	}
@@ -104,14 +100,21 @@ func (r *MachineReconciler) reconcileNode(ctx context.Context, cluster *clusterv
 	return nil
 }
 
-// Return true if all Node Conditions are false other than "Ready" condition.
-// "Ready" being false does not mean there is a problem with the Node, may be missing CNI.
+// checkNodeConditions checks if a Node is healthy and does not have any semantically negative Conditions.
+// Returns true if NodeMemoryPressure, NodeDiskPressure, or NodePIDPressure Conditions are false or Ready Condition is true.
 func checkNodeConditions(node *apicorev1.Node) bool {
 	for _, condition := range node.Status.Conditions {
-		if condition.Type != apicorev1.NodeReady {
-			if condition.Status == apicorev1.ConditionTrue {
-				return false
-			}
+		if condition.Type == apicorev1.NodeMemoryPressure && condition.Status == apicorev1.ConditionTrue {
+			return false
+		}
+		if condition.Type == apicorev1.NodeDiskPressure && condition.Status == apicorev1.ConditionTrue {
+			return false
+		}
+		if condition.Type == apicorev1.NodePIDPressure && condition.Status == apicorev1.ConditionTrue {
+			return false
+		}
+		if condition.Type == apicorev1.NodeReady && condition.Status == apicorev1.ConditionFalse {
+			return false
 		}
 	}
 	return true
