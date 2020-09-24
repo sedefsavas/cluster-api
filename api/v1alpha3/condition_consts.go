@@ -176,6 +176,7 @@ const (
 	// EtcdMemberHasAlarmsReason (Severity=Warning) documents a Machine's etcd member has alarms.
 	EtcdMemberHasAlarmsReason = "EtcdMemberHasAlarms"
 
+	// warning, should not surface. Unknown -- generic failure better at this point.
 	// EtcdClientRelatedFailureReason (Severity=Warning) documents client-related failures,
 	// either creating etcd client fails or using the created etcd client to perform some operations fails.
 	EtcdClientRelatedFailureReason = "EtcdClientRelatedFailure"
@@ -183,3 +184,4 @@ const (
 	// NodeEtcdMissingFromMemberListReason (Severity=Warning) documents the machine's corresponding node has a ready etcd pod but not part of etcd members yet.
 	NodeEtcdMissingFromMemberListReason = "NodeEtcdMissingFromMemberList"
 )
+

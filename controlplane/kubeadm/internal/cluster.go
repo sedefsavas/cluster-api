@@ -21,6 +21,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"time"
 
 	"github.com/pkg/errors"
@@ -185,7 +186,7 @@ type healthCheck func(context.Context, []*clusterv1.Machine) (HealthCheckResult,
 // HealthCheck will run a generic health check function and report any errors discovered.
 // In addition to the health check, it also ensures there is a 1;1 match between nodes and machines.
 // To have access to the owned control-plane machines during health checks, need to pass owningMachines here.
-func (m *Management) healthCheck(ctx context.Context, kcpMachines []*clusterv1.Machine, check healthCheck, clusterKey client.ObjectKey) error {
+func (m *Management) healthCheck(ctx context.Context, controlPlane *controlplanev1.KubeadmControlPlane, check healthCheck, clusterKey client.ObjectKey) error {
 	var errorList []error
 
 	// Make sure Cluster API is aware of all the nodes.

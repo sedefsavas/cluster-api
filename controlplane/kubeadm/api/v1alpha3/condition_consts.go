@@ -67,6 +67,8 @@ const (
 	ScalingDownReason = "ScalingDown"
 )
 
+// Too many reasons. Add messages
+// Check if there is quorum!!
 const (
 	// EtcdClusterHealthy documents the overall etcd cluster's health for the KCP-managed etcd.
 	EtcdClusterHealthy clusterv1.ConditionType = "EtcdClusterHealthy"

@@ -26,6 +26,7 @@ import (
 	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd"
 	etcdutil "sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd/util"
+	"sigs.k8s.io/cluster-api/util/conditions"
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -38,7 +39,7 @@ type etcdClientFor interface {
 // This is a best effort check and nodes can become unhealthy after the check is complete. It is not a guarantee.
 // It's used a signal for if we should allow a target cluster to scale up, scale down or upgrade.
 // It returns a map of nodes checked along with an error for a given node.
-func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Machine) (HealthCheckResult, error) {
+func (w *Workload) EtcdIsHealthy(ctx context.Context, controlPlane *ControlPlane) (HealthCheckResult, error) {
 	var knownClusterID uint64
 	var knownMemberIDSet etcdutil.UInt64Set
 
@@ -51,9 +52,9 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 	response := make(map[string]error)
 	var owningMachine *clusterv1.Machine
 	owningMachine = nil
-	healthTracker := GetHealthTracker()
+
 	// Initial assumtion is that etcd cluster is healthy. If otherwise is observed below, it is set to false.
-	healthTracker.SetEtcdClusterConditionTrue()
+		controlPlane.KCPConditions[controlplanev1.EtcdClusterHealthy] =  conditions.TrueCondition(controlplanev1.EtcdClusterHealthy)
 
 	for _, node := range controlPlaneNodes.Items {
 		name := node.Name
@@ -63,11 +64,11 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 			continue
 		}
 
-		for _, m := range machines {
+		for _, m := range controlPlane.Machines {
 			if *m.Spec.ProviderID == node.Spec.ProviderID {
 				owningMachine = m
-				// Only set this condition if there is the node has an owning machine.
-				healthTracker.SetMachineConditionTrue(m.Name, clusterv1.MachineEtcdMemberHealthyCondition)
+				// Only set this condition if the node has an owning machine.
+				controlPlane.MachineConditions[owningMachine.Name][clusterv1.MachineEtcdMemberHealthyCondition] = conditions.TrueCondition(clusterv1.MachineEtcdMemberHealthyCondition)
 				break
 			}
 		}
@@ -75,7 +76,7 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 		// TODO: If owning machine is nil, should not continue. But this change break the logic below.
 
 		// Check etcd pod's health
-		isEtcdPodHealthy, _ := checkPodStatusAndUpdateHealthTracker(w.Client, EtcdPodNamePrefix, node, owningMachine, clusterv1.MachineEtcdPodHealthyCondition)
+		isEtcdPodHealthy, _ := w.checkPodStatusAndUpdateCondition(controlPlane, EtcdPodNamePrefix, node, owningMachine, clusterv1.MachineEtcdPodHealthyCondition)
 		// This gives the same result with checkStaticPodReadyCondition , the only condition that EtcdPodHealth is that it is Ready.
 		// isEtcdPodHealthy is false, if Pod is not Ready or there is a client error.
 		if !isEtcdPodHealthy {
@@ -93,7 +94,7 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 		etcdClient, err := w.etcdClientGenerator.forNodes(ctx, []corev1.Node{node})
 		if err != nil {
 			if owningMachine != nil {
-				healthTracker.SetMachineConditionFalse(owningMachine.Name, clusterv1.MachineEtcdMemberHealthyCondition, clusterv1.EtcdClientRelatedFailureReason)
+				controlPlane.MachineConditions[owningMachine.Name][clusterv1.MachineEtcdMemberHealthyCondition] = conditions.FalseCondition(clusterv1.MachineEtcdMemberHealthyCondition, clusterv1.EtcdClientRelatedFailureReason, ConditionReason(clusterv1.MachineEtcdMemberHealthyCondition).GetSeverity(), "")
 			}
 			response[name] = errors.Wrap(err, "failed to create etcd client")
 			continue
@@ -104,7 +105,7 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 		members, err := etcdClient.Members(ctx)
 		if err != nil {
 			if owningMachine != nil {
-				healthTracker.SetMachineConditionFalse(owningMachine.Name, clusterv1.MachineEtcdMemberHealthyCondition, clusterv1.EtcdClientRelatedFailureReason)
+				controlPlane.MachineConditions[owningMachine.Name][clusterv1.MachineEtcdMemberHealthyCondition] = conditions.FalseCondition(clusterv1.MachineEtcdMemberHealthyCondition, clusterv1.EtcdClientRelatedFailureReason, ConditionReason(clusterv1.MachineEtcdMemberHealthyCondition).GetSeverity(), "")
 			}
 			response[name] = errors.Wrap(err, "failed to list etcd members using etcd client")
 			continue
@@ -115,7 +116,7 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 		// Check that the member reports no alarms.
 		if len(member.Alarms) > 0 {
 			if owningMachine != nil {
-				healthTracker.SetMachineConditionFalse(owningMachine.Name, clusterv1.MachineEtcdMemberHealthyCondition, clusterv1.EtcdMemberHasAlarmsReason)
+				controlPlane.MachineConditions[owningMachine.Name][clusterv1.MachineEtcdMemberHealthyCondition] = conditions.FalseCondition(clusterv1.MachineEtcdMemberHealthyCondition, clusterv1.EtcdMemberHasAlarmsReason, ConditionReason(clusterv1.EtcdMemberHasAlarmsReason).GetSeverity(), "")
 			}
 			response[name] = errors.Errorf("etcd member reports alarms: %v", member.Alarms)
 			continue
@@ -137,7 +138,7 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 		} else {
 			unknownMembers := memberIDSet.Difference(knownMemberIDSet)
 			if unknownMembers.Len() > 0 {
-				healthTracker.SetEtcdClusterConditionFalse(controlplanev1.EtcdMemberListUnstableReason)
+				controlPlane.KCPConditions[controlplanev1.EtcdClusterHealthy] = conditions.FalseCondition(controlplanev1.EtcdClusterHealthy, controlplanev1.EtcdMemberListUnstableReason, ConditionReason(controlplanev1.EtcdMemberListUnstableReason).GetSeverity(), "")
 				response[name] = errors.Errorf("etcd member reports members IDs %v, but all previously seen etcd members reported member IDs %v", memberIDSet.UnsortedList(), knownMemberIDSet.UnsortedList())
 			}
 			continue
@@ -149,7 +150,7 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 	if err == nil {
 		alarmList, err := etcdClient.Alarms(ctx)
 		if len(alarmList) > 0 || err != nil {
-			healthTracker.SetEtcdClusterConditionFalse(controlplanev1.EtcdAlarmExistReason)
+			controlPlane.KCPConditions[controlplanev1.EtcdClusterHealthy] = conditions.FalseCondition(controlplanev1.EtcdClusterHealthy, controlplanev1.EtcdAlarmExistReason, ConditionReason(controlplanev1.EtcdAlarmExistReason).GetSeverity(), "")
 		}
 	}
 	defer etcdClient.Close()
@@ -159,7 +160,7 @@ func (w *Workload) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Mach
 	// Check that there is exactly one etcd member for every healthy pod.
 	// This allows us to handle the expected case where there is a failing pod but it's been removed from the member list.
 	if expectedMembers != len(knownMemberIDSet) {
-		healthTracker.SetEtcdClusterConditionFalse(controlplanev1.EtcdMemberNumMismatchWithPodNumReason)
+		controlPlane.KCPConditions[controlplanev1.EtcdClusterHealthy] = conditions.FalseCondition(controlplanev1.EtcdClusterHealthy, controlplanev1.EtcdMemberNumMismatchWithPodNumReason, ConditionReason(controlplanev1.EtcdMemberNumMismatchWithPodNumReason).GetSeverity(), "")
 		return response, errors.Errorf("there are %d healthy etcd pods, but %d etcd members", expectedMembers, len(knownMemberIDSet))
 	}
 

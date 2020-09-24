@@ -71,7 +71,7 @@ type ControlPlaneHealthTracker struct {
 	// KCP related conditions
 	EtcdClusterHealthy *clusterv1.Condition
 
-	// TODO: CHeck if protecting getter/setters is needed
+	// TODO: Check if protecting getter/setters is needed
 	lock sync.Mutex
 }
 
