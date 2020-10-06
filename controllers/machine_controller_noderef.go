@@ -42,7 +42,7 @@ func (r *MachineReconciler) reconcileNodeRef(ctx context.Context, cluster *clust
 		return ctrl.Result{}, nil
 	}
 
-	// Check that the Machine doesn't already have a NodeRef.
+	// Return early if machine already has a NodeRef.
 	if machine.Status.NodeRef != nil {
 		return ctrl.Result{}, nil
 	}
