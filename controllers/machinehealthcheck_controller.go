@@ -95,14 +95,6 @@ func (r *MachineHealthCheckReconciler) SetupWithManager(mgr ctrl.Manager, option
 		return errors.Wrap(err, "failed to add Watch for Clusters to controller manager")
 	}
 
-	// Add index to Machine for listing by Node reference
-	if err := mgr.GetCache().IndexField(&clusterv1.Machine{},
-		machineNodeNameIndex,
-		r.indexMachineByNodeName,
-	); err != nil {
-		return errors.Wrap(err, "error setting index fields")
-	}
-
 	r.controller = controller
 	r.recorder = mgr.GetEventRecorderFor("machinehealthcheck-controller")
 	r.scheme = mgr.GetScheme()
@@ -412,20 +404,6 @@ func (r *MachineHealthCheckReconciler) watchClusterNodes(ctx context.Context, cl
 	}); err != nil {
 		return err
 	}
-	return nil
-}
-
-func (r *MachineHealthCheckReconciler) indexMachineByNodeName(object runtime.Object) []string {
-	machine, ok := object.(*clusterv1.Machine)
-	if !ok {
-		r.Log.Error(errors.New("incorrect type"), "expected a Machine", "type", fmt.Sprintf("%T", object))
-		return nil
-	}
-
-	if machine.Status.NodeRef != nil {
-		return []string{machine.Status.NodeRef.Name}
-	}
-
 	return nil
 }
 

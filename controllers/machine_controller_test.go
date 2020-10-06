@@ -24,6 +24,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -34,12 +35,150 @@ import (
 	"sigs.k8s.io/cluster-api/test/helpers"
 	"sigs.k8s.io/cluster-api/util"
 	"sigs.k8s.io/cluster-api/util/conditions"
+	"sigs.k8s.io/cluster-api/util/patch"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
+
+func TestExternalWatch(t *testing.T) {
+	g := NewWithT(t)
+
+	infraMachine := &unstructured.Unstructured{
+		Object: map[string]interface{}{
+			"kind":       "InfrastructureMachine",
+			"apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+			"metadata": map[string]interface{}{
+				"name":      "infra-config1",
+				"namespace": "default",
+			},
+			"spec": map[string]interface{}{
+				"providerID": "test://id-1",
+			},
+			"status": map[string]interface{}{
+				"ready": true,
+				"addresses": []interface{}{
+					map[string]interface{}{
+						"type":    "InternalIP",
+						"address": "10.0.0.1",
+					},
+				},
+			},
+		},
+	}
+
+	defaultBootstrap := &unstructured.Unstructured{
+		Object: map[string]interface{}{
+			"kind":       "BootstrapMachine",
+			"apiVersion": "bootstrap.cluster.x-k8s.io/v1alpha3",
+			"metadata": map[string]interface{}{
+				"name":      "bootstrap-config-machinereconcile",
+				"namespace": "default",
+			},
+			"spec":   map[string]interface{}{},
+			"status": map[string]interface{}{},
+		},
+	}
+
+	testCluster := &clusterv1.Cluster{
+		ObjectMeta: metav1.ObjectMeta{
+			GenerateName: "machine-reconcile-",
+			Namespace:    "default",
+		},
+	}
+
+	node := &corev1.Node{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "node-1",
+			Namespace: "default",
+		},
+		Spec: corev1.NodeSpec{
+			ProviderID: "test:///id-1",
+		},
+	}
+
+	g.Expect(testEnv.Create(ctx, testCluster)).To(BeNil())
+	g.Expect(testEnv.CreateKubeconfigSecret(testCluster)).To(Succeed())
+	g.Expect(testEnv.Create(ctx, defaultBootstrap)).To(BeNil())
+	g.Expect(testEnv.Create(ctx, node)).To(Succeed())
+	g.Expect(testEnv.Create(ctx, infraMachine)).To(BeNil())
+
+	// Patch infra machine ready
+	patchHelper, err := patch.NewHelper(infraMachine, testEnv)
+	g.Expect(err).ShouldNot(HaveOccurred())
+	g.Expect(unstructured.SetNestedField(infraMachine.Object, true, "status", "ready")).NotTo(HaveOccurred())
+	g.Expect(patchHelper.Patch(ctx, infraMachine, patch.WithStatusObservedGeneration{})).ShouldNot(HaveOccurred())
+
+	// Patch bootstrap ready
+	patchHelper, err = patch.NewHelper(defaultBootstrap, testEnv)
+	g.Expect(err).ShouldNot(HaveOccurred())
+	g.Expect(unstructured.SetNestedField(defaultBootstrap.Object, true, "status", "ready")).NotTo(HaveOccurred())
+	g.Expect(unstructured.SetNestedField(defaultBootstrap.Object, "secretData", "status", "dataSecretName")).To(Succeed())
+	g.Expect(patchHelper.Patch(ctx, defaultBootstrap, patch.WithStatusObservedGeneration{})).ShouldNot(HaveOccurred())
+
+	machine := &clusterv1.Machine{
+		ObjectMeta: metav1.ObjectMeta{
+			GenerateName: "machine-created-",
+			Namespace:    "default",
+			Finalizers:   []string{clusterv1.MachineFinalizer},
+		},
+		Spec: clusterv1.MachineSpec{
+			ClusterName: testCluster.Name,
+			InfrastructureRef: corev1.ObjectReference{
+				APIVersion: "infrastructure.cluster.x-k8s.io/v1alpha3",
+				Kind:       "InfrastructureMachine",
+				Name:       "infra-config1",
+			},
+			Bootstrap: clusterv1.Bootstrap{
+				ConfigRef: &corev1.ObjectReference{
+					APIVersion: "bootstrap.cluster.x-k8s.io/v1alpha3",
+					Kind:       "BootstrapMachine",
+					Name:       "bootstrap-config-machinereconcile",
+				},
+			}},
+	}
+
+	g.Expect(testEnv.Create(ctx, machine)).To(BeNil())
+
+	// Wait for reconciliation to happen.
+	// Since infra and bootstrap objects are ready, a nodeRef will be assigned during nodereconcilation.
+	key := client.ObjectKey{Name: machine.Name, Namespace: machine.Namespace}
+	g.Eventually(func() bool {
+		if err := testEnv.Get(ctx, key, machine); err != nil {
+			return false
+		}
+		return machine.Status.NodeRef != nil
+	}, timeout).Should(BeTrue())
+
+	g.Consistently(func() bool { return machine.Status.NodeRef != nil }, 2*time.Second, 100*time.Millisecond).Should(BeTrue())
+
+	// Node deletion will trigger node watchers and a request will be added to the queue.
+	g.Expect(testEnv.Delete(ctx, node)).NotTo(HaveOccurred())
+	// TODO: Once conditions are in place, check if node deletion triggered a reconcile.
+
+	// Delete infra machine, external tracker will trigger reconcile
+	// and machine Status.FailureReason should be non-nil after reconcileInfrastructure
+	g.Expect(testEnv.Delete(ctx, infraMachine)).NotTo(HaveOccurred())
+	g.Eventually(func() bool {
+		if err := testEnv.Get(ctx, key, machine); err != nil {
+			return false
+		}
+		return machine.Status.FailureMessage != nil
+	}, timeout).Should(BeTrue())
+
+	g.Expect(testEnv.Delete(ctx, machine)).NotTo(HaveOccurred())
+	// Wait for Machine to be deleted.
+	g.Eventually(func() bool {
+		if err := testEnv.Get(ctx, key, machine); err != nil {
+			if apierrors.IsNotFound(err) {
+				return true
+			}
+		}
+		return false
+	}, timeout).Should(BeTrue())
+}
 
 func TestMachineFinalizer(t *testing.T) {
 	bootstrapData := "some valid data"
@@ -126,6 +265,48 @@ func TestMachineFinalizer(t *testing.T) {
 			} else {
 				g.Expect(actual.Finalizers).To(BeEmpty())
 			}
+		})
+	}
+}
+
+func TestIndexMachineByNodeName(t *testing.T) {
+	r := &MachineReconciler{
+		Log: log.Log,
+	}
+
+	testCases := []struct {
+		name     string
+		object   runtime.Object
+		expected []string
+	}{
+		{
+			name:     "when the machine has no NodeRef",
+			object:   &clusterv1.Machine{},
+			expected: []string{},
+		},
+		{
+			name: "when the machine has valid a NodeRef",
+			object: &clusterv1.Machine{
+				Status: clusterv1.MachineStatus{
+					NodeRef: &corev1.ObjectReference{
+						Name: "node1",
+					},
+				},
+			},
+			expected: []string{"node1"},
+		},
+		{
+			name:     "when the object passed is not a Machine",
+			object:   &corev1.Node{},
+			expected: []string{},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			g := NewWithT(t)
+			got := r.indexMachineByNodeName(tc.object)
+			g.Expect(got).To(ConsistOf(tc.expected))
 		})
 	}
 }

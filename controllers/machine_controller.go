@@ -74,6 +74,7 @@ type MachineReconciler struct {
 	Log     logr.Logger
 	Tracker *remote.ClusterCacheTracker
 
+	controller      controller.Controller
 	restConfig      *rest.Config
 	scheme          *runtime.Scheme
 	recorder        record.EventRecorder
@@ -95,6 +96,14 @@ func (r *MachineReconciler) SetupWithManager(mgr ctrl.Manager, options controlle
 		return errors.Wrap(err, "failed setting up with a controller manager")
 	}
 
+	// Add index to Machine for listing by Node reference
+	if err := mgr.GetCache().IndexField(&clusterv1.Machine{},
+		machineNodeNameIndex,
+		r.indexMachineByNodeName,
+	); err != nil {
+		return errors.Wrap(err, "error setting index fields")
+	}
+
 	err = controller.Watch(
 		&source.Kind{Type: &clusterv1.Cluster{}},
 		&handler.EnqueueRequestsFromMapFunc{
@@ -107,6 +116,7 @@ func (r *MachineReconciler) SetupWithManager(mgr ctrl.Manager, options controlle
 		return errors.Wrap(err, "failed to add Watch for Clusters to controller manager")
 	}
 
+	r.controller = controller
 	r.recorder = mgr.GetEventRecorderFor("machine-controller")
 	r.restConfig = mgr.GetConfig()
 	r.scheme = mgr.GetScheme()
@@ -237,6 +247,11 @@ func patchMachine(ctx context.Context, patchHelper *patch.Helper, machine *clust
 func (r *MachineReconciler) reconcile(ctx context.Context, cluster *clusterv1.Cluster, m *clusterv1.Machine) (ctrl.Result, error) {
 	logger := r.Log.WithValues("machine", m.Name, "namespace", m.Namespace)
 	logger = logger.WithValues("cluster", cluster.Name)
+
+	if err := r.watchClusterNodes(ctx, cluster); err != nil {
+		logger.Error(err, "error watching nodes on target cluster")
+		return ctrl.Result{}, err
+	}
 
 	// If the Machine belongs to a cluster, add an owner reference.
 	if r.shouldAdopt(m) {
@@ -612,6 +627,69 @@ func (r *MachineReconciler) reconcileDeleteExternal(ctx context.Context, m *clus
 
 func (r *MachineReconciler) shouldAdopt(m *clusterv1.Machine) bool {
 	return metav1.GetControllerOf(m) == nil && !util.HasOwner(m.OwnerReferences, clusterv1.GroupVersion.String(), []string{"Cluster"})
+}
+
+func (r *MachineReconciler) watchClusterNodes(ctx context.Context, cluster *clusterv1.Cluster) error {
+	// If there is no tracker, don't watch remote nodes
+	if r.Tracker == nil {
+		return nil
+	}
+
+	if err := r.Tracker.Watch(ctx, remote.WatchInput{
+		Name:         "machine-watchNodes",
+		Cluster:      util.ObjectKey(cluster),
+		Watcher:      r.controller,
+		Kind:         &corev1.Node{},
+		EventHandler: &handler.EnqueueRequestsFromMapFunc{ToRequests: handler.ToRequestsFunc(r.nodeToMachine)},
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *MachineReconciler) nodeToMachine(o handler.MapObject) []reconcile.Request {
+	node, ok := o.Object.(*corev1.Node)
+	if !ok {
+		r.Log.Error(errors.New("incorrect type"), "expected a Node", "type", fmt.Sprintf("%T", o))
+		return nil
+	}
+
+	machineList := &clusterv1.MachineList{}
+	if err := r.Client.List(
+		context.TODO(),
+		machineList,
+		client.MatchingFields{machineNodeNameIndex: node.Name},
+	); err != nil {
+		r.Log.Error(err, "failed getting machine list")
+		return nil
+	}
+
+	if len(machineList.Items) != 1 {
+		machineNames := make([]string, 0, len(machineList.Items))
+		for _, m := range machineList.Items {
+			machineNames = append(machineNames, m.Name)
+		}
+		r.Log.Error(errors.Errorf("expecting one machine for node %v, got %v", node.Name, machineNames), "Unable to retrieve machine from node", "node", node.GetName())
+		return nil
+	}
+	var requests []reconcile.Request
+	key := util.ObjectKey(&machineList.Items[0])
+	requests = append(requests, reconcile.Request{NamespacedName: key})
+	return requests
+}
+
+func (r *MachineReconciler) indexMachineByNodeName(object runtime.Object) []string {
+	machine, ok := object.(*clusterv1.Machine)
+	if !ok {
+		r.Log.Error(errors.New("incorrect type"), "expected a Machine", "type", fmt.Sprintf("%T", object))
+		return nil
+	}
+
+	if machine.Status.NodeRef != nil {
+		return []string{machine.Status.NodeRef.Name}
+	}
+
+	return nil
 }
 
 // writer implements io.Writer interface as a pass-through for klog.
