@@ -46,8 +46,6 @@ import (
 )
 
 const (
-	machineNodeNameIndex = "status.nodeRef.name"
-
 	// Event types
 
 	// EventRemediationRestricted is emitted in case when machine remediation
@@ -359,7 +357,7 @@ func (r *MachineHealthCheckReconciler) getMachineFromNode(ctx context.Context, n
 	if err := r.Client.List(
 		ctx,
 		machineList,
-		client.MatchingFields{machineNodeNameIndex: nodeName},
+		client.MatchingFields{clusterv1.MachineNodeNameIndex: nodeName},
 	); err != nil {
 		return nil, errors.Wrap(err, "failed getting machine list")
 	}

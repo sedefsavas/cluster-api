@@ -59,6 +59,8 @@ const (
 	MachineInternalIP  MachineAddressType = "InternalIP"
 	MachineExternalDNS MachineAddressType = "ExternalDNS"
 	MachineInternalDNS MachineAddressType = "InternalDNS"
+
+	MachineNodeNameIndex = "status.nodeRef.name"
 )
 
 // MachineAddress contains information for the node's address.
