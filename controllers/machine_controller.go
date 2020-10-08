@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -96,14 +97,6 @@ func (r *MachineReconciler) SetupWithManager(mgr ctrl.Manager, options controlle
 		return errors.Wrap(err, "failed setting up with a controller manager")
 	}
 
-	// Add index to Machine for listing by Node reference. This indexing is used in both MachineHealthCheck and Machine controllers.
-	if err := mgr.GetCache().IndexField(&clusterv1.Machine{},
-		clusterv1.MachineNodeNameIndex,
-		r.indexMachineByNodeName,
-	); err != nil {
-		return errors.Wrap(err, "error setting index fields")
-	}
-
 	err = controller.Watch(
 		&source.Kind{Type: &clusterv1.Cluster{}},
 		&handler.EnqueueRequestsFromMapFunc{
@@ -114,6 +107,14 @@ func (r *MachineReconciler) SetupWithManager(mgr ctrl.Manager, options controlle
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to add Watch for Clusters to controller manager")
+	}
+
+	// Add index to Machine for listing by Node reference. This indexing is used in both MachineHealthCheck and Machine controllers.
+	if err := mgr.GetCache().IndexField(&clusterv1.Machine{},
+		clusterv1.MachineNodeNameIndex,
+		r.indexMachineByNodeName,
+	); err != nil {
+		return errors.Wrap(err, "error setting index fields")
 	}
 
 	r.controller = controller
@@ -249,8 +250,11 @@ func (r *MachineReconciler) reconcile(ctx context.Context, cluster *clusterv1.Cl
 	logger = logger.WithValues("cluster", cluster.Name)
 
 	if err := r.watchClusterNodes(ctx, cluster); err != nil {
-		logger.Error(err, "error watching nodes on target cluster")
-		return ctrl.Result{}, err
+		// Remote cluster may not be initialized yet.
+		if !strings.Contains(err.Error(), remote.ErrCreatingRemoteClusterCache.Error()) {
+			logger.Error(err, "error watching nodes on target cluster")
+			return ctrl.Result{}, err
+		}
 	}
 
 	// If the Machine belongs to a cluster, add an owner reference.
@@ -672,10 +676,9 @@ func (r *MachineReconciler) nodeToMachine(o handler.MapObject) []reconcile.Reque
 		r.Log.Error(errors.Errorf("expecting one machine for node %v, got %v", node.Name, machineNames), "Unable to retrieve machine from node", "node", node.GetName())
 		return nil
 	}
-	var requests []reconcile.Request
+
 	key := util.ObjectKey(&machineList.Items[0])
-	requests = append(requests, reconcile.Request{NamespacedName: key})
-	return requests
+	return []reconcile.Request{reconcile.Request{NamespacedName: key}}
 }
 
 func (r *MachineReconciler) indexMachineByNodeName(object runtime.Object) []string {
