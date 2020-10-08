@@ -96,9 +96,9 @@ func (r *MachineReconciler) SetupWithManager(mgr ctrl.Manager, options controlle
 		return errors.Wrap(err, "failed setting up with a controller manager")
 	}
 
-	// Add index to Machine for listing by Node reference
+	// Add index to Machine for listing by Node reference. This indexing is used in both MachineHealthCheck and Machine controllers.
 	if err := mgr.GetCache().IndexField(&clusterv1.Machine{},
-		machineNodeNameIndex,
+		clusterv1.MachineNodeNameIndex,
 		r.indexMachineByNodeName,
 	); err != nil {
 		return errors.Wrap(err, "error setting index fields")
@@ -658,7 +658,7 @@ func (r *MachineReconciler) nodeToMachine(o handler.MapObject) []reconcile.Reque
 	if err := r.Client.List(
 		context.TODO(),
 		machineList,
-		client.MatchingFields{machineNodeNameIndex: node.Name},
+		client.MatchingFields{clusterv1.MachineNodeNameIndex: node.Name},
 	); err != nil {
 		r.Log.Error(err, "failed getting machine list")
 		return nil
