@@ -92,14 +92,6 @@ func (r *MachineReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manag
 		return errors.Wrap(err, "failed setting up with a controller manager")
 	}
 
-	// Add index to Machine for listing by Node reference. This indexing is used in both MachineHealthCheck and Machine controllers.
-	if err := mgr.GetCache().IndexField(ctx, &clusterv1.Machine{},
-		clusterv1.MachineNodeNameIndex,
-		r.indexMachineByNodeName,
-	); err != nil {
-		return errors.Wrap(err, "error setting index fields")
-	}
-
 	err = controller.Watch(
 		&source.Kind{Type: &clusterv1.Cluster{}},
 		handler.EnqueueRequestsFromMapFunc(clusterToMachines),
@@ -108,6 +100,14 @@ func (r *MachineReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manag
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to add Watch for Clusters to controller manager")
+	}
+
+	// Add index to Machine for listing by Node reference. This indexing is used in both MachineHealthCheck and Machine controllers.
+	if err := mgr.GetCache().IndexField(ctx, &clusterv1.Machine{},
+		clusterv1.MachineNodeNameIndex,
+		r.indexMachineByNodeName,
+	); err != nil {
+		return errors.Wrap(err, "error setting index fields")
 	}
 
 	r.controller = controller
@@ -237,9 +237,12 @@ func patchMachine(ctx context.Context, patchHelper *patch.Helper, machine *clust
 
 func (r *MachineReconciler) reconcile(ctx context.Context, cluster *clusterv1.Cluster, m *clusterv1.Machine) (ctrl.Result, error) {
 	log := ctrl.LoggerFrom(ctx)
-	if err := r.watchClusterNodes(ctx, cluster); err != nil {
-		log.Error(err, "error watching nodes on target cluster")
-		return ctrl.Result{}, err
+
+	if cluster.Status.ControlPlaneInitialized {
+		if err := r.watchClusterNodes(ctx, cluster); err != nil {
+			log.Error(err, "error watching nodes on target cluster")
+			return ctrl.Result{}, err
+		}
 	}
 
 	// If the Machine belongs to a cluster, add an owner reference.
@@ -651,10 +654,9 @@ func (r *MachineReconciler) nodeToMachine(o client.Object) []reconcile.Request {
 	if len(machineList.Items) != 1 {
 		return nil
 	}
-	var requests []reconcile.Request
+
 	key := util.ObjectKey(&machineList.Items[0])
-	requests = append(requests, reconcile.Request{NamespacedName: key})
-	return requests
+	return []reconcile.Request{{NamespacedName: key}}
 }
 
 func (r *MachineReconciler) indexMachineByNodeName(o client.Object) []string {

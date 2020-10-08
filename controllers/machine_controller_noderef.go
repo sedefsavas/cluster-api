@@ -47,8 +47,6 @@ func (r *MachineReconciler) reconcileNodeRef(ctx context.Context, cluster *clust
 		return ctrl.Result{}, nil
 	}
 
-	log = log.WithValues("cluster", cluster.Name)
-
 	// Check that the Machine has a valid ProviderID.
 	if machine.Spec.ProviderID == nil || *machine.Spec.ProviderID == "" {
 		log.Info("Machine doesn't have a valid ProviderID yet")

@@ -48,6 +48,10 @@ const (
 	healthCheckUnhealthyThreshold = 10
 )
 
+var (
+	ErrCreatingRemoteClusterCache = errors.New("error creating client and cache for remote cluster")
+)
+
 // ClusterCacheTracker manages client caches for workload clusters.
 type ClusterCacheTracker struct {
 	log    logr.Logger
@@ -232,7 +236,7 @@ func (t *ClusterCacheTracker) Watch(ctx context.Context, input WatchInput) error
 
 	a, err := t.getClusterAccessorLH(ctx, input.Cluster)
 	if err != nil {
-		return err
+		return ErrCreatingRemoteClusterCache
 	}
 
 	if a.watches.Has(input.Name) {

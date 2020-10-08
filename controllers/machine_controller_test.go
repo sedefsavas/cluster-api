@@ -96,13 +96,19 @@ func TestExternalWatch(t *testing.T) {
 	}
 
 	g.Expect(testEnv.Create(ctx, testCluster)).To(BeNil())
-	g.Expect(testEnv.CreateKubeconfigSecret(testCluster)).To(Succeed())
+	g.Expect(testEnv.CreateKubeconfigSecret(ctx, testCluster)).To(Succeed())
 	g.Expect(testEnv.Create(ctx, defaultBootstrap)).To(BeNil())
 	g.Expect(testEnv.Create(ctx, node)).To(Succeed())
 	g.Expect(testEnv.Create(ctx, infraMachine)).To(BeNil())
 
+	// Patch cluster control plane initialized (this is required to start node watch)
+	patchHelper, err := patch.NewHelper(testCluster, testEnv)
+	g.Expect(err).ShouldNot(HaveOccurred())
+	testCluster.Status.ControlPlaneInitialized = true
+	g.Expect(patchHelper.Patch(ctx, testCluster, patch.WithStatusObservedGeneration{})).ShouldNot(HaveOccurred())
+
 	// Patch infra machine ready
-	patchHelper, err := patch.NewHelper(infraMachine, testEnv)
+	patchHelper, err = patch.NewHelper(infraMachine, testEnv)
 	g.Expect(err).ShouldNot(HaveOccurred())
 	g.Expect(unstructured.SetNestedField(infraMachine.Object, true, "status", "ready")).NotTo(HaveOccurred())
 	g.Expect(patchHelper.Patch(ctx, infraMachine, patch.WithStatusObservedGeneration{})).ShouldNot(HaveOccurred())
@@ -151,6 +157,7 @@ func TestExternalWatch(t *testing.T) {
 	g.Consistently(func() bool { return machine.Status.NodeRef != nil }, 2*time.Second, 100*time.Millisecond).Should(BeTrue())
 
 	// Node deletion will trigger node watchers and a request will be added to the queue.
+	//
 	g.Expect(testEnv.Delete(ctx, node)).NotTo(HaveOccurred())
 	// TODO: Once conditions are in place, check if node deletion triggered a reconcile.
 
@@ -265,13 +272,11 @@ func TestMachineFinalizer(t *testing.T) {
 }
 
 func TestIndexMachineByNodeName(t *testing.T) {
-	r := &MachineReconciler{
-		Log: log.Log,
-	}
+	r := &MachineReconciler{}
 
 	testCases := []struct {
 		name     string
-		object   runtime.Object
+		object   client.Object
 		expected []string
 	}{
 		{
@@ -289,11 +294,6 @@ func TestIndexMachineByNodeName(t *testing.T) {
 				},
 			},
 			expected: []string{"node1"},
-		},
-		{
-			name:     "when the object passed is not a Machine",
-			object:   &corev1.Node{},
-			expected: []string{},
 		},
 	}
 
