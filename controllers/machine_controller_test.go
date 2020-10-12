@@ -39,7 +39,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
 
-func TestExternalWatch(t *testing.T) {
+func TestWatches(t *testing.T) {
 	g := NewWithT(t)
 
 	infraMachine := &unstructured.Unstructured{
@@ -145,7 +145,7 @@ func TestExternalWatch(t *testing.T) {
 	g.Expect(testEnv.Create(ctx, machine)).To(BeNil())
 
 	// Wait for reconciliation to happen.
-	// Since infra and bootstrap objects are ready, a nodeRef will be assigned during nodereconcilation.
+	// Since infra and bootstrap objects are ready, a nodeRef will be assigned during node reconciliation.
 	key := client.ObjectKey{Name: machine.Name, Namespace: machine.Namespace}
 	g.Eventually(func() bool {
 		if err := testEnv.Get(ctx, key, machine); err != nil {
@@ -157,7 +157,6 @@ func TestExternalWatch(t *testing.T) {
 	g.Consistently(func() bool { return machine.Status.NodeRef != nil }, 2*time.Second, 100*time.Millisecond).Should(BeTrue())
 
 	// Node deletion will trigger node watchers and a request will be added to the queue.
-	//
 	g.Expect(testEnv.Delete(ctx, node)).NotTo(HaveOccurred())
 	// TODO: Once conditions are in place, check if node deletion triggered a reconcile.
 

@@ -102,7 +102,7 @@ func (r *MachineReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manag
 		return errors.Wrap(err, "failed to add Watch for Clusters to controller manager")
 	}
 
-	// Add index to Machine for listing by Node reference. This indexing is used in both MachineHealthCheck and Machine controllers.
+	// Add index to Machine for listing by Node reference.
 	if err := mgr.GetCache().IndexField(ctx, &clusterv1.Machine{},
 		clusterv1.MachineNodeNameIndex,
 		r.indexMachineByNodeName,
