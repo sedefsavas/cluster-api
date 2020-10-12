@@ -23,7 +23,6 @@ import (
 	. "github.com/onsi/gomega"
 
 	corev1 "k8s.io/api/core/v1"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -41,6 +40,11 @@ import (
 
 func TestWatches(t *testing.T) {
 	g := NewWithT(t)
+	ns, err := testEnv.CreateNamespace(ctx, "test-machine-watches")
+	g.Expect(err).ToNot(HaveOccurred())
+	defer func() {
+		g.Expect(testEnv.Cleanup(ctx, ns)).To(Succeed())
+	}()
 
 	infraMachine := &unstructured.Unstructured{
 		Object: map[string]interface{}{
@@ -48,7 +52,7 @@ func TestWatches(t *testing.T) {
 			"apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
 			"metadata": map[string]interface{}{
 				"name":      "infra-config1",
-				"namespace": "default",
+				"namespace": ns.Name,
 			},
 			"spec": map[string]interface{}{
 				"providerID": "test://id-1",
@@ -71,7 +75,7 @@ func TestWatches(t *testing.T) {
 			"apiVersion": "bootstrap.cluster.x-k8s.io/v1alpha3",
 			"metadata": map[string]interface{}{
 				"name":      "bootstrap-config-machinereconcile",
-				"namespace": "default",
+				"namespace": ns.Name,
 			},
 			"spec":   map[string]interface{}{},
 			"status": map[string]interface{}{},
@@ -81,14 +85,14 @@ func TestWatches(t *testing.T) {
 	testCluster := &clusterv1.Cluster{
 		ObjectMeta: metav1.ObjectMeta{
 			GenerateName: "machine-reconcile-",
-			Namespace:    "default",
+			Namespace:    ns.Name,
 		},
 	}
 
 	node := &corev1.Node{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "node-1",
-			Namespace: "default",
+			Namespace: ns.Name,
 		},
 		Spec: corev1.NodeSpec{
 			ProviderID: "test:///id-1",
@@ -105,26 +109,25 @@ func TestWatches(t *testing.T) {
 	patchHelper, err := patch.NewHelper(testCluster, testEnv)
 	g.Expect(err).ShouldNot(HaveOccurred())
 	testCluster.Status.ControlPlaneInitialized = true
-	g.Expect(patchHelper.Patch(ctx, testCluster, patch.WithStatusObservedGeneration{})).ShouldNot(HaveOccurred())
+	g.Expect(patchHelper.Patch(ctx, testCluster, patch.WithStatusObservedGeneration{})).To(Succeed())
 
 	// Patch infra machine ready
 	patchHelper, err = patch.NewHelper(infraMachine, testEnv)
 	g.Expect(err).ShouldNot(HaveOccurred())
-	g.Expect(unstructured.SetNestedField(infraMachine.Object, true, "status", "ready")).NotTo(HaveOccurred())
-	g.Expect(patchHelper.Patch(ctx, infraMachine, patch.WithStatusObservedGeneration{})).ShouldNot(HaveOccurred())
+	g.Expect(unstructured.SetNestedField(infraMachine.Object, true, "status", "ready")).To(Succeed())
+	g.Expect(patchHelper.Patch(ctx, infraMachine, patch.WithStatusObservedGeneration{})).To(Succeed())
 
 	// Patch bootstrap ready
 	patchHelper, err = patch.NewHelper(defaultBootstrap, testEnv)
 	g.Expect(err).ShouldNot(HaveOccurred())
-	g.Expect(unstructured.SetNestedField(defaultBootstrap.Object, true, "status", "ready")).NotTo(HaveOccurred())
+	g.Expect(unstructured.SetNestedField(defaultBootstrap.Object, true, "status", "ready")).To(Succeed())
 	g.Expect(unstructured.SetNestedField(defaultBootstrap.Object, "secretData", "status", "dataSecretName")).To(Succeed())
-	g.Expect(patchHelper.Patch(ctx, defaultBootstrap, patch.WithStatusObservedGeneration{})).ShouldNot(HaveOccurred())
+	g.Expect(patchHelper.Patch(ctx, defaultBootstrap, patch.WithStatusObservedGeneration{})).To(Succeed())
 
 	machine := &clusterv1.Machine{
 		ObjectMeta: metav1.ObjectMeta{
 			GenerateName: "machine-created-",
-			Namespace:    "default",
-			Finalizers:   []string{clusterv1.MachineFinalizer},
+			Namespace:    ns.Name,
 		},
 		Spec: clusterv1.MachineSpec{
 			ClusterName: testCluster.Name,
@@ -154,31 +157,18 @@ func TestWatches(t *testing.T) {
 		return machine.Status.NodeRef != nil
 	}, timeout).Should(BeTrue())
 
-	g.Consistently(func() bool { return machine.Status.NodeRef != nil }, 2*time.Second, 100*time.Millisecond).Should(BeTrue())
-
 	// Node deletion will trigger node watchers and a request will be added to the queue.
-	g.Expect(testEnv.Delete(ctx, node)).NotTo(HaveOccurred())
+	g.Expect(testEnv.Delete(ctx, node)).To(Succeed())
 	// TODO: Once conditions are in place, check if node deletion triggered a reconcile.
 
 	// Delete infra machine, external tracker will trigger reconcile
 	// and machine Status.FailureReason should be non-nil after reconcileInfrastructure
-	g.Expect(testEnv.Delete(ctx, infraMachine)).NotTo(HaveOccurred())
+	g.Expect(testEnv.Delete(ctx, infraMachine)).To(Succeed())
 	g.Eventually(func() bool {
 		if err := testEnv.Get(ctx, key, machine); err != nil {
 			return false
 		}
 		return machine.Status.FailureMessage != nil
-	}, timeout).Should(BeTrue())
-
-	g.Expect(testEnv.Delete(ctx, machine)).NotTo(HaveOccurred())
-	// Wait for Machine to be deleted.
-	g.Eventually(func() bool {
-		if err := testEnv.Get(ctx, key, machine); err != nil {
-			if apierrors.IsNotFound(err) {
-				return true
-			}
-		}
-		return false
 	}, timeout).Should(BeTrue())
 }
 
@@ -271,8 +261,6 @@ func TestMachineFinalizer(t *testing.T) {
 }
 
 func TestIndexMachineByNodeName(t *testing.T) {
-	r := &MachineReconciler{}
-
 	testCases := []struct {
 		name     string
 		object   client.Object
@@ -299,7 +287,7 @@ func TestIndexMachineByNodeName(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			g := NewWithT(t)
-			got := r.indexMachineByNodeName(tc.object)
+			got := indexMachineByNodeName(tc.object)
 			g.Expect(got).To(ConsistOf(tc.expected))
 		})
 	}

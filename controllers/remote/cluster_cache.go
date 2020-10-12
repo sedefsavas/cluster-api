@@ -232,7 +232,7 @@ func (t *ClusterCacheTracker) Watch(ctx context.Context, input WatchInput) error
 
 	a, err := t.getClusterAccessorLH(ctx, input.Cluster)
 	if err != nil {
-		return errors.Wrapf(err, "error creating client and cache for remote cluster %s/%s", input.Cluster.Namespace, input.Cluster.Name)
+		return err
 	}
 
 	if a.watches.Has(input.Name) {

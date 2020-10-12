@@ -105,7 +105,7 @@ func (r *MachineReconciler) SetupWithManager(ctx context.Context, mgr ctrl.Manag
 	// Add index to Machine for listing by Node reference.
 	if err := mgr.GetCache().IndexField(ctx, &clusterv1.Machine{},
 		clusterv1.MachineNodeNameIndex,
-		r.indexMachineByNodeName,
+		indexMachineByNodeName,
 	); err != nil {
 		return errors.Wrap(err, "error setting index fields")
 	}
@@ -659,7 +659,7 @@ func (r *MachineReconciler) nodeToMachine(o client.Object) []reconcile.Request {
 	return []reconcile.Request{{NamespacedName: key}}
 }
 
-func (r *MachineReconciler) indexMachineByNodeName(o client.Object) []string {
+func indexMachineByNodeName(o client.Object) []string {
 	machine, ok := o.(*clusterv1.Machine)
 	if !ok {
 		panic(fmt.Sprintf("Expected a Machine but got a %T", o))
