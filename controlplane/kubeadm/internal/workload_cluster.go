@@ -53,12 +53,20 @@ var (
 	ErrControlPlaneMinNodes = errors.New("cluster has fewer than 2 control plane nodes; removing an etcd member is not supported")
 )
 
+// Common control-plane pod name prefixes
+const (
+	KubeAPIServerPodNamePrefix         = "kube-apiserver"
+	KubeControllerManagerPodNamePrefix = "kube-controller-manager"
+	KubeSchedulerHealthyPodNamePrefix  = "kube-scheduler"
+	EtcdPodNamePrefix                  = "etcd"
+)
+
 // WorkloadCluster defines all behaviors necessary to upgrade kubernetes on a workload cluster
 type WorkloadCluster interface {
 	// Basic health and status checks.
 	ClusterStatus(ctx context.Context) (ClusterStatus, error)
-	ControlPlaneIsHealthy(ctx context.Context) (HealthCheckResult, error)
-	EtcdIsHealthy(ctx context.Context) (HealthCheckResult, error)
+	ControlPlaneIsHealthy(ctx context.Context, controlPlane *ControlPlane) (HealthCheckResult, error)
+	EtcdIsHealthy(ctx context.Context, controlPlane *ControlPlane) (HealthCheckResult, error)
 
 	// Upgrade related tasks.
 	ReconcileKubeletRBACBinding(ctx context.Context, version semver.Version) error
@@ -112,7 +120,7 @@ type HealthCheckResult map[string]error
 // controlPlaneIsHealthy does a best effort check of the control plane components the kubeadm control plane cares about.
 // The return map is a map of node names as keys to error that that node encountered.
 // All nodes will exist in the map with nil errors if there were no errors for that node.
-func (w *Workload) ControlPlaneIsHealthy(ctx context.Context) (HealthCheckResult, error) {
+func (w *Workload) ControlPlaneIsHealthy(ctx context.Context, controlPlane *ControlPlane) (HealthCheckResult, error) {
 	controlPlaneNodes, err := w.getControlPlaneNodes(ctx)
 	if err != nil {
 		return nil, err

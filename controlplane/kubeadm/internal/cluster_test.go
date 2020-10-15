@@ -38,6 +38,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	"sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/machinefilters"
 	"sigs.k8s.io/cluster-api/util/certs"
 	"sigs.k8s.io/cluster-api/util/kubeconfig"
@@ -118,8 +119,10 @@ func TestControlPlaneIsHealthy(t *testing.T) {
 			},
 		},
 	}
+	controlPlane, err := NewControlPlane(ctx, workloadCluster.Client, &clusterv1.Cluster{}, &v1alpha3.KubeadmControlPlane{}, nil)
+	g.Expect(err).NotTo(HaveOccurred())
 
-	health, err := workloadCluster.ControlPlaneIsHealthy(context.Background())
+	health, err := workloadCluster.ControlPlaneIsHealthy(context.Background(), controlPlane)
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(health).NotTo(HaveLen(0))
 	g.Expect(health).To(HaveLen(len(nodeListForTestControlPlaneIsHealthy().Items)))
@@ -156,7 +159,7 @@ func TestGetMachinesForCluster(t *testing.T) {
 func TestGetWorkloadCluster(t *testing.T) {
 	g := NewWithT(t)
 
-	ns, err := testEnv.CreateNamespace(ctx, "workload-cluster")
+	ns, err := testEnv.CreateNamespace(ctx, "workload-cluster2")
 	g.Expect(err).ToNot(HaveOccurred())
 	defer func() {
 		g.Expect(testEnv.Cleanup(ctx, ns)).To(Succeed())
@@ -459,138 +462,105 @@ func (f *fakeClient) Update(_ context.Context, _ runtime.Object, _ ...client.Upd
 	return nil
 }
 
+func createControlPlane(machines []*clusterv1.Machine) *ControlPlane {
+	controlPlane, _ := NewControlPlane(ctx, &fakeClient{}, &clusterv1.Cluster{}, &v1alpha3.KubeadmControlPlane{}, NewFilterableMachineCollection(machines...))
+	return controlPlane
+}
+
 func TestManagementCluster_healthCheck_NoError(t *testing.T) {
+	threeMachines := []*clusterv1.Machine{
+		controlPlaneMachine("one"),
+		controlPlaneMachine("two"),
+		controlPlaneMachine("three"),
+	}
+	controlPlane := createControlPlane(threeMachines)
 	tests := []struct {
 		name             string
-		machineList      *clusterv1.MachineList
-		check            healthCheck
+		checkResult      HealthCheckResult
 		clusterKey       client.ObjectKey
 		controlPlaneName string
+		controlPlane     *ControlPlane
 	}{
 		{
 			name: "simple",
-			machineList: &clusterv1.MachineList{
-				Items: []clusterv1.Machine{
-					controlPlaneMachine("one"),
-					controlPlaneMachine("two"),
-					controlPlaneMachine("three"),
-				},
+			checkResult: HealthCheckResult{
+				"one":   nil,
+				"two":   nil,
+				"three": nil,
 			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
-				return HealthCheckResult{
-					"one":   nil,
-					"two":   nil,
-					"three": nil,
-				}, nil
-			},
-			clusterKey: client.ObjectKey{Namespace: "default", Name: "cluster-name"},
+			clusterKey:   client.ObjectKey{Namespace: "default", Name: "cluster-name"},
+			controlPlane: controlPlane,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			g := NewWithT(t)
 
-			ctx := context.Background()
 			m := &Management{
-				Client: &fakeClient{list: tt.machineList},
+				Client: &fakeClient{},
 			}
-			g.Expect(m.healthCheck(ctx, tt.check, tt.clusterKey)).To(Succeed())
+			g.Expect(m.healthCheck(controlPlane, tt.checkResult, tt.clusterKey)).To(Succeed())
 		})
 	}
 }
 
 func TestManagementCluster_healthCheck_Errors(t *testing.T) {
+
 	tests := []struct {
 		name             string
-		machineList      *clusterv1.MachineList
-		check            healthCheck
+		checkResult      HealthCheckResult
 		clusterKey       client.ObjectKey
 		controlPlaneName string
+		controlPlane     *ControlPlane
 		// expected errors will ensure the error contains this list of strings.
 		// If not supplied, no check on the error's value will occur.
 		expectedErrors []string
 	}{
 		{
 			name: "machine's node was not checked for health",
-			machineList: &clusterv1.MachineList{
-				Items: []clusterv1.Machine{
-					controlPlaneMachine("one"),
-					controlPlaneMachine("two"),
-					controlPlaneMachine("three"),
-				},
+			controlPlane: createControlPlane([]*clusterv1.Machine{
+				controlPlaneMachine("one"),
+				controlPlaneMachine("two"),
+				controlPlaneMachine("three"),
+			}),
+			checkResult: HealthCheckResult{
+				"one": nil,
 			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
-				return HealthCheckResult{
-					"one": nil,
-				}, nil
-			},
-		},
-		{
-			name: "health check returns an error not related to the nodes health",
-			machineList: &clusterv1.MachineList{
-				Items: []clusterv1.Machine{
-					controlPlaneMachine("one"),
-					controlPlaneMachine("two"),
-					controlPlaneMachine("three"),
-				},
-			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
-				return HealthCheckResult{
-					"one":   nil,
-					"two":   errors.New("two"),
-					"three": errors.New("three"),
-				}, errors.New("meta")
-			},
-			expectedErrors: []string{"two", "three", "meta"},
 		},
 		{
 			name: "two nodes error on the check but no overall error occurred",
-			machineList: &clusterv1.MachineList{
-				Items: []clusterv1.Machine{
-					controlPlaneMachine("one"),
-					controlPlaneMachine("two"),
-					controlPlaneMachine("three"),
-				},
-			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
-				return HealthCheckResult{
-					"one":   nil,
-					"two":   errors.New("two"),
-					"three": errors.New("three"),
-				}, nil
+			controlPlane: createControlPlane([]*clusterv1.Machine{
+				controlPlaneMachine("one"),
+				controlPlaneMachine("two"),
+				controlPlaneMachine("three")}),
+			checkResult: HealthCheckResult{
+				"one":   nil,
+				"two":   errors.New("two"),
+				"three": errors.New("three"),
 			},
 			expectedErrors: []string{"two", "three"},
 		},
 		{
 			name: "more nodes than machines were checked (out of band control plane nodes)",
-			machineList: &clusterv1.MachineList{
-				Items: []clusterv1.Machine{
-					controlPlaneMachine("one"),
-				},
-			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
-				return HealthCheckResult{
-					"one":   nil,
-					"two":   nil,
-					"three": nil,
-				}, nil
+			controlPlane: createControlPlane([]*clusterv1.Machine{
+				controlPlaneMachine("one")}),
+			checkResult: HealthCheckResult{
+				"one":   nil,
+				"two":   nil,
+				"three": nil,
 			},
 		},
 		{
 			name: "a machine that has a nil node reference",
-			machineList: &clusterv1.MachineList{
-				Items: []clusterv1.Machine{
-					controlPlaneMachine("one"),
-					controlPlaneMachine("two"),
-					nilNodeRef(controlPlaneMachine("three")),
-				},
-			},
-			check: func(ctx context.Context) (HealthCheckResult, error) {
-				return HealthCheckResult{
-					"one":   nil,
-					"two":   nil,
-					"three": nil,
-				}, nil
+			controlPlane: createControlPlane([]*clusterv1.Machine{
+				controlPlaneMachine("one"),
+				controlPlaneMachine("two"),
+				nilNodeRef(controlPlaneMachine("three"))}),
+			checkResult: HealthCheckResult{
+				"one":   nil,
+				"two":   nil,
+				"three": nil,
 			},
 		},
 	}
@@ -598,13 +568,10 @@ func TestManagementCluster_healthCheck_Errors(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			g := NewWithT(t)
 
-			ctx := context.Background()
 			clusterKey := client.ObjectKey{Namespace: "default", Name: "cluster-name"}
 
-			m := &Management{
-				Client: &fakeClient{list: tt.machineList},
-			}
-			err := m.healthCheck(ctx, tt.check, clusterKey)
+			m := &Management{Client: &fakeClient{}}
+			err := m.healthCheck(tt.controlPlane, tt.checkResult, clusterKey)
 			g.Expect(err).To(HaveOccurred())
 
 			for _, expectedError := range tt.expectedErrors {
@@ -614,9 +581,9 @@ func TestManagementCluster_healthCheck_Errors(t *testing.T) {
 	}
 }
 
-func controlPlaneMachine(name string) clusterv1.Machine {
+func controlPlaneMachine(name string) *clusterv1.Machine {
 	t := true
-	return clusterv1.Machine{
+	return &clusterv1.Machine{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: "default",
 			Name:      name,
@@ -637,7 +604,7 @@ func controlPlaneMachine(name string) clusterv1.Machine {
 	}
 }
 
-func nilNodeRef(machine clusterv1.Machine) clusterv1.Machine {
+func nilNodeRef(machine *clusterv1.Machine) *clusterv1.Machine {
 	machine.Status.NodeRef = nil
 	return machine
 }

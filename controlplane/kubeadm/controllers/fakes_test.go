@@ -57,18 +57,31 @@ func (f *fakeManagementCluster) GetMachinesForCluster(c context.Context, n clien
 	return f.Machines, nil
 }
 
-func (f *fakeManagementCluster) TargetClusterControlPlaneIsHealthy(_ context.Context, _ client.ObjectKey) error {
+func (f *fakeManagementCluster) TargetClusterAnalyseControlPlaneHealth(_ context.Context, _ *internal.ControlPlane, _ client.ObjectKey) error {
 	if !f.ControlPlaneHealthy {
 		return errors.New("control plane is not healthy")
 	}
 	return nil
 }
 
-func (f *fakeManagementCluster) TargetClusterEtcdIsHealthy(_ context.Context, _ client.ObjectKey) error {
+func (f *fakeManagementCluster) TargetClusterAnalyseEtcdHealth(_ context.Context, _ *internal.ControlPlane, _ client.ObjectKey) error {
 	if !f.EtcdHealthy {
 		return errors.New("etcd is not healthy")
 	}
 	return nil
+}
+func (f *fakeManagementCluster) TargetClusterEtcdHealthCheck(_ context.Context, _ *internal.ControlPlane, _ client.ObjectKey) (internal.HealthCheckResult, error) {
+	if !f.EtcdHealthy {
+		return nil, errors.New("etcd is not healthy")
+	}
+	return nil, nil
+}
+
+func (f *fakeManagementCluster) TargetClusterControlPlaneHealthCheck(_ context.Context, _ *internal.ControlPlane, _ client.ObjectKey) (internal.HealthCheckResult, error) {
+	if !f.ControlPlaneHealthy {
+		return nil, errors.New("control plane is not healthy")
+	}
+	return nil, nil
 }
 
 type fakeWorkloadCluster struct {
