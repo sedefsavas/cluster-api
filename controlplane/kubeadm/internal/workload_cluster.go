@@ -53,14 +53,6 @@ var (
 	ErrControlPlaneMinNodes = errors.New("cluster has fewer than 2 control plane nodes; removing an etcd member is not supported")
 )
 
-// Common control-plane pod name prefixes
-const (
-	KubeAPIServerPodNamePrefix         = "kube-apiserver"
-	KubeControllerManagerPodNamePrefix = "kube-controller-manager"
-	KubeSchedulerHealthyPodNamePrefix  = "kube-scheduler"
-	EtcdPodNamePrefix                  = "etcd"
-)
-
 // WorkloadCluster defines all behaviors necessary to upgrade kubernetes on a workload cluster
 type WorkloadCluster interface {
 	// Basic health and status checks.

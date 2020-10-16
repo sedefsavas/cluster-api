@@ -302,7 +302,7 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 	// source ref (reason@machine/name) so the problem can be easily tracked down to its source machine.
 	conditions.SetAggregate(controlPlane.KCP, controlplanev1.MachinesReadyCondition, controlPlane.Machines.ConditionGetters(), conditions.AddSourceRef())
 
-	// reconcileControlPlaneHealth returns err if there is a machine being delete or control plane is unhealthy.
+	// reconcileControlPlaneHealth returns err if there is a machine being deleted or the control plane is unhealthy.
 	// If control plane is not initialized, then control-plane machines will be empty and hence health check will not fail.
 	if result, err := r.reconcileControlPlaneHealth(ctx, cluster, kcp, controlPlane); err != nil || !result.IsZero() {
 		return result, err
