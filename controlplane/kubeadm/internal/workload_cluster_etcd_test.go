@@ -39,12 +39,6 @@ import (
 func TestWorkload_EtcdIsHealthy(t *testing.T) {
 	g := NewWithT(t)
 
-	controlPlane := createControlPlane([]*clusterv1.Machine{
-		controlPlaneMachine("one"),
-		controlPlaneMachine("two"),
-		controlPlaneMachine("three"),
-	})
-
 	workload := &Workload{
 		Client: &fakeClient{
 			get: map[string]interface{}{
@@ -81,7 +75,7 @@ func TestWorkload_EtcdIsHealthy(t *testing.T) {
 		},
 	}
 	ctx := context.Background()
-	health, err := workload.EtcdIsHealthy(ctx, controlPlane)
+	health, err := workload.EtcdIsHealthy(ctx)
 	g.Expect(err).NotTo(HaveOccurred())
 
 	for _, err := range health {

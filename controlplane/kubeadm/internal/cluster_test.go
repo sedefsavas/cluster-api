@@ -22,7 +22,6 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"crypto/x509/pkix"
-	"errors"
 	"fmt"
 	"math/big"
 	"testing"
@@ -38,7 +37,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
-	"sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/machinefilters"
 	"sigs.k8s.io/cluster-api/util/certs"
 	"sigs.k8s.io/cluster-api/util/kubeconfig"
@@ -119,10 +117,8 @@ func TestControlPlaneIsHealthy(t *testing.T) {
 			},
 		},
 	}
-	controlPlane, err := NewControlPlane(ctx, workloadCluster.Client, &clusterv1.Cluster{}, &v1alpha3.KubeadmControlPlane{}, nil)
-	g.Expect(err).NotTo(HaveOccurred())
 
-	health, err := workloadCluster.ControlPlaneIsHealthy(context.Background(), controlPlane)
+	health, err := workloadCluster.ControlPlaneIsHealthy(context.Background())
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(health).NotTo(HaveLen(0))
 	g.Expect(health).To(HaveLen(len(nodeListForTestControlPlaneIsHealthy().Items)))
@@ -460,151 +456,4 @@ func (f *fakeClient) Update(_ context.Context, _ runtime.Object, _ ...client.Upd
 		return f.updateErr
 	}
 	return nil
-}
-
-func createControlPlane(machines []*clusterv1.Machine) *ControlPlane {
-	controlPlane, _ := NewControlPlane(ctx, &fakeClient{}, &clusterv1.Cluster{}, &v1alpha3.KubeadmControlPlane{}, NewFilterableMachineCollection(machines...))
-	return controlPlane
-}
-
-func TestManagementCluster_healthCheck_NoError(t *testing.T) {
-	threeMachines := []*clusterv1.Machine{
-		controlPlaneMachine("one"),
-		controlPlaneMachine("two"),
-		controlPlaneMachine("three"),
-	}
-	controlPlane := createControlPlane(threeMachines)
-	tests := []struct {
-		name             string
-		checkResult      HealthCheckResult
-		clusterKey       client.ObjectKey
-		controlPlaneName string
-		controlPlane     *ControlPlane
-	}{
-		{
-			name: "simple",
-			checkResult: HealthCheckResult{
-				"one":   nil,
-				"two":   nil,
-				"three": nil,
-			},
-			clusterKey:   client.ObjectKey{Namespace: "default", Name: "cluster-name"},
-			controlPlane: controlPlane,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			g := NewWithT(t)
-
-			m := &Management{
-				Client: &fakeClient{},
-			}
-			g.Expect(m.healthCheck(controlPlane, tt.checkResult, tt.clusterKey)).To(Succeed())
-		})
-	}
-}
-
-func TestManagementCluster_healthCheck_Errors(t *testing.T) {
-
-	tests := []struct {
-		name             string
-		checkResult      HealthCheckResult
-		clusterKey       client.ObjectKey
-		controlPlaneName string
-		controlPlane     *ControlPlane
-		// expected errors will ensure the error contains this list of strings.
-		// If not supplied, no check on the error's value will occur.
-		expectedErrors []string
-	}{
-		{
-			name: "machine's node was not checked for health",
-			controlPlane: createControlPlane([]*clusterv1.Machine{
-				controlPlaneMachine("one"),
-				controlPlaneMachine("two"),
-				controlPlaneMachine("three"),
-			}),
-			checkResult: HealthCheckResult{
-				"one": nil,
-			},
-		},
-		{
-			name: "two nodes error on the check but no overall error occurred",
-			controlPlane: createControlPlane([]*clusterv1.Machine{
-				controlPlaneMachine("one"),
-				controlPlaneMachine("two"),
-				controlPlaneMachine("three")}),
-			checkResult: HealthCheckResult{
-				"one":   nil,
-				"two":   errors.New("two"),
-				"three": errors.New("three"),
-			},
-			expectedErrors: []string{"two", "three"},
-		},
-		{
-			name: "more nodes than machines were checked (out of band control plane nodes)",
-			controlPlane: createControlPlane([]*clusterv1.Machine{
-				controlPlaneMachine("one")}),
-			checkResult: HealthCheckResult{
-				"one":   nil,
-				"two":   nil,
-				"three": nil,
-			},
-		},
-		{
-			name: "a machine that has a nil node reference",
-			controlPlane: createControlPlane([]*clusterv1.Machine{
-				controlPlaneMachine("one"),
-				controlPlaneMachine("two"),
-				nilNodeRef(controlPlaneMachine("three"))}),
-			checkResult: HealthCheckResult{
-				"one":   nil,
-				"two":   nil,
-				"three": nil,
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			g := NewWithT(t)
-
-			clusterKey := client.ObjectKey{Namespace: "default", Name: "cluster-name"}
-
-			m := &Management{Client: &fakeClient{}}
-			err := m.healthCheck(tt.controlPlane, tt.checkResult, clusterKey)
-			g.Expect(err).To(HaveOccurred())
-
-			for _, expectedError := range tt.expectedErrors {
-				g.Expect(err).To(MatchError(ContainSubstring(expectedError)))
-			}
-		})
-	}
-}
-
-func controlPlaneMachine(name string) *clusterv1.Machine {
-	t := true
-	return &clusterv1.Machine{
-		ObjectMeta: metav1.ObjectMeta{
-			Namespace: "default",
-			Name:      name,
-			Labels:    ControlPlaneLabelsForCluster("cluster-name"),
-			OwnerReferences: []metav1.OwnerReference{
-				{
-					Kind:       "KubeadmControlPlane",
-					Name:       "control-plane-name",
-					Controller: &t,
-				},
-			},
-		},
-		Status: clusterv1.MachineStatus{
-			NodeRef: &corev1.ObjectReference{
-				Name: name,
-			},
-		},
-	}
-}
-
-func nilNodeRef(machine *clusterv1.Machine) *clusterv1.Machine {
-	machine.Status.NodeRef = nil
-	return machine
 }

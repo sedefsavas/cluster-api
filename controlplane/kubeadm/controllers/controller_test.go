@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 	"testing"
@@ -1447,4 +1448,172 @@ func newCluster(namespacedName *types.NamespacedName) *clusterv1.Cluster {
 			Name:      namespacedName.Name,
 		},
 	}
+}
+
+func TestHealthCheck_NoError(t *testing.T) {
+	g := NewWithT(t)
+	threeMachines := []*clusterv1.Machine{
+		controlPlaneMachine("one"),
+		controlPlaneMachine("two"),
+		controlPlaneMachine("three"),
+	}
+	controlPlane := createControlPlane(g, threeMachines)
+	tests := []struct {
+		name             string
+		checkResult      internal.HealthCheckResult
+		clusterKey       client.ObjectKey
+		controlPlaneName string
+		controlPlane     *internal.ControlPlane
+	}{
+		{
+			name: "simple",
+			checkResult: internal.HealthCheckResult{
+				"one":   nil,
+				"two":   nil,
+				"three": nil,
+			},
+			clusterKey:   client.ObjectKey{Namespace: "default", Name: "cluster-name"},
+			controlPlane: controlPlane,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			g := NewWithT(t)
+
+			g.Expect(healthCheck(controlPlane, tt.checkResult, tt.clusterKey)).To(Succeed())
+		})
+	}
+}
+
+func TestManagementCluster_healthCheck_Errors(t *testing.T) {
+	g := NewWithT(t)
+
+	tests := []struct {
+		name             string
+		checkResult      internal.HealthCheckResult
+		clusterKey       client.ObjectKey
+		controlPlaneName string
+		controlPlane     *internal.ControlPlane
+		// expected errors will ensure the error contains this list of strings.
+		// If not supplied, no check on the error's value will occur.
+		expectedErrors []string
+	}{
+		{
+			name: "machine's node was not checked for health",
+			controlPlane: createControlPlane(g, []*clusterv1.Machine{
+				controlPlaneMachine("one"),
+				controlPlaneMachine("two"),
+				controlPlaneMachine("three"),
+			}),
+			checkResult: internal.HealthCheckResult{
+				"one": nil,
+			},
+		},
+		{
+			name: "two nodes error on the check but no overall error occurred",
+			controlPlane: createControlPlane(g, []*clusterv1.Machine{
+				controlPlaneMachine("one"),
+				controlPlaneMachine("two"),
+				controlPlaneMachine("three")}),
+			checkResult: internal.HealthCheckResult{
+				"one":   nil,
+				"two":   errors.New("two"),
+				"three": errors.New("three"),
+			},
+			expectedErrors: []string{"two", "three"},
+		},
+		{
+			name: "more nodes than machines were checked (out of band control plane nodes)",
+			controlPlane: createControlPlane(g, []*clusterv1.Machine{
+				controlPlaneMachine("one")}),
+			checkResult: internal.HealthCheckResult{
+				"one":   nil,
+				"two":   nil,
+				"three": nil,
+			},
+		},
+		{
+			name: "a machine that has a nil node reference",
+			controlPlane: createControlPlane(g, []*clusterv1.Machine{
+				controlPlaneMachine("one"),
+				controlPlaneMachine("two"),
+				nilNodeRef(controlPlaneMachine("three"))}),
+			checkResult: internal.HealthCheckResult{
+				"one":   nil,
+				"two":   nil,
+				"three": nil,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			g := NewWithT(t)
+
+			clusterKey := client.ObjectKey{Namespace: "default", Name: "cluster-name"}
+
+			err := healthCheck(tt.controlPlane, tt.checkResult, clusterKey)
+			g.Expect(err).To(HaveOccurred())
+
+			for _, expectedError := range tt.expectedErrors {
+				g.Expect(err).To(MatchError(ContainSubstring(expectedError)))
+			}
+		})
+	}
+}
+
+func createControlPlane(g *WithT, machines []*clusterv1.Machine) *internal.ControlPlane {
+	defaultInfra := &unstructured.Unstructured{
+		Object: map[string]interface{}{
+			"kind":       "InfrastructureMachine",
+			"apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+			"metadata": map[string]interface{}{
+				"name":      "infra-config1",
+				"namespace": "default",
+			},
+			"spec":   map[string]interface{}{},
+			"status": map[string]interface{}{},
+		},
+	}
+
+	controlPlane, _ := internal.NewControlPlane(ctx, newFakeClient(g, defaultInfra.DeepCopy()), &clusterv1.Cluster{}, &controlplanev1.KubeadmControlPlane{}, internal.NewFilterableMachineCollection(machines...))
+	return controlPlane
+}
+
+func controlPlaneMachine(name string) *clusterv1.Machine {
+	t := true
+	infraRef := &corev1.ObjectReference{
+		Kind:       "InfraKind",
+		APIVersion: "infrastructure.cluster.x-k8s.io/v1alpha3",
+		Name:       "infra",
+		Namespace:  "default",
+	}
+
+	return &clusterv1.Machine{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: "default",
+			Name:      name,
+			Labels:    internal.ControlPlaneLabelsForCluster("cluster-name"),
+			OwnerReferences: []metav1.OwnerReference{
+				{
+					Kind:       "KubeadmControlPlane",
+					Name:       "control-plane-name",
+					Controller: &t,
+				},
+			},
+		},
+		Spec: clusterv1.MachineSpec{
+			InfrastructureRef: *infraRef.DeepCopy(),
+		},
+		Status: clusterv1.MachineStatus{
+			NodeRef: &corev1.ObjectReference{
+				Name: name,
+			},
+		},
+	}
+}
+
+func nilNodeRef(machine *clusterv1.Machine) *clusterv1.Machine {
+	machine.Status.NodeRef = nil
+	return machine
 }

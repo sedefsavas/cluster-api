@@ -17,6 +17,7 @@ limitations under the License.
 package controllers
 
 import (
+	"context"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
@@ -32,6 +33,7 @@ import (
 
 var (
 	testEnv *helpers.TestEnvironment
+	ctx     context.Context
 )
 
 func TestAPIs(t *testing.T) {
