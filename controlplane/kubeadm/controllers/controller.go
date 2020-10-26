@@ -220,6 +220,7 @@ func patchKubeadmControlPlane(ctx context.Context, patchHelper *patch.Helper, kc
 			controlplanev1.MachinesReadyCondition,
 			controlplanev1.AvailableCondition,
 			controlplanev1.CertificatesAvailableCondition,
+			controlplanev1.EtcdClusterHealthy,
 		),
 	)
 
@@ -304,9 +305,21 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 	// source ref (reason@machine/name) so the problem can be easily tracked down to its source machine.
 	conditions.SetAggregate(controlPlane.KCP, controlplanev1.MachinesReadyCondition, controlPlane.Machines.ConditionGetters(), conditions.AddSourceRef())
 
+	// Initialize the patch helpers for control plane machines.
+	machinePatchHelpers, err := r.machinePatchHelperInit(controlPlane.Machines.UnsortedList())
+	if err != nil {
+		logger.Error(err, "Failed to configure the machine patch helpers")
+		return ctrl.Result{Requeue: true}, nil
+	}
+
 	// reconcileControlPlaneHealth returns err if there is a machine being deleted or if the control plane is unhealthy.
 	// If the control plane is not yet initialized, this call shouldn't fail.
-	if result, err := r.reconcileControlPlaneHealth(ctx, cluster, kcp, controlPlane); err != nil || !result.IsZero() {
+	result, err := r.reconcileControlPlaneHealth(ctx, cluster, kcp, controlPlane)
+	errPatch := patchMachines(ctx, machinePatchHelpers, controlPlane.Machines.UnsortedList())
+	if errPatch != nil {
+		logger.Error(errPatch, "Failed to patch control plane machines")
+	}
+	if err != nil || !result.IsZero() || errPatch != nil {
 		return result, err
 	}
 
@@ -377,6 +390,29 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 	return ctrl.Result{}, nil
 }
 
+// machinePatchHelperInit initializes patch helpers for all machines.
+func (r *KubeadmControlPlaneReconciler) machinePatchHelperInit(machines []*clusterv1.Machine) ([]*patch.Helper, error) {
+	helpers := []*patch.Helper{}
+	for _, machine := range machines {
+		patchHelper, err := patch.NewHelper(machine, r.Client)
+		if err != nil {
+			return helpers, err
+		}
+		helpers = append(helpers, patchHelper)
+	}
+	return helpers, nil
+}
+
+func patchMachines(ctx context.Context, patchHelpers []*patch.Helper, machines []*clusterv1.Machine) error {
+	errList := []error{}
+	for i := range patchHelpers {
+		if err := patchHelpers[i].Patch(ctx, machines[i]); err != nil {
+			errList = append(errList, err)
+		}
+	}
+	return kerrors.NewAggregate(errList)
+}
+
 // reconcileDelete handles KubeadmControlPlane deletion.
 // The implementation does not take non-control plane workloads into consideration. This may or may not change in the future.
 // Please see https://github.com/kubernetes-sigs/cluster-api/issues/2064.
@@ -391,6 +427,12 @@ func (r *KubeadmControlPlaneReconciler) reconcileDelete(ctx context.Context, clu
 	}
 	ownedMachines := allMachines.Filter(machinefilters.OwnedMachines(kcp))
 
+	// Initialize the patch helpers for control plane machines.
+	machinePatchHelpers, err := r.machinePatchHelperInit(ownedMachines.UnsortedList())
+	if err != nil {
+		r.Log.V(2).Info("Failed to configure the machine patch helpers", "err", err.Error())
+	}
+
 	// Ignore the health check results here as well as the errors, health check functions are to set health related conditions on Machines.
 	// Errors may be due to not being able to get workload cluster nodes.
 	workloadCluster, err := r.managementCluster.GetWorkloadCluster(ctx, util.ObjectKey(cluster))
@@ -404,10 +446,15 @@ func (r *KubeadmControlPlaneReconciler) reconcileDelete(ctx context.Context, clu
 		}
 
 		// Do a health check of the etcd
-		if err := workloadCluster.EtcdIsHealthy(ctx, ownedMachines.UnsortedList()); err != nil {
+		if err := workloadCluster.EtcdIsHealthy(ctx, ownedMachines.UnsortedList(), kcp); err != nil {
 			// Do nothing
 			r.Log.V(2).Info("Control plane did not pass etcd health check during delete reconciliation", "err", err.Error())
 		}
+	}
+
+	errPatch := patchMachines(ctx, machinePatchHelpers, ownedMachines.UnsortedList())
+	if errPatch != nil {
+		r.Log.V(2).Info("Failed to patch control plane machines", "err", errPatch.Error())
 	}
 
 	// If no control plane machines remain, remove the finalizer
@@ -493,7 +540,7 @@ func (r *KubeadmControlPlaneReconciler) reconcileControlPlaneHealth(ctx context.
 
 	// If KCP should manage etcd, ensure etcd is healthy.
 	if controlPlane.IsEtcdManaged() {
-		if err := workloadCluster.EtcdIsHealthy(ctx, controlPlane.Machines.UnsortedList()); err != nil {
+		if err := workloadCluster.EtcdIsHealthy(ctx, controlPlane.Machines.UnsortedList(), kcp); err != nil {
 			errList = append(errList, errors.Wrap(err, "failed to pass etcd health check"))
 			r.recorder.Eventf(kcp, corev1.EventTypeWarning, "ControlPlaneUnhealthy",
 				"Waiting for control plane to pass etcd health check to continue reconciliation: %v", err)

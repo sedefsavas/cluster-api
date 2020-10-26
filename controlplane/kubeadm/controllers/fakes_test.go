@@ -23,6 +23,7 @@ import (
 	"github.com/blang/semver"
 	"k8s.io/apimachinery/pkg/runtime"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/machinefilters"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -105,7 +106,7 @@ func (f fakeWorkloadCluster) ControlPlaneIsHealthy(ctx context.Context, machines
 	return nil
 }
 
-func (f fakeWorkloadCluster) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Machine) error {
+func (f fakeWorkloadCluster) EtcdIsHealthy(ctx context.Context, machines []*clusterv1.Machine, kcp *controlplanev1.KubeadmControlPlane) error {
 	if !f.EtcdHealthy {
 		return errors.New("etcd is not healthy")
 	}

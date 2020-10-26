@@ -29,6 +29,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	"sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd"
 	fake2 "sigs.k8s.io/cluster-api/controlplane/kubeadm/internal/etcd/fake"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -48,10 +49,10 @@ func TestWorkload_EtcdIsHealthy(t *testing.T) {
 	workload := &Workload{
 		Client: &fakeClient{
 			get: map[string]interface{}{
-				"kube-system/etcd-test-1": etcdPod("etcd-test-1", withReadyOption),
-				"kube-system/etcd-test-2": etcdPod("etcd-test-2", withReadyOption),
-				"kube-system/etcd-test-3": etcdPod("etcd-test-3", withReadyOption),
-				"kube-system/etcd-test-4": etcdPod("etcd-test-4"),
+				"kube-system/etcd-test-1": getPod("etcd-test-1", withReadyOption),
+				"kube-system/etcd-test-2": getPod("etcd-test-2", withReadyOption),
+				"kube-system/etcd-test-3": getPod("etcd-test-3", withReadyOption),
+				"kube-system/etcd-test-4": getPod("etcd-test-4"),
 			},
 			list: &corev1.NodeList{
 				Items: []corev1.Node{
@@ -81,7 +82,7 @@ func TestWorkload_EtcdIsHealthy(t *testing.T) {
 		},
 	}
 	ctx := context.Background()
-	err := workload.EtcdIsHealthy(ctx, machines)
+	err := workload.EtcdIsHealthy(ctx, machines, &v1alpha3.KubeadmControlPlane{})
 	g.Expect(err).NotTo(HaveOccurred())
 }
 
@@ -633,28 +634,6 @@ func (c *fakeEtcdClientGenerator) forNodes(_ context.Context, _ []corev1.Node) (
 
 func (c *fakeEtcdClientGenerator) forLeader(_ context.Context, _ []corev1.Node) (*etcd.Client, error) {
 	return c.forLeaderClient, c.forLeaderErr
-}
-
-type podOption func(*corev1.Pod)
-
-func etcdPod(name string, options ...podOption) *corev1.Pod {
-	p := &corev1.Pod{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: metav1.NamespaceSystem,
-		},
-	}
-	for _, opt := range options {
-		opt(p)
-	}
-	return p
-}
-func withReadyOption(pod *corev1.Pod) {
-	readyCondition := corev1.PodCondition{
-		Type:   corev1.PodReady,
-		Status: corev1.ConditionTrue,
-	}
-	pod.Status.Conditions = append(pod.Status.Conditions, readyCondition)
 }
 
 func withProviderID(pi string) func(corev1.Node) corev1.Node {

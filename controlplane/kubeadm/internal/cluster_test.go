@@ -23,7 +23,9 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"fmt"
+	"k8s.io/apimachinery/pkg/types"
 	"math/big"
+	controlplanev1 "sigs.k8s.io/cluster-api/controlplane/kubeadm/api/v1alpha3"
 	"testing"
 	"time"
 
@@ -94,37 +96,262 @@ func TestCheckStaticPodNotReadyCondition(t *testing.T) {
 }
 
 func TestControlPlaneIsHealthy(t *testing.T) {
-	g := NewWithT(t)
-
 	machines := []*clusterv1.Machine{
 		controlPlaneMachine("first-control-plane"),
 		controlPlaneMachine("second-control-plane"),
 		controlPlaneMachine("third-control-plane"),
 	}
-	readyStatus := corev1.PodStatus{
-		Conditions: []corev1.PodCondition{
-			{
-				Type:   corev1.PodReady,
-				Status: corev1.ConditionTrue,
-			},
-		},
+
+	singleMachine := []*clusterv1.Machine{
+		controlPlaneMachine("single-control-plane"),
 	}
-	workloadCluster := &Workload{
-		Client: &fakeClient{
-			list: nodeListForTestControlPlaneIsHealthy(),
-			get: map[string]interface{}{
-				"kube-system/kube-apiserver-first-control-plane":           &corev1.Pod{Status: readyStatus},
-				"kube-system/kube-apiserver-second-control-plane":          &corev1.Pod{Status: readyStatus},
-				"kube-system/kube-apiserver-third-control-plane":           &corev1.Pod{Status: readyStatus},
-				"kube-system/kube-controller-manager-first-control-plane":  &corev1.Pod{Status: readyStatus},
-				"kube-system/kube-controller-manager-second-control-plane": &corev1.Pod{Status: readyStatus},
-				"kube-system/kube-controller-manager-third-control-plane":  &corev1.Pod{Status: readyStatus},
+
+	tests := []struct {
+		name                 string
+		workloadCluster      *Workload
+		controlPlaneMachines []*clusterv1.Machine
+		expectedConditions   []clusterv1.Conditions // only checks important ones, not all
+		expectErr            bool
+	}{
+		{
+			name:                 "all control plane pods are healthy in a HA control plane",
+			controlPlaneMachines: machines,
+			workloadCluster: &Workload{
+				Client: &fakeClient{
+					list: nodeListForMachines(machines),
+					get: podsForFakeWorkloadGet([]podStatus{
+						{KubeAPIServerPodNamePrefix, machines[0].Name, []podOption{withReadyOption}},
+						{KubeAPIServerPodNamePrefix, machines[1].Name, []podOption{withReadyOption}},
+						{KubeAPIServerPodNamePrefix, machines[2].Name, []podOption{withReadyOption}},
+
+						{KubeControllerManagerPodNamePrefix, machines[0].Name, []podOption{withReadyOption}},
+						{KubeControllerManagerPodNamePrefix, machines[1].Name, []podOption{withReadyOption}},
+						{KubeControllerManagerPodNamePrefix, machines[2].Name, []podOption{withReadyOption}},
+
+						{KubeSchedulerHealthyPodNamePrefix, machines[0].Name, []podOption{withReadyOption}},
+						{KubeSchedulerHealthyPodNamePrefix, machines[1].Name, []podOption{withReadyOption}},
+						{KubeSchedulerHealthyPodNamePrefix, machines[2].Name, []podOption{withReadyOption}},
+					}...),
+				},
 			},
+			expectedConditions: []clusterv1.Conditions{
+				{
+					{
+						Type:   controlplanev1.MachineAPIServerPodHealthyCondition,
+						Status: corev1.ConditionTrue,
+					},
+					{
+						Type:   controlplanev1.MachineControllerManagerPodHealthyCondition,
+						Status: corev1.ConditionTrue,
+					},
+					{
+						Type:   controlplanev1.MachineSchedulerPodHealthyCondition,
+						Status: corev1.ConditionTrue,
+					},
+				},
+			},
+			expectErr: false,
+		},
+		{
+			name:                 "some control plane pods are missing in a HA control plane, should return error",
+			controlPlaneMachines: machines,
+			workloadCluster: &Workload{
+				Client: &fakeClient{
+					list: nodeListForMachines(machines),
+					get: podsForFakeWorkloadGet([]podStatus{
+						{KubeAPIServerPodNamePrefix, machines[0].Name, []podOption{withReadyOption}},
+						{KubeControllerManagerPodNamePrefix, machines[0].Name, []podOption{withReadyOption}},
+						{KubeSchedulerHealthyPodNamePrefix, machines[0].Name, []podOption{withReadyOption}},
+					}...),
+				},
+			},
+			expectedConditions: []clusterv1.Conditions{
+				{
+					{
+						Type:   controlplanev1.MachineAPIServerPodHealthyCondition,
+						Status: corev1.ConditionTrue,
+					},
+				},
+				{
+					{
+						Type:   controlplanev1.MachineAPIServerPodHealthyCondition,
+						Status: corev1.ConditionFalse,
+						Reason: controlplanev1.PodMissingReason,
+					},
+				},
+				{
+					{
+						Type:   controlplanev1.MachineAPIServerPodHealthyCondition,
+						Status: corev1.ConditionFalse,
+						Reason: controlplanev1.PodMissingReason,
+					},
+				},
+			},
+			expectErr: true,
+		},
+		{
+			name:                 "A control plane pod is in failed state, should return error",
+			controlPlaneMachines: singleMachine,
+			workloadCluster: &Workload{
+				Client: &fakeClient{
+					list: nodeListForMachines(singleMachine),
+					get: podsForFakeWorkloadGet([]podStatus{
+						{KubeAPIServerPodNamePrefix, singleMachine[0].Name, []podOption{withFailedStatus}},
+						{KubeControllerManagerPodNamePrefix, singleMachine[0].Name, []podOption{withReadyOption}},
+					}...),
+				},
+			},
+			expectedConditions: []clusterv1.Conditions{
+				{
+					{
+						Type:   controlplanev1.MachineAPIServerPodHealthyCondition,
+						Status: corev1.ConditionFalse,
+						Reason: controlplanev1.PodFailedReason,
+					},
+					{
+						Type:   controlplanev1.MachineControllerManagerPodHealthyCondition,
+						Status: corev1.ConditionTrue,
+					},
+					{
+						Type:   controlplanev1.MachineSchedulerPodHealthyCondition,
+						Status: corev1.ConditionFalse,
+						Reason: controlplanev1.PodMissingReason,
+					},
+				},
+			},
+			expectErr: true,
+		},
+		{
+			name:                 "1 control plane pod is in pending state with control plane not initialized yet",
+			controlPlaneMachines: singleMachine,
+			workloadCluster: &Workload{
+				Client: &fakeClient{
+					list: nodeListForMachines(singleMachine),
+					get: podsForFakeWorkloadGet([]podStatus{
+						{KubeAPIServerPodNamePrefix, singleMachine[0].Name, []podOption{withPendingStatus, withPodInitializedOption(corev1.ConditionFalse)}},
+						{KubeControllerManagerPodNamePrefix, singleMachine[0].Name, []podOption{withReadyOption}},
+					}...),
+				},
+			},
+			expectedConditions: []clusterv1.Conditions{
+				{
+					{
+						Type:   controlplanev1.MachineAPIServerPodHealthyCondition,
+						Status: corev1.ConditionFalse,
+						Reason: controlplanev1.PodProvisioningReason,
+					},
+					{
+						Type:   controlplanev1.MachineControllerManagerPodHealthyCondition,
+						Status: corev1.ConditionTrue,
+					},
+					{
+						Type:   controlplanev1.MachineSchedulerPodHealthyCondition,
+						Status: corev1.ConditionFalse,
+						Reason: controlplanev1.PodMissingReason,
+					},
+				},
+			},
+			expectErr: true,
+		},
+		{
+			name:                 "1 control plane pod is in pending state but provisioned (not ready)",
+			controlPlaneMachines: singleMachine,
+			workloadCluster: &Workload{
+				Client: &fakeClient{
+					list: nodeListForMachines(singleMachine),
+					get: podsForFakeWorkloadGet([]podStatus{
+						{KubeAPIServerPodNamePrefix, singleMachine[0].Name, []podOption{withPendingStatus}},
+						{KubeControllerManagerPodNamePrefix, singleMachine[0].Name, []podOption{withReadyOption}},
+					}...),
+				},
+			},
+			expectedConditions: []clusterv1.Conditions{
+				{
+					{
+						Type:   controlplanev1.MachineAPIServerPodHealthyCondition,
+						Status: corev1.ConditionFalse,
+						Reason: controlplanev1.PodIsNotReadyReason,
+					},
+					{
+						Type:   controlplanev1.MachineControllerManagerPodHealthyCondition,
+						Status: corev1.ConditionTrue,
+					},
+					{
+						Type:   controlplanev1.MachineSchedulerPodHealthyCondition,
+						Status: corev1.ConditionFalse,
+						Reason: controlplanev1.PodMissingReason,
+					},
+				},
+			},
+			expectErr: true,
 		},
 	}
 
-	err := workloadCluster.ControlPlaneIsHealthy(context.Background(), machines)
-	g.Expect(err).NotTo(HaveOccurred())
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			g := NewWithT(t)
+			err := tt.workloadCluster.ControlPlaneIsHealthy(context.Background(), tt.controlPlaneMachines)
+
+			g.Expect(checkConditions(tt.controlPlaneMachines, tt.expectedConditions)).To(BeTrue())
+			if tt.expectErr {
+				g.Expect(err).To(HaveOccurred())
+				return
+			}
+			g.Expect(err).NotTo(HaveOccurred())
+		})
+	}
+}
+
+type podStatus struct {
+	podPrefix string
+	nodeName  string
+	options   []podOption
+}
+
+func getPodName(pod podStatus) string {
+	return types.NamespacedName{Namespace: metav1.NamespaceSystem, Name: staticPodName(pod.podPrefix, pod.nodeName)}.String()
+}
+
+// podsForFakeWorkloadGet returns map of pod namespace/name with pod
+// pod namespace/name looks like: "kube-system/kube-controller-manager-second-control-plane"
+func podsForFakeWorkloadGet(podStatuses ...podStatus) map[string]interface{} {
+	pods := make(map[string]interface{})
+	for _, podStatus := range podStatuses {
+		pods[getPodName(podStatus)] = getPod("", podStatus.options...)
+	}
+	return pods
+}
+
+// checkConditions checks if machineConditions have all the expectedConditions
+// machineConditions may have more conditions that expectedConditions.
+func checkConditions(machines []*clusterv1.Machine, expectedConditions []clusterv1.Conditions) bool {
+	for i := range expectedConditions {
+		if !checkMachineConditions(machines[i], expectedConditions[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+// checkMachineConditions returns false if it does not have all the expected conditions.
+func checkMachineConditions(machine *clusterv1.Machine, expectedConditions clusterv1.Conditions) bool {
+	for i := range expectedConditions {
+		isFound := false
+		for j := range machine.Status.Conditions {
+			if machine.Status.Conditions[j].Type == expectedConditions[i].Type {
+				isFound = true
+				if machine.Status.Conditions[j].Status != expectedConditions[i].Status ||
+					machine.Status.Conditions[j].Reason != expectedConditions[i].Reason {
+					return false
+				}
+			}
+		}
+
+		if !isFound {
+			return false
+		}
+	}
+	return true
 }
 
 func TestGetMachinesForCluster(t *testing.T) {
@@ -325,13 +552,13 @@ type checkStaticPodReadyConditionTest struct {
 	conditions []corev1.PodCondition
 }
 
-func nodeListForTestControlPlaneIsHealthy() *corev1.NodeList {
+func nodeListForMachines(machines []*clusterv1.Machine) *corev1.NodeList {
+	nodeList := []corev1.Node{}
+	for _, machine := range machines {
+		nodeList = append(nodeList, nodeNamed(machine.Name))
+	}
 	return &corev1.NodeList{
-		Items: []corev1.Node{
-			nodeNamed("first-control-plane"),
-			nodeNamed("second-control-plane"),
-			nodeNamed("third-control-plane"),
-		},
+		Items: nodeList,
 	}
 }
 
@@ -345,6 +572,48 @@ func nodeNamed(name string, options ...func(n corev1.Node) corev1.Node) corev1.N
 		node = opt(node)
 	}
 	return node
+}
+
+type podOption func(*corev1.Pod)
+
+func getPod(name string, options ...podOption) *corev1.Pod {
+	p := &corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: metav1.NamespaceSystem,
+		},
+	}
+	for _, opt := range options {
+		opt(p)
+	}
+	return p
+}
+
+func withReadyOption(pod *corev1.Pod) {
+	readyCondition := corev1.PodCondition{
+		Type:   corev1.PodReady,
+		Status: corev1.ConditionTrue,
+	}
+	pod.Status.Conditions = append(pod.Status.Conditions, readyCondition)
+}
+
+func withPodInitializedOption(status corev1.ConditionStatus) podOption {
+	initializedCondition := corev1.PodCondition{
+		Type:   corev1.PodInitialized,
+		Status: status,
+	}
+
+	return func(pod *corev1.Pod) {
+		pod.Status.Conditions = append(pod.Status.Conditions, initializedCondition)
+	}
+}
+
+func withFailedStatus(pod *corev1.Pod) {
+	pod.Status.Phase = corev1.PodFailed
+}
+
+func withPendingStatus(pod *corev1.Pod) {
+	pod.Status.Phase = corev1.PodPending
 }
 
 func machineListForTestGetMachinesForCluster() *clusterv1.MachineList {
