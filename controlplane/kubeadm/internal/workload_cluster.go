@@ -60,6 +60,7 @@ type WorkloadCluster interface {
 	ClusterStatus(ctx context.Context) (ClusterStatus, error)
 	ControlPlaneIsHealthy(ctx context.Context) (HealthCheckResult, error)
 	EtcdIsHealthy(ctx context.Context) (HealthCheckResult, error)
+	UpdateStaticPodConditions(ctx context.Context, kcp *controlplanev1.KubeadmControlPlane, machines []*clusterv1.Machine)
 
 	// Upgrade related tasks.
 	ReconcileKubeletRBACBinding(ctx context.Context, version semver.Version) error

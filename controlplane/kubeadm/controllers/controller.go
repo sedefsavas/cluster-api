@@ -304,6 +304,12 @@ func (r *KubeadmControlPlaneReconciler) reconcile(ctx context.Context, cluster *
 	// source ref (reason@machine/name) so the problem can be easily tracked down to its source machine.
 	conditions.SetAggregate(controlPlane.KCP, controlplanev1.MachinesReadyCondition, controlPlane.Machines.ConditionGetters(), conditions.AddSourceRef())
 
+	// Updates conditions reporting the status of static pods and the status of the etcd cluster.
+	// NOTE: Conditions reporting KCP operation progress like e.g. Resized or SpecUpToDate are managed down in this func.
+	if result, err := r.reconcileControlPlaneConditions(ctx, cluster, kcp, controlPlane); err != nil || !result.IsZero() {
+		return result, err
+	}
+
 	// reconcileControlPlaneHealth returns err if there is a machine being deleted or if the control plane is unhealthy.
 	// If the control plane is not yet initialized, this call shouldn't fail.
 	if result, err := r.reconcileControlPlaneHealth(ctx, cluster, kcp, controlPlane); err != nil || !result.IsZero() {
@@ -465,6 +471,33 @@ func (r *KubeadmControlPlaneReconciler) ClusterToKubeadmControlPlane(o handler.M
 	}
 
 	return nil
+}
+
+// reconcileControlPlaneConditions is responsible of reconciling conditions reporting the status of static pods and
+// the status of the etcd cluster.
+// NOTE: Conditions reporting KCP operation progress like e.g. Resized or SpecUpToDate are managed directly in reconcile.
+func (r *KubeadmControlPlaneReconciler) reconcileControlPlaneConditions(ctx context.Context, cluster *clusterv1.Cluster, kcp *controlplanev1.KubeadmControlPlane, controlPlane *internal.ControlPlane) (ctrl.Result, error) {
+	// if the cluster is not yet initialized, there is no way to connect to the workload cluster and fetch information
+	// for updating conditions. Return early.
+	if !kcp.Status.Initialized {
+		return ctrl.Result{}, nil
+	}
+
+	workloadCluster, err := r.managementCluster.GetWorkloadCluster(ctx, util.ObjectKey(cluster))
+	if err != nil {
+		return ctrl.Result{}, errors.Wrap(err, "cannot get remote client to workload cluster. Unable to update cluster conditions")
+	}
+
+	// Update conditions status
+	workloadCluster.UpdateStaticPodConditions(ctx, kcp, controlPlane.Machines.UnsortedList())
+
+	// Patch machines with the updated conditions.
+	if err := controlPlane.PatchMachines(ctx); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	// KCP will be patched at the end of Reconcile to reflect updated conditions, se we can return now.
+	return ctrl.Result{}, nil
 }
 
 // reconcileControlPlaneHealth performs health checks for control plane components and etcd
