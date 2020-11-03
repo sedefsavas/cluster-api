@@ -131,7 +131,7 @@ func (w *Workload) UpdateStaticPodConditions(ctx context.Context, kcp *controlpl
 		}
 	}
 
-	// Aggregate components error from machines at at KCP level
+	// Aggregate components error from machines at KCP level
 	kcpMachinesWithErrors := sets.NewString()
 	kcpMachinesWithWarnings := sets.NewString()
 	kcpMachinesWithInfo := sets.NewString()
@@ -194,7 +194,7 @@ func (w *Workload) UpdateStaticPodConditions(ctx context.Context, kcp *controlpl
 		return
 	}
 
-	// We can get here only in there are no provisioned machines,; in this case it is not required setting condition at KCP level
+	// We can get here only if there are no provisioned machines; in this case it is not required setting condition at KCP level
 }
 
 // nodeHasUnreachableTaint returns true if the node has is unreachable from the node controller.
@@ -251,14 +251,44 @@ func (w *Workload) updateStaticPodCondition(machine *clusterv1.Machine, node cor
 			return
 		}
 
-		// Surface wait message from containers.
+		// If there is no error from containers, report provisioning without further details.
+		conditions.MarkFalse(machine, staticPodCondition, controlplanev1.PodProvisioningReason, clusterv1.ConditionSeverityInfo, "")
+	case corev1.PodRunning:
+		// PodRunning means the pod has been bound to a node and all of the containers have been started.
+		// At least one container is still running or is in the process of being restarted.
+
+		// PodRunning condition does not mean its containers are in running state.
+		// E.g., a terminated container with an error can be in waiting state with "CrashLoopBackOff" reason while the Pod is in "Running" phase.
+		// ContainersReady and Ready pod conditions should also be True.
+		// PodReady condition means the pod is able to service requests
+		if podCondition(pod, corev1.PodReady) == corev1.ConditionTrue {
+			conditions.MarkTrue(machine, staticPodCondition)
+			return
+		}
+
+		// Surface wait message from containers but waiting state does not always mean "PodProvisioningReason".
+		// Exception: Since default "restartPolicy" = "Always", a container that exited with error will be in waiting state (not terminated state)
+		// with "CrashLoopBackOff" reason and its LastTerminationState will be non-nil.
+		// "CrashLoopBackOff" should not be considered as PodProvisioningReason.
 		var containerWaitingMessages []string
+		terminatedWithError := false
 		for _, containerStatus := range pod.Status.ContainerStatuses {
+			if containerStatus.LastTerminationState.Terminated != nil && containerStatus.LastTerminationState.Terminated.ExitCode != 0 {
+				terminatedWithError = true
+				// LastTerminationState.Terminated.Reason is always "Error", so no need to add this to the message.
+			}
 			if containerStatus.State.Waiting != nil {
 				containerWaitingMessages = append(containerWaitingMessages, containerStatus.State.Waiting.Reason)
 			}
 		}
 		if len(containerWaitingMessages) > 0 {
+			if terminatedWithError {
+				conditions.MarkFalse(machine, staticPodCondition, controlplanev1.PodFailedReason, clusterv1.ConditionSeverityError, strings.Join(containerWaitingMessages, ", "))
+				return
+			}
+
+			// Note: Some error cases cannot be caught when container state == "Waiting",
+			// e.g., "waiting.reason: ErrImagePull" is an error, but since LastTerminationState does not exist, this cannot be differentiated from "PodProvisioningReason"
 			conditions.MarkFalse(machine, staticPodCondition, controlplanev1.PodProvisioningReason, clusterv1.ConditionSeverityInfo, strings.Join(containerWaitingMessages, ", "))
 			return
 		}
@@ -274,17 +304,7 @@ func (w *Workload) updateStaticPodCondition(machine *clusterv1.Machine, node cor
 			conditions.MarkFalse(machine, staticPodCondition, controlplanev1.PodFailedReason, clusterv1.ConditionSeverityError, strings.Join(containerTerminatedMessages, ", "))
 			return
 		}
-		// If there are no error from containers, report provisioning without further details.
-		conditions.MarkFalse(machine, staticPodCondition, controlplanev1.PodProvisioningReason, clusterv1.ConditionSeverityInfo, "")
-	case corev1.PodRunning:
-		// PodRunning means the pod has been bound to a node and all of the containers have been started.
-		// At least one container is still running or is in the process of being restarted.
 
-		// PodReady condition means the pod is able to service requests
-		if podCondition(pod, corev1.PodReady) == corev1.ConditionTrue {
-			conditions.MarkTrue(machine, staticPodCondition)
-			return
-		}
 		// If the pod is not yet ready, most probably it is waiting for startup or readiness probes.
 		// Report this as part of the provisioning process because the corresponding control plane component is not ready yet.
 		conditions.MarkFalse(machine, staticPodCondition, controlplanev1.PodProvisioningReason, clusterv1.ConditionSeverityInfo, "Waiting for startup or readiness probes")
@@ -296,7 +316,21 @@ func (w *Workload) updateStaticPodCondition(machine *clusterv1.Machine, node cor
 	case corev1.PodFailed:
 		// PodFailed means that all containers in the pod have terminated, and at least one container has
 		// terminated in a failure (exited with a non-zero exit code or was stopped by the system).
-		// NOTE: This should never happen for the static pods running control plane components.
+		// NOTE: This should never happen for the static pods running control plane components because default "restartPolicy" is "Always".
+		// If "restartPolicy" == "Never", then containers can be terminated with failure.
+
+		// Surface errors message from containers.
+		var containerTerminatedMessages []string
+		for _, containerStatus := range pod.Status.ContainerStatuses {
+			if containerStatus.State.Terminated != nil {
+				containerTerminatedMessages = append(containerTerminatedMessages, containerStatus.State.Terminated.Reason)
+			}
+		}
+		if len(containerTerminatedMessages) > 0 {
+			conditions.MarkFalse(machine, staticPodCondition, controlplanev1.PodFailedReason, clusterv1.ConditionSeverityError, strings.Join(containerTerminatedMessages, ", "))
+			return
+		}
+
 		conditions.MarkFalse(machine, staticPodCondition, controlplanev1.PodFailedReason, clusterv1.ConditionSeverityError, "All the containers have been terminated")
 	case corev1.PodUnknown:
 		// PodUnknown means that for some reason the state of the pod could not be obtained, typically due
