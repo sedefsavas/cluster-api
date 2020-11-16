@@ -1,4 +1,4 @@
-module sigs.k8s.io/cluster-api
+module github.com/sedefsavas/cluster-api
 
 go 1.15
 
