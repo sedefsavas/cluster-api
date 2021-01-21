@@ -524,7 +524,7 @@ release-staging: ## Builds and push container images to the staging bucket.
 
 .PHONY: release-staging-daily
 release-staging-daily: ## Builds and push container images to the staging bucket.
-	$(eval RELEASE_ALIAS_TAG := daily_$(RELEASE_TAG)_$(shell date +%F))
+	$(eval RELEASE_ALIAS_TAG := daily_$(TAG)_$(shell date +%F))
 	$(MAKE) release-staging RELEASE_ALIAS_TAG=$(RELEASE_ALIAS_TAG)
 
 	# Set the images to the staging bucket.
