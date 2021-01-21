@@ -70,8 +70,10 @@ CLOUDINIT_SCRIPT := $(CLOUDINIT_PKG_DIR)/kubeadm-bootstrap-script.sh
 
 # Define Docker related variables. Releases should modify and double check these vars.
 REGISTRY ?= gcr.io/$(shell gcloud config get-value project)
-STAGING_REGISTRY ?= gcr.io/k8s-staging-cluster-api
 PROD_REGISTRY ?= us.gcr.io/k8s-artifacts-prod/cluster-api
+
+STAGING_REGISTRY ?= gcr.io/k8s-staging-cluster-api
+STAGING_BUCKET ?= artifacts.k8s-staging-cluster-api.appspot.com
 
 # core
 IMAGE_NAME ?= cluster-api-controller
@@ -443,6 +445,7 @@ set-manifest-image:
 ## --------------------------------------
 
 RELEASE_TAG := $(shell git describe --abbrev=0 2>/dev/null)
+RELEASE_ALIAS_TAG ?= $(PULL_BASE_REF)
 RELEASE_DIR := out
 
 $(RELEASE_DIR):
@@ -519,7 +522,28 @@ release-binary: $(RELEASE_DIR)
 release-staging: ## Builds and push container images to the staging bucket.
 	REGISTRY=$(STAGING_REGISTRY) $(MAKE) docker-build-all docker-push-all release-alias-tag
 
-RELEASE_ALIAS_TAG=$(PULL_BASE_REF)
+.PHONY: release-staging-daily
+release-staging-daily: ## Builds and push container images to the staging bucket.
+	$(eval RELEASE_ALIAS_TAG := daily_$(RELEASE_TAG)_$(shell date +%F))
+	$(MAKE) release-staging RELEASE_ALIAS_TAG=$(RELEASE_ALIAS_TAG)
+
+	# Set the images to the staging bucket.
+	$(MAKE) set-manifest-image \
+		MANIFEST_IMG=$(STAGING_REGISTRY)/$(IMAGE_NAME) MANIFEST_TAG=$(RELEASE_ALIAS_TAG) \
+		TARGET_RESOURCE="./config/manager/manager_image_patch.yaml"
+	$(MAKE) set-manifest-image \
+		MANIFEST_IMG=$(STAGING_REGISTRY)/$(KUBEADM_BOOTSTRAP_IMAGE_NAME) MANIFEST_TAG=$(RELEASE_ALIAS_TAG) \
+		TARGET_RESOURCE="./bootstrap/kubeadm/config/manager/manager_image_patch.yaml"
+	$(MAKE) set-manifest-image \
+		MANIFEST_IMG=$(STAGING_REGISTRY)/$(KUBEADM_CONTROL_PLANE_IMAGE_NAME) MANIFEST_TAG=$(RELEASE_ALIAS_TAG) \
+		TARGET_RESOURCE="./controlplane/kubeadm/config/manager/manager_image_patch.yaml"
+	# Set pull policy
+	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./config/manager/manager_pull_policy.yaml"
+	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./bootstrap/kubeadm/config/manager/manager_pull_policy.yaml"
+	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./controlplane/kubeadm/config/manager/manager_pull_policy.yaml"
+	## Build the manifests
+	$(MAKE) release-manifests
+	gsutil cp $(RELEASE_DIR)/* gs://$(STAGING_BUCKET)/components/$(RELEASE_ALIAS_TAG)
 
 .PHONY: release-alias-tag
 release-alias-tag: ## Adds the tag to the last build tag.
