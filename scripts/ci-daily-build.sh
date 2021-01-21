@@ -20,6 +20,9 @@ set -o pipefail
 
 REPO_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
 
-# Build and publish images and manifests to the staging bucket
+# Build and publish cluster-api images and manifests to the staging bucket
 cd "${REPO_ROOT}" && make release-staging-daily
+
+# Build and publish CAPD images and manifests to the staging bucket
+$(MAKE) -C test/infrastructure/docker release-staging-daily
 

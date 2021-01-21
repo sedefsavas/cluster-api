@@ -534,8 +534,8 @@ release-staging: ## Builds and push container images to the staging bucket.
 .PHONY: release-staging-daily
 release-staging-daily: ## Builds and push container images to the staging bucket.
 	$(eval RELEASE_ALIAS_TAG := daily_$(RELEASE_ALIAS_TAG)_$(shell date +'%Y%-m%d'))
-	$(MAKE) release-staging RELEASE_ALIAS_TAG=$(RELEASE_ALIAS_TAG)
-	# Set the manifest image to the production bucket.
+	$(MAKE) release-alias-tag RELEASE_ALIAS_TAG=$(RELEASE_ALIAS_TAG)
+	# Set the manifest image to the staging bucket.
 	$(MAKE) manifest-modification REGISTRY=$(STAGING_REGISTRY) RELEASE_TAG=$(RELEASE_ALIAS_TAG)
 	## Build the manifests
 	$(MAKE) release-manifests
