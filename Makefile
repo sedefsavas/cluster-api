@@ -87,6 +87,8 @@ KUBEADM_BOOTSTRAP_CONTROLLER_IMG ?= $(REGISTRY)/$(KUBEADM_BOOTSTRAP_IMAGE_NAME)
 KUBEADM_CONTROL_PLANE_IMAGE_NAME ?= kubeadm-control-plane-controller
 KUBEADM_CONTROL_PLANE_CONTROLLER_IMG ?= $(REGISTRY)/$(KUBEADM_CONTROL_PLANE_IMAGE_NAME)
 
+# GIT_TAG is set by Prow, a git-based tag of the form vYYYYMMDD-hash, e.g., v20210120-v0.3.10-308-gc61521971.
+# It is suggested (by test-infra) to use it to tag the images.
 ifneq ($(GIT_TAG),)
   TAG ?= $(GIT_TAG)
 else
@@ -449,8 +451,8 @@ set-manifest-image:
 ## Release
 ## --------------------------------------
 
-RELEASE_TAG := $(shell git describe --abbrev=0 2>/dev/null)
-RELEASE_ALIAS_TAG ?= $(PULL_BASE_REF)
+RELEASE_TAG := $(shell git describe --abbrev=0 2>/dev/null) ## latest git tag for the commit, e.g., v0.3.10
+RELEASE_ALIAS_TAG ?= $(PULL_BASE_REF) ## set by Prow, ref name of the base branch, e.g., master
 RELEASE_DIR := out
 
 $(RELEASE_DIR):
@@ -463,25 +465,27 @@ release: clean-release ## Builds and push container images using the latest git 
 	git checkout "${RELEASE_TAG}"
 	# Build binaries first.
 	$(MAKE) release-binaries
-	# Set the core manifest image to the production bucket.
-	$(MAKE) set-manifest-image \
-		MANIFEST_IMG=$(PROD_REGISTRY)/$(IMAGE_NAME) MANIFEST_TAG=$(RELEASE_TAG) \
-		TARGET_RESOURCE="./config/manager/manager_image_patch.yaml"
-	# Set the kubeadm bootstrap image to the production bucket.
-	$(MAKE) set-manifest-image \
-		MANIFEST_IMG=$(PROD_REGISTRY)/$(KUBEADM_BOOTSTRAP_IMAGE_NAME) MANIFEST_TAG=$(RELEASE_TAG) \
-		TARGET_RESOURCE="./bootstrap/kubeadm/config/manager/manager_image_patch.yaml"
-	# Set the kubeadm control plane image to the production bucket.
-	$(MAKE) set-manifest-image \
-		MANIFEST_IMG=$(PROD_REGISTRY)/$(KUBEADM_CONTROL_PLANE_IMAGE_NAME) MANIFEST_TAG=$(RELEASE_TAG) \
-		TARGET_RESOURCE="./controlplane/kubeadm/config/manager/manager_image_patch.yaml"
-	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./config/manager/manager_pull_policy.yaml"
-	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./bootstrap/kubeadm/config/manager/manager_pull_policy.yaml"
-	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./controlplane/kubeadm/config/manager/manager_pull_policy.yaml"
+	# Set the manifest image to the production bucket.
+	$(MAKE) manifest-modification REGISTRY=$(PROD_REGISTRY)
 	## Build the manifests
 	$(MAKE) release-manifests clean-release-git
 	## Build the development manifests
 	$(MAKE) release-manifests-dev clean-release-git
+
+.PHONY: manifest-modification
+manifest-modification: # Set the manifest images to the staging/production bucket.
+	$(MAKE) set-manifest-image \
+		MANIFEST_IMG=$(REGISTRY)/$(IMAGE_NAME) MANIFEST_TAG=$(RELEASE_TAG) \
+		TARGET_RESOURCE="./config/manager/manager_image_patch.yaml"
+	$(MAKE) set-manifest-image \
+		MANIFEST_IMG=$(REGISTRY)/$(KUBEADM_BOOTSTRAP_IMAGE_NAME) MANIFEST_TAG=$(RELEASE_TAG) \
+		TARGET_RESOURCE="./bootstrap/kubeadm/config/manager/manager_image_patch.yaml"
+	$(MAKE) set-manifest-image \
+		MANIFEST_IMG=$(REGISTRY)/$(KUBEADM_CONTROL_PLANE_IMAGE_NAME) MANIFEST_TAG=$(RELEASE_TAG) \
+		TARGET_RESOURCE="./controlplane/kubeadm/config/manager/manager_image_patch.yaml"
+	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./config/manager/manager_pull_policy.yaml"
+	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./bootstrap/kubeadm/config/manager/manager_pull_policy.yaml"
+	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./controlplane/kubeadm/config/manager/manager_pull_policy.yaml"
 
 .PHONY: release-manifests
 release-manifests: $(RELEASE_DIR) $(KUSTOMIZE) ## Builds the manifests to publish with a release
@@ -529,23 +533,10 @@ release-staging: ## Builds and push container images to the staging bucket.
 
 .PHONY: release-staging-daily
 release-staging-daily: ## Builds and push container images to the staging bucket.
-	$(eval RELEASE_ALIAS_TAG := daily_$(TAG)_$(shell date +%F))
+	$(eval RELEASE_ALIAS_TAG := daily_$(RELEASE_ALIAS_TAG)_$(shell date +'%Y%-m%d'))
 	$(MAKE) release-staging RELEASE_ALIAS_TAG=$(RELEASE_ALIAS_TAG)
-
-	# Set the images to the staging bucket.
-	$(MAKE) set-manifest-image \
-		MANIFEST_IMG=$(STAGING_REGISTRY)/$(IMAGE_NAME) MANIFEST_TAG=$(RELEASE_ALIAS_TAG) \
-		TARGET_RESOURCE="./config/manager/manager_image_patch.yaml"
-	$(MAKE) set-manifest-image \
-		MANIFEST_IMG=$(STAGING_REGISTRY)/$(KUBEADM_BOOTSTRAP_IMAGE_NAME) MANIFEST_TAG=$(RELEASE_ALIAS_TAG) \
-		TARGET_RESOURCE="./bootstrap/kubeadm/config/manager/manager_image_patch.yaml"
-	$(MAKE) set-manifest-image \
-		MANIFEST_IMG=$(STAGING_REGISTRY)/$(KUBEADM_CONTROL_PLANE_IMAGE_NAME) MANIFEST_TAG=$(RELEASE_ALIAS_TAG) \
-		TARGET_RESOURCE="./controlplane/kubeadm/config/manager/manager_image_patch.yaml"
-	# Set pull policy
-	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./config/manager/manager_pull_policy.yaml"
-	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./bootstrap/kubeadm/config/manager/manager_pull_policy.yaml"
-	$(MAKE) set-manifest-pull-policy PULL_POLICY=IfNotPresent TARGET_RESOURCE="./controlplane/kubeadm/config/manager/manager_pull_policy.yaml"
+	# Set the manifest image to the production bucket.
+	$(MAKE) manifest-modification REGISTRY=$(STAGING_REGISTRY) RELEASE_TAG=$(RELEASE_ALIAS_TAG)
 	## Build the manifests
 	$(MAKE) release-manifests
 	gsutil cp $(RELEASE_DIR)/* gs://$(STAGING_BUCKET)/components/$(RELEASE_ALIAS_TAG)
